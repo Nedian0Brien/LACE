@@ -14,4 +14,7 @@ artifacts/
 
 .env
 .kaggle/
-
+.agents/
+.claude/
+.codex/
+.omc/
