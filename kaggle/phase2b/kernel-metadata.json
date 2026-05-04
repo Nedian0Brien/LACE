@@ -1,0 +1,14 @@
+{
+  "id": "dennisparknd/lace-phase-2b-calibrated-validation",
+  "title": "LACE Phase 2B Calibrated Validation",
+  "code_file": "run_phase2b.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

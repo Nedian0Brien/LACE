@@ -1,0 +1,14 @@
+{
+  "id": "dennisparknd/lace-phase-2c-positional-encoding",
+  "title": "LACE Phase 2C Positional Encoding",
+  "code_file": "run_phase2c.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
