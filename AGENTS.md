@@ -1,59 +1,61 @@
 # AGENTS.md
 
-## Communication Preference
+## 커뮤니케이션 원칙
 
 사용자에게 핵심을 전달합니다. 방향성, 본질에 집중하여 직관적으로 설명합니다.
 
-Give interpretive context rather than terse summaries, but match length to the question. Design and discussion questions get a recommendation plus the main trade-off in 2–3 short paragraphs. Do not expand into adjacent decisions the user did not ask about. Catalog-style enumeration of every option is the wrong default.
+해석은 너무 짧은 요약으로 끝내지 말고, 질문의 크기에 맞춰 맥락을 제공합니다. 설계나 논의 질문에는 추천안과 핵심 trade-off를 2-3개의 짧은 문단으로 답합니다. 사용자가 묻지 않은 인접 결정까지 확장하지 않습니다. 모든 선택지를 카탈로그처럼 나열하는 방식은 기본값으로 사용하지 않습니다.
 
-Use the following 5-step structure **only** for finalized experiment results, metric/gate definitions, and next-step plans. **Do not apply it to option comparisons, scorer candidates, or design alternatives** — those use a short table plus one or two lines per option.
+다음 5단계 구조는 **확정된 실험 결과, metric/gate 정의, 다음 실험 계획**에만 사용합니다. **옵션 비교, scorer 후보, 설계 대안**에는 적용하지 않습니다. 그런 경우에는 짧은 표와 옵션별 1-2줄 해석을 사용합니다.
 
-1. Explain what the metric, control, or experiment item measures.
-2. Explain why it matters in the current LACE/DLM-ALM experiment.
-3. Explain what a good or bad result would imply.
-4. Explain what objection, confound, or ambiguity the item helps address.
-5. Explain how the next experiment should verify or falsify the interpretation.
+1. metric, control, experiment item이 무엇을 측정하는지 설명합니다.
+2. 그것이 현재 LACE/DLM-ALM 실험에서 왜 중요한지 설명합니다.
+3. 좋은 결과와 나쁜 결과가 각각 무엇을 의미하는지 설명합니다.
+4. 어떤 반론, confound, 모호성을 다루는지 설명합니다.
+5. 다음 실험이 그 해석을 어떻게 검증하거나 반증해야 하는지 설명합니다.
 
-Be especially careful to separate:
+특히 다음을 분리해서 설명합니다.
 
 - hidden-state reconstruction quality
-- representation direction or semantic structure
+- representation direction 또는 semantic structure
 - token-level reconstruction proxy
 - open-ended generation behavior
-- evidence for actual latent use
-- claims about compression forward process versus corruption forward process
+- actual latent/skeleton use evidence
+- compression forward process와 corruption forward process에 대한 claim
 
-Avoid overclaiming from early smoke runs. State both the defensible interpretation and the remaining caveats.
+초기 smoke run이나 제한된 실험 결과를 과장하지 않습니다. 방어 가능한 해석과 남아 있는 caveat를 함께 말합니다.
 
-## Research Direction
+## 연구 방향
 
-For the current v2 track, treat the working core claim as:
+현재 v2 track의 작업 가설은 다음입니다.
 
 > Semantic skeleton + positional scaffold creates a better reverse trajectory than random corruption.
 
-Interpret this carefully. The semantic skeleton is the content-bearing terminal state of the forward process. The positional scaffold is auxiliary structure that helps the reverse process expand the skeleton back into text. Positional scaffold evidence alone must not be treated as evidence for semantic skeleton use.
+이 문장은 신중하게 해석합니다. Semantic skeleton은 forward process의 content-bearing terminal state입니다. Positional scaffold는 skeleton을 다시 text로 확장하도록 돕는 보조 구조입니다. Positional scaffold만으로 좋아진 결과를 semantic skeleton use의 증거로 취급하지 않습니다.
 
-Whenever this claim is tested, keep random corruption, position-only, same-position random, and wrong-document/same-position controls close to the main condition.
+이 claim을 검증할 때는 random corruption, position-only, same-position random, wrong-document/same-position control을 핵심 조건 가까이에 둡니다.
 
-## Research Timeline
+## 연구 타임라인
 
-Maintain a chronological research timeline at `docs/v2/research-timeline.md`.
+시간순 연구 타임라인은 `docs/v2/research-timeline.md`에 유지합니다.
 
-Whenever the research process produces a meaningful question, decision, or finding, update the timeline in the same task. This includes:
+연구 과정에서 의미 있는 질문, 결정, 발견이 생기면 같은 작업 안에서 타임라인을 업데이트합니다. 포함 대상은 다음과 같습니다.
 
-- new or revised research questions
-- decisions about the core claim, phase order, scorer, control, metric, or gate
-- empirical facts from local smoke runs, Kaggle runs, downloaded outputs, or result documents
-- caveats, confounds, failed assumptions, and interpretation changes
+- 새로 생기거나 수정된 연구 질문
+- 핵심 claim, phase 순서, scorer, control, metric, gate에 관한 결정
+- local smoke run, Kaggle run, 다운로드된 output, 결과 문서에서 확인한 empirical fact
+- caveat, confound, 실패한 가정, 해석 변경
 
-Each timeline entry should include the date, short context, the question/decision/fact, evidence or source artifact, and the implication for the next experiment. Keep entries concise and interpretive; do not leave important research state only in chat, commit messages, or raw output files.
+각 타임라인 항목에는 날짜, 짧은 맥락, 질문/결정/사실, 근거 또는 source artifact, 다음 실험에 주는 의미를 포함합니다.
 
-## Development Workflow
+모든 연구 기록은 한글로 남깁니다. 단, code identifier, 파일 경로, metric 이름, gate 이름, kernel id, command, 고유 claim 문장처럼 정확성이 중요한 원문 표기는 그대로 유지할 수 있습니다. 중요한 연구 상태를 chat, commit message, raw output 파일에만 남기지 않습니다.
 
-Do not use test-driven development (TDD) in this research project.
+## 개발 워크플로
 
-For this repo, prefer direct implementation plus focused verification after the change. Do not run or create routine test suites for documentation-only or planning-only work. Use lightweight checks such as `git diff --check`, syntax checks, small smoke runs, or targeted metric/gate checks only when they materially reduce risk.
+이 연구 프로젝트에서는 test-driven development(TDD)를 사용하지 않습니다.
 
-At the end of each completed task, automatically commit and push the completed work unless the user explicitly says not to. The commit should include the relevant code, experiment plan/result documents, and verification updates for that task, while preserving unrelated user changes.
+이 repo에서는 직접 구현한 뒤 변화의 위험도에 맞춰 집중 검증합니다. 문서 작업이나 계획 작업에는 routine test suite를 만들거나 실행하지 않습니다. 필요할 때만 `git diff --check`, syntax check, small smoke run, targeted metric/gate check 같은 가벼운 검증을 사용합니다.
 
-When running a Kaggle-backed experiment, consult `docs/v2/kaggle-experiment-workflow.md` before planning, implementing, pushing, downloading outputs, or reporting results.
+작업을 완료하면 사용자가 명시적으로 막지 않는 한 자동으로 commit/push합니다. 커밋에는 해당 작업과 관련된 code, experiment plan/result document, verification update를 포함하되, 관련 없는 사용자 변경은 보존하고 섞지 않습니다.
+
+Kaggle-backed experiment를 진행할 때는 planning, implementation, push, output download, report 전에 `docs/v2/kaggle-experiment-workflow.md`를 확인합니다.
