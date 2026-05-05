@@ -2,7 +2,7 @@
 
 이 폴더는 v2 semantic skeleton track의 실험 계획서를 저장한다.
 
-첫 계획서는 다음 작업에서 작성한다.
+첫 계획서는 작성되었다.
 
 ```text
 s0-skeleton-pipeline-plan.md
