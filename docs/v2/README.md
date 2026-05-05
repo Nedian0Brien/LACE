@@ -43,7 +43,7 @@ v1에서 확인한 병목은 v2 설계에 다음 제약을 준다.
 
 ## 현재 실험 방향
 
-v2의 첫 실험인 S0는 거대한 end-to-end model이 아니라 **semantic skeleton bridge**로 시작했고, 결과는 [experiments/s0-skeleton-pipeline.md](./experiments/s0-skeleton-pipeline.md)에 기록했다.
+v2의 첫 실험인 S0는 거대한 end-to-end model이 아니라 **의미 골격 bridge**로 시작했고, 결과는 [experiments/s0-skeleton-pipeline.md](./experiments/s0-skeleton-pipeline.md)에 기록했다.
 
 S0에서 확인한 것은 다음이다.
 
@@ -51,4 +51,6 @@ S0에서 확인한 것은 다음이다.
 2. 하지만 `position_prior` baseline이 강하므로 WikiText lead-position confound를 과소평가하면 안 된다.
 3. S0는 generation 성공 증거가 아니라 S1/S2 설계를 위한 skeleton pipeline 검증이다.
 
-다음 실험은 `S1: skeleton-use controls`다. 여기서는 correct, shuffled, random, wrong-document, position-prior, top-k removal control을 통해 model/evaluator가 skeleton을 실제로 쓰는지 확인한다.
+S1은 [experiments/s1-skeleton-use-controls.md](./experiments/s1-skeleton-use-controls.md)에 기록했다. S1에서 `attention_correct`는 `random_same_count`, `wrong_document`, `position_only`, `same_position_random`보다 강했고, `s2_ready=true`로 통과했다.
+
+다음 실험은 `S2: skeleton-to-text reconstruction`이다. 여기서는 의미 골격과 위치 보조 구조를 입력으로 하는 복원 학습을 시작하되, `position_prior`, `position_only`, `same_position_random` control을 계속 유지한다.

@@ -36,7 +36,7 @@ v2는 다음 문장을 중심 주장으로 둔다.
 
 즉, 중요한 token은 reverse denoising을 돕는 보조 anchor가 아니라, forward process가 도달해야 하는 semantic skeleton terminal state다.
 
-`S0: semantic skeleton extraction and preservation validation`은 완료됐다. 다음 실험은 `S1: skeleton-use controls`다.
+`S0: semantic skeleton extraction and preservation validation`과 `S1: skeleton-use controls`는 완료됐다. 다음 실험은 `S2: skeleton-to-text reconstruction`이다.
 
 ## 실험 실행
 

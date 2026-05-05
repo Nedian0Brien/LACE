@@ -4,6 +4,53 @@
 
 ## 2026-05-05
 
+### 발견: S1 검색형 의미 골격 사용 검증 통과
+
+추가 시각: 2026-05-05 22:06 KST
+
+맥락:
+
+S0는 의미 골격 생성 흐름이 작동한다는 것을 보였지만, 의미 골격이 실제 복원 단서로 쓰이는지는 확인하지 못했다. S1은 frozen `t5-small` encoder를 사용해 의미 골격을 query로 보고, 1024개 후보 원문 중 자기 원문을 찾는 검색형 복원 평가로 진행했다.
+
+결과:
+
+`attention_correct`가 Hit@1 0.9111로 가장 강했다. 이는 `random_same_count` 0.7373, `wrong_document` 0.0000, `position_only` 0.0010, `same_position_random` 0.0020보다 높다. `shuffled_correct`는 0.6074로 떨어져 순서 정보도 일부 작동했다.
+
+주의점:
+
+`position_prior`는 Hit@1 0.8154로 여전히 강했다. 따라서 S2에서는 위치 보조 구조를 버리지 말고, 위치 전용 control을 계속 유지해야 한다. 또한 `remove_topk` 0.4238이 `remove_lowk` 0.3750보다 낮지 않았으므로, 중요도 순서가 token별 인과 중요도와 정확히 일치한다는 주장은 아직 방어할 수 없다.
+
+근거/출처:
+
+- `outputs/v2_s1/lace_v2_s1/summary.md`
+- `docs/v2/experiments/s1-skeleton-use-controls.md`
+
+다음 실험에 주는 의미:
+
+S1은 `overall_pass=true`, `s2_ready=true`로 통과했다. 다음 단계는 S2 의미 골격-문장 복원 학습이다. 핵심 주장은 "의미 골격 + 위치 보조 구조가 무작위 손상보다 더 좋은 역방향 궤적을 만든다"로 유지하되, S2에서는 생성 품질과 teacher-forced proxy를 분리하고 위치 편향 control을 계속 포함한다.
+
+### 결정: S1은 검색형 복원 평가로 시작한다
+
+추가 시각: 2026-05-05 21:55 KST
+
+맥락:
+
+S0는 의미 골격 생성 흐름이 작동한다는 것을 보여줬지만, 의미 골격이 실제 복원 과정에서 쓰이는지는 아직 확인하지 못했다. 바로 큰 생성 모델을 학습하면 실패 원인을 분리하기 어렵다.
+
+결정:
+
+S1은 frozen `t5-small` encoder를 사용한 검색형 복원 평가로 시작한다. 의미 골격을 query로 보고, 후보 원문 중 자기 원문을 얼마나 잘 찾는지 hit@1, hit@5, MRR, cosine margin으로 평가한다.
+
+근거/출처:
+
+- `docs/v2/experiments/s0-skeleton-pipeline.md`
+- `docs/v2/experiment-roadmap.md`
+- `docs/v2/plan/s1-skeleton-use-controls-plan.md`
+
+다음 실험에 주는 의미:
+
+S1에서는 correct, shuffled, random, wrong-document, position-prior, position-only, same-position random, remove top-k, remove low-k control을 먼저 검증한다. correct 의미 골격이 random/wrong-document/position-only보다 명확히 좋아야 S2 복원 학습으로 넘어간다.
+
 ### 결정: 타임라인 항목에는 추가 시각을 함께 기록한다
 
 추가 시각: 2026-05-05 21:17 KST

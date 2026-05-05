@@ -137,24 +137,31 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0는 완료됐다. 결과 문서는 [experiments/s0-skeleton-pipeline.md](./experiments/s0-skeleton-pipeline.md)에 있다.
+S0와 S1은 완료됐다.
+
+결과 문서는 다음에 있다.
+
+- [experiments/s0-skeleton-pipeline.md](./experiments/s0-skeleton-pipeline.md)
+- [experiments/s1-skeleton-use-controls.md](./experiments/s1-skeleton-use-controls.md)
 
 핵심 판단:
 
 1. IDF/attention skeleton은 random/uniform보다 의미 보존 신호를 보였다.
 2. `position_prior`가 강해서 lead-position confound는 실제 risk로 확인됐다.
-3. 따라서 바로 S2/S3로 가지 말고 S1 skeleton-use control을 먼저 수행한다.
+3. S1에서 `attention_correct`는 `random_same_count`, `wrong_document`, `position_only`, `same_position_random`보다 강했다.
+4. 하지만 `position_prior`도 강하므로 S2에서는 위치 보조 구조와 위치 전용 control을 함께 유지한다.
+5. `remove_topk`가 `remove_lowk`보다 더 치명적이라는 순서 주장은 아직 확인되지 않았다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S1: skeleton-use controls
+S2: skeleton-to-text reconstruction
 ```
 
 산출물:
 
-- `kaggle/v2_s1/run_v2_s1.py`
-- `kaggle/v2_s1/kernel-metadata.json`
-- `scripts/push_kaggle_v2_s1.sh`
-- `docs/v2/plan/s1-skeleton-use-controls-plan.md`
-- `docs/v2/experiments/s1-skeleton-use-controls.md`
+- `kaggle/v2_s2/run_v2_s2.py`
+- `kaggle/v2_s2/kernel-metadata.json`
+- `scripts/push_kaggle_v2_s2.sh`
+- `docs/v2/plan/s2-skeleton-to-text-reconstruction-plan.md`
+- `docs/v2/experiments/s2-skeleton-to-text-reconstruction.md`
