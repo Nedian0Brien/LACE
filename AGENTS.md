@@ -4,24 +4,17 @@
 
 사용자에게 핵심을 전달합니다. 방향성, 본질에 집중하여 직관적으로 설명합니다.
 
-해석은 너무 짧은 요약으로 끝내지 말고, 질문의 크기에 맞춰 맥락을 제공합니다. 설계나 논의 질문에는 추천안과 핵심 trade-off를 2-3개의 짧은 문단으로 답합니다. 사용자가 묻지 않은 인접 결정까지 확장하지 않습니다. 모든 선택지를 카탈로그처럼 나열하는 방식은 기본값으로 사용하지 않습니다.
+꼭 영단어가 필요한 경우가 아니면 가급적 한글 용어로 답변합니다.
 
-다음 5단계 구조는 **확정된 실험 결과, metric/gate 정의, 다음 실험 계획**에만 사용합니다. **옵션 비교, scorer 후보, 설계 대안**에는 적용하지 않습니다. 그런 경우에는 짧은 표와 옵션별 1-2줄 해석을 사용합니다.
+해석은 너무 짧은 요약으로 끝내지 말고, 질문의 크기에 맞춰 맥락을 제공합니다. 설계나 논의 질문에는 추천안과 핵심 trade-off를 2-3개의 짧은 문단으로 답합니다.
+
+다음 5단계 구조는 **확정된 실험 결과, metric/gate 정의, 다음 실험 계획**에만 사용합니다.
 
 1. metric, control, experiment item이 무엇을 측정하는지 설명합니다.
-2. 그것이 현재 LACE/DLM-ALM 실험에서 왜 중요한지 설명합니다.
+2. 그것이 현재 실험에서 왜 중요한지 설명합니다.
 3. 좋은 결과와 나쁜 결과가 각각 무엇을 의미하는지 설명합니다.
 4. 어떤 반론, confound, 모호성을 다루는지 설명합니다.
 5. 다음 실험이 그 해석을 어떻게 검증하거나 반증해야 하는지 설명합니다.
-
-특히 다음을 분리해서 설명합니다.
-
-- hidden-state reconstruction quality
-- representation direction 또는 semantic structure
-- token-level reconstruction proxy
-- open-ended generation behavior
-- actual latent/skeleton use evidence
-- compression forward process와 corruption forward process에 대한 claim
 
 초기 smoke run이나 제한된 실험 결과를 과장하지 않습니다. 방어 가능한 해석과 남아 있는 caveat를 함께 말합니다.
 
@@ -46,13 +39,13 @@
 - local smoke run, Kaggle run, 다운로드된 output, 결과 문서에서 확인한 empirical fact
 - caveat, confound, 실패한 가정, 해석 변경
 
-각 타임라인 항목에는 날짜, 짧은 맥락, 질문/결정/사실, 근거 또는 source artifact, 다음 실험에 주는 의미를 포함합니다.
+각 타임라인 항목에는 날짜, 추가 시각, 짧은 맥락, 질문/결정/사실, 근거 또는 source artifact, 다음 실험에 주는 의미를 포함합니다.
 
 모든 연구 기록은 한글로 남깁니다. 단, code identifier, 파일 경로, metric 이름, gate 이름, kernel id, command, 고유 claim 문장처럼 정확성이 중요한 원문 표기는 그대로 유지할 수 있습니다. 중요한 연구 상태를 chat, commit message, raw output 파일에만 남기지 않습니다.
 
 ## 개발 워크플로
 
-이 연구 프로젝트에서는 test-driven development(TDD)를 사용하지 않습니다.
+이 연구 프로젝트에서는 test-driven development(TDD)를 사용하지 않습니다. 불필요한 테스트를 만들지 않습니다.
 
 이 repo에서는 직접 구현한 뒤 변화의 위험도에 맞춰 집중 검증합니다. 문서 작업이나 계획 작업에는 routine test suite를 만들거나 실행하지 않습니다. 필요할 때만 `git diff --check`, syntax check, small smoke run, targeted metric/gate check 같은 가벼운 검증을 사용합니다.
 
