@@ -20,7 +20,6 @@ v2 실험은 다음 구조를 따른다.
 | Kaggle runner | `kaggle/v2_s0/run_v2_s0.py` |
 | Kaggle metadata | `kaggle/v2_s0/kernel-metadata.json` |
 | push script | `scripts/push_kaggle_v2_s0.sh` |
-| local tests | `tests/test_v2_s0_runner.py` |
 | plan document | `docs/v2/plan/s0-skeleton-pipeline-plan.md` |
 | result document | `docs/v2/experiments/s0-skeleton-pipeline.md` |
 | outputs | `outputs/v2_s0/` |
@@ -48,15 +47,14 @@ Runner는 Kaggle script kernel에서 단독 실행될 수 있게 self-contained�
 
 ## 4. 로컬 검증
 
-Kaggle push 전에는 문법과 gate/test logic을 로컬에서 확인한다.
+Kaggle push 전에는 문법과 script 형태를 가볍게 확인한다. 문서 작업이나 계획 작업에는 test suite를 만들거나 실행하지 않는다.
 
 ```bash
 rtk .venv/bin/python -m py_compile kaggle/v2_s0/run_v2_s0.py
 rtk bash -n scripts/push_kaggle_v2_s0.sh
-rtk .venv/bin/python -m unittest discover -s tests -q
 ```
 
-이 repo에서는 TDD를 사용하지 않는다. 구현 후 focused verification을 수행한다.
+이 repo에서는 TDD를 사용하지 않는다. 구현 후에는 실험 위험도에 맞춰 syntax check, small smoke run, 또는 Kaggle smoke/full run 중 필요한 것만 수행한다.
 
 ## 5. Kaggle 실행
 
@@ -96,7 +94,7 @@ Kaggle kernel id, version, sample count, data source, output path는 결과 문�
 작업 마무리 전에는 다음을 확인한다.
 
 ```bash
-rtk .venv/bin/python -m unittest discover -s tests -q
+git diff --check
 rtk git status --short --branch
 ```
 

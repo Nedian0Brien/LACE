@@ -39,12 +39,13 @@ v1은 v2의 핵심 주장인 "중요 token은 auxiliary anchor가 아니라 forw
 
 ## 실행 코드 위치
 
-기존 Kaggle runner와 tests는 아직 top-level에 둔다.
+기존 Kaggle runner와 push scripts는 아직 top-level에 둔다.
 
 | 위치 | 내용 |
 |---|---|
 | `kaggle/phase0` - `kaggle/phase3a` | v1 실험 runner |
 | `scripts/push_kaggle_phase*.sh` | v1 Kaggle push scripts |
-| `tests/test_phase*_runner.py` | v1 runner/gate 검증 |
 
 코드를 물리적으로 옮기지 않은 이유는 기존 runner, script, test의 상대 경로를 깨지 않기 위해서다.
+
+과거 v1 runner 테스트 파일은 문서 작업 속도를 위해 제거했다. v1 runner를 다시 수정할 때만 해당 runner의 syntax check나 작은 smoke run을 수행한다.

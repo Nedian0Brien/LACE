@@ -15,6 +15,7 @@ v1이 continuous latent token-budget compression을 먼저 탐색했다면, v2�
 | [연구기획서.md](./연구기획서.md) | v2의 기본 연구계획서 |
 | [research-questions.md](./research-questions.md) | v2에서 검증해야 할 연구 질문과 성공/실패 조건 |
 | [experiment-roadmap.md](./experiment-roadmap.md) | v2 실험 phase 구조와 다음 실행 우선순위 |
+| [v1-carryover.md](./v1-carryover.md) | v1에서 얻은 성과와 v2로 계승할 실험 규율 |
 | [kaggle-experiment-workflow.md](./kaggle-experiment-workflow.md) | v2 Kaggle 실험 문서화/실행 절차 |
 | [document-alignment.md](./document-alignment.md) | v1에서 v2로 문서 기준을 옮긴 결정 기록 |
 
@@ -36,6 +37,8 @@ v1에서 확인한 병목은 v2 설계에 다음 제약을 준다.
 - teacher-forced proxy와 open-ended generation은 분리해서 평가해야 한다.
 - positional shortcut과 content contribution을 분리해야 한다.
 - Gaussian/noise control이 강하면 compression forward의 고유 우위를 주장할 수 없다.
+
+상세한 계승 원칙은 [v1-carryover.md](./v1-carryover.md)에 정리한다.
 
 ## 다음 실험 방향
 

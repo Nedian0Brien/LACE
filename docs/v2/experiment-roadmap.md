@@ -2,6 +2,8 @@
 
 이 문서는 v2 실험을 위한 단계형 로드맵이다. 기존 v1의 Phase 0-3A와 충돌하지 않도록 v2 실험은 `S` prefix를 사용한다. 여기서 `S`는 semantic skeleton track을 뜻한다.
 
+v1에서 이어갈 실험 규율은 [v1-carryover.md](./v1-carryover.md)를 따른다. 특히 proxy metric과 generation metric을 분리하고, skeleton-use control과 강한 baseline을 초반부터 유지한다.
+
 ## S0. Skeleton Pipeline Sanity Check
 
 ### 질문
@@ -154,6 +156,5 @@ S0: semantic skeleton extraction and preservation validation
 - `kaggle/v2_s0/run_v2_s0.py`
 - `kaggle/v2_s0/kernel-metadata.json`
 - `scripts/push_kaggle_v2_s0.sh`
-- `tests/test_v2_s0_runner.py`
 - `docs/v2/plan/s0-skeleton-pipeline-plan.md`
 - `docs/v2/experiments/s0-skeleton-pipeline.md`

@@ -27,7 +27,7 @@ Avoid overclaiming from early smoke runs. State both the defensible interpretati
 
 Do not use test-driven development (TDD) in this research project.
 
-For this repo, prefer direct implementation plus focused verification after the change. Tests are still useful when they clarify behavior or protect a risky metric/gate, but do not follow a red-green TDD loop and do not require failing tests before implementation.
+For this repo, prefer direct implementation plus focused verification after the change. Do not run or create routine test suites for documentation-only or planning-only work. Use lightweight checks such as `git diff --check`, syntax checks, small smoke runs, or targeted metric/gate checks only when they materially reduce risk.
 
 At the end of each completed task, automatically commit and push the completed work unless the user explicitly says not to. The commit should include the relevant code, experiment plan/result documents, and verification updates for that task, while preserving unrelated user changes.
 

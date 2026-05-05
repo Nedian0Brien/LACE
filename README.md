@@ -42,10 +42,10 @@ v2는 다음 문장을 중심 주장으로 둔다.
 
 Kaggle-backed 실험을 진행할 때는 먼저 [docs/v2/kaggle-experiment-workflow.md](./docs/v2/kaggle-experiment-workflow.md)를 확인한다.
 
-로컬 검증 기본 명령:
+가벼운 로컬 검증 기본 명령:
 
 ```bash
-rtk .venv/bin/python -m unittest discover -s tests -q
+git diff --check
 ```
 
-v1 runner와 tests는 기존 재현성을 위해 top-level `kaggle/`, `scripts/`, `tests/`에 유지한다.
+v1 runner와 push scripts는 기존 재현성을 위해 top-level `kaggle/`, `scripts/`에 유지한다. 과거 runner 테스트는 문서 작업 속도를 위해 제거했고, 필요하면 해당 phase runner에 대해 syntax check나 작은 smoke run을 직접 수행한다.
