@@ -31,4 +31,4 @@ For this repo, prefer direct implementation plus focused verification after the 
 
 At the end of each completed task, automatically commit and push the completed work unless the user explicitly says not to. The commit should include the relevant code, experiment plan/result documents, and verification updates for that task, while preserving unrelated user changes.
 
-When running a Kaggle-backed experiment, consult `docs/experiments/kaggle-experiment-workflow.md` before planning, implementing, pushing, downloading outputs, or reporting results.
+When running a Kaggle-backed experiment, consult `docs/v2/kaggle-experiment-workflow.md` before planning, implementing, pushing, downloading outputs, or reporting results.

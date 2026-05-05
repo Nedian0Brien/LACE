@@ -2,32 +2,50 @@
 
 **LACE: Latent Adaptive Compression and Expansion for Language Diffusion**
 
-이 저장소는 논문 주제인 *Compression, Not Corruption*의 핵심 주장, 즉 언어 확산 모델의 시간축을 임의 손상 스케줄이 아니라 정보율 경로로 다루어야 한다는 가설을 작은 규모에서 검증하기 위한 연구 스캐폴드다.
+이 저장소는 논문 주제인 *Compression, Not Corruption*을 연구하기 위한 실험 및 문서 스캐폴드다. 핵심 문제의식은 언어 확산 모델의 forward process를 random corruption이 아니라 semantic information-rate schedule로 재정의할 수 있는지 검증하는 것이다.
 
-현재 실행 가능한 목표는 **Phase 0**이며, Kaggle에서 바로 돌릴 수 있는 최소 검증 실험이다.
+## 현재 문서 기준
 
-1. 작은 텍스트 배치를 불러온다.
-2. 고정된 `t5-small` encoder로 latent를 추출한다.
-3. average pooling으로 단계별 latent shape를 만든다.
-4. latent cache를 저장하고 다시 불러온다.
-5. `metrics.json`과 `summary.md`를 기록한다.
+문서는 v1과 v2로 분리한다.
 
-## Kaggle에서 Phase 0 실행
+| 위치 | 설명 |
+|---|---|
+| [docs/v1/](./docs/v1/) | Phase 0-3A까지 진행한 latent token-budget compression 연구 기록 |
+| [docs/v2/](./docs/v2/) | importance-guided semantic skeleton 방향으로 재설계한 현재 연구 기반 |
+
+현재 새 연구 방향의 기준은 [docs/v2/연구기획서.md](./docs/v2/연구기획서.md)다.
+
+## v1 요약
+
+v1은 frozen `t5-small` encoder latent `h0`를 단계적으로 압축하고, reverse expander가 이를 복원할 수 있는지 확인했다.
+
+주요 결과:
+
+- Kaggle GPU 기반 latent cache와 실험 pipeline이 동작했다.
+- Average Pooling은 learned attention compression보다 안정적인 baseline이었다.
+- Average Pooling은 일부 decoder bridge와 latent-use 신호를 보였지만, open-ended generation은 회복하지 못했다.
+- token-head objective는 proxy NLL을 낮췄지만 frozen decoder NLL과 generation을 악화시켰다.
+
+따라서 v1은 최종 성공 증거가 아니라, v2로 넘어가기 위한 병목과 confound를 드러낸 사전 탐색으로 보존한다.
+
+## v2 방향
+
+v2는 다음 문장을 중심 주장으로 둔다.
+
+> Important tokens are not auxiliary anchors; they are the terminal state of the forward diffusion process.
+
+즉, 중요한 token은 reverse denoising을 돕는 보조 anchor가 아니라, forward process가 도달해야 하는 semantic skeleton terminal state다.
+
+다음 실험은 `S0: semantic skeleton extraction and preservation validation`부터 시작한다.
+
+## 실험 실행
+
+Kaggle-backed 실험을 진행할 때는 먼저 [docs/v2/kaggle-experiment-workflow.md](./docs/v2/kaggle-experiment-workflow.md)를 확인한다.
+
+로컬 검증 기본 명령:
 
 ```bash
-kaggle kernels push -p kaggle/phase0 --accelerator NvidiaTeslaT4 --timeout 3600
-kaggle kernels status dennisparknd/lace-phase-0-latent-cache
-kaggle kernels output dennisparknd/lace-phase-0-latent-cache -p outputs/phase0
+rtk .venv/bin/python -m unittest discover -s tests -q
 ```
 
-Kaggle 스크립트는 독립 실행형으로 작성되어 있어 전체 저장소를 패키징하지 않아도 Kaggle 스크립트 커널에서 실행할 수 있다.
-
-## 로컬 간단 검증
-
-문법만 확인할 때는 로컬 환경에 GPU 의존성을 설치할 필요가 없다.
-
-```bash
-python3 -m py_compile kaggle/phase0/run_phase0.py
-```
-
-로컬에서 실제 encoder까지 실행하려면 먼저 PyTorch와 Transformers를 설치해야 한다.
+v1 runner와 tests는 기존 재현성을 위해 top-level `kaggle/`, `scripts/`, `tests/`에 유지한다.
