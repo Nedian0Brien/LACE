@@ -40,13 +40,14 @@ v1에서 확인한 병목은 v2 설계에 다음 제약을 준다.
 
 상세한 계승 원칙은 [v1-carryover.md](./v1-carryover.md)에 정리한다.
 
-## 다음 실험 방향
+## 현재 실험 방향
 
-v2의 첫 실험은 거대한 end-to-end model이 아니라 **semantic skeleton bridge**로 시작한다.
+v2의 첫 실험인 S0는 거대한 end-to-end model이 아니라 **semantic skeleton bridge**로 시작했고, 결과는 [experiments/s0-skeleton-pipeline.md](./experiments/s0-skeleton-pipeline.md)에 기록했다.
 
-목표는 다음을 작게 검증하는 것이다.
+S0에서 확인한 것은 다음이다.
 
-1. importance-guided skeleton이 random skeleton보다 원문 의미를 더 잘 보존하는가?
-2. reverse model이 correct skeleton을 실제로 사용하는가?
-3. shuffled/wrong-document skeleton에서 성능이 하락하는가?
-4. skeleton-to-text reconstruction이 token/generation metric으로 이어지는가?
+1. IDF/attention 계열 skeleton은 random/uniform보다 의미 보존 신호가 있다.
+2. 하지만 `position_prior` baseline이 강하므로 WikiText lead-position confound를 과소평가하면 안 된다.
+3. S0는 generation 성공 증거가 아니라 S1/S2 설계를 위한 skeleton pipeline 검증이다.
+
+다음 실험은 `S1: skeleton-use controls`다. 여기서는 correct, shuffled, random, wrong-document, position-prior, top-k removal control을 통해 model/evaluator가 skeleton을 실제로 쓰는지 확인한다.

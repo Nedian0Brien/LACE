@@ -135,26 +135,26 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 - skeleton faithfulness
 - human preference 또는 LLM-as-judge 보조 평가
 
-## 즉시 다음 단계 추천
+## 현재 다음 단계 추천
 
-바로 S2/S3로 가지 말고 S0를 먼저 수행한다.
+S0는 완료됐다. 결과 문서는 [experiments/s0-skeleton-pipeline.md](./experiments/s0-skeleton-pipeline.md)에 있다.
 
-이유:
+핵심 판단:
 
-1. v2의 핵심 단위인 semantic skeleton이 아직 이 repo에서 실험적으로 생성된 적이 없다.
-2. v1은 latent compression track이므로, v2의 token skeleton claim을 직접 지지하지 않는다.
-3. importance scorer가 약하면 reverse/generation 실험 실패 원인을 분리하기 어렵다.
+1. IDF/attention skeleton은 random/uniform보다 의미 보존 신호를 보였다.
+2. `position_prior`가 강해서 lead-position confound는 실제 risk로 확인됐다.
+3. 따라서 바로 S2/S3로 가지 말고 S1 skeleton-use control을 먼저 수행한다.
 
-따라서 다음 Kaggle 실험 후보는 다음이다.
+다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S0: semantic skeleton extraction and preservation validation
+S1: skeleton-use controls
 ```
 
 산출물:
 
-- `kaggle/v2_s0/run_v2_s0.py`
-- `kaggle/v2_s0/kernel-metadata.json`
-- `scripts/push_kaggle_v2_s0.sh`
-- `docs/v2/plan/s0-skeleton-pipeline-plan.md`
-- `docs/v2/experiments/s0-skeleton-pipeline.md`
+- `kaggle/v2_s1/run_v2_s1.py`
+- `kaggle/v2_s1/kernel-metadata.json`
+- `scripts/push_kaggle_v2_s1.sh`
+- `docs/v2/plan/s1-skeleton-use-controls-plan.md`
+- `docs/v2/experiments/s1-skeleton-use-controls.md`

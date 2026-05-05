@@ -1,0 +1,14 @@
+{
+  "id": "dennisparknd/lace-v2-s0-skeleton-pipeline",
+  "title": "LACE V2 S0 Skeleton Pipeline",
+  "code_file": "run_v2_s0.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
