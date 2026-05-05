@@ -53,4 +53,6 @@ S0에서 확인한 것은 다음이다.
 
 S1은 [experiments/s1-skeleton-use-controls.md](./experiments/s1-skeleton-use-controls.md)에 기록했다. S1에서 `attention_correct`는 `random_same_count`, `wrong_document`, `position_only`, `same_position_random`보다 강했고, `s2_ready=true`로 통과했다.
 
-다음 실험은 `S2: skeleton-to-text reconstruction`이다. 여기서는 의미 골격과 위치 보조 구조를 입력으로 하는 복원 학습을 시작하되, `position_prior`, `position_only`, `same_position_random` control을 계속 유지한다.
+S2는 [experiments/s2-skeleton-to-text-reconstruction.md](./experiments/s2-skeleton-to-text-reconstruction.md)에 기록했다. S2에서 `attention_scaffold`는 `random_scaffold`, `position_only`, wrong-document control보다 강했고, `next_ready=true`로 통과했다.
+
+다음 실험은 `S3: anchor baseline comparison`이다. 여기서는 중요한 token을 terminal state로 남기는 방식과 anchor를 보조 조건으로 쓰는 방식을 직접 비교한다.

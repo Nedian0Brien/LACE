@@ -2,6 +2,55 @@
 
 이 문서는 v2 의미 골격 연구 흐름의 연구 질문, 결정, 경험적 사실, 주의점, 해석 변경을 시간순으로 기록한다.
 
+## 2026-05-06
+
+### 발견: S2 의미 골격-문장 복원 학습 통과
+
+추가 시각: 2026-05-06 08:48 KST
+
+맥락:
+
+S1은 의미 골격이 검색형 원문 식별 단서로 쓰일 수 있음을 보였다. S2는 같은 `t5-small` 구조와 짧은 학습 예산에서 의미 골격 + 위치 보조 구조가 무작위 골격이나 위치 전용 입력보다 더 나은 복원 학습 문제를 만드는지 확인했다.
+
+결과:
+
+S2는 `overall_pass=true`, `next_ready=true`로 통과했다. `attention_scaffold`는 token F1 0.3830, ROUGE-L 0.3117로 `random_scaffold` token F1 0.2286, ROUGE-L 0.1789보다 높았다. `position_only`는 nonempty 생성은 했지만 token F1과 ROUGE-L이 0이었다. attention 모델에 wrong-document 입력을 넣으면 token F1이 0.1222로 떨어졌다.
+
+주의점:
+
+`idf_scaffold`는 loss 2.4851로 가장 낮았고, `position_prior_scaffold`는 keyword recall 0.8504로 매우 높았다. 따라서 S2 결과는 attention scorer의 최종 우위가 아니라, 중요도 기반 의미 골격 계열이 무작위 골격보다 복원 학습에 유리하다는 제한된 증거로 해석한다.
+
+근거/출처:
+
+- `outputs/v2_s2/lace_v2_s2/summary.md`
+- `docs/v2/experiments/s2-skeleton-to-text-reconstruction.md`
+
+다음 실험에 주는 의미:
+
+다음 단계는 S3 anchor baseline comparison이 적절하다. S2는 open-ended generation 성공 증거가 아니므로, 바로 큰 생성 주장으로 넘어가기보다 terminal skeleton 방식과 anchor 보조 조건 방식을 같은 복원 틀에서 비교해야 한다.
+
+### 결정: S2는 짧은 조건별 복원 학습으로 시작한다
+
+추가 시각: 2026-05-06 08:35 KST
+
+맥락:
+
+S1은 frozen encoder 검색 평가에서 `attention_correct` 의미 골격이 무작위, 다른 문서, 위치 전용 control보다 강하다는 것을 확인했다. 하지만 검색형 사용 신호만으로는 LACE의 핵심 주장인 더 나은 역방향 궤적을 입증할 수 없다.
+
+결정:
+
+S2는 `t5-small`을 조건별로 짧게 미세조정하는 의미 골격-문장 복원 학습으로 시작한다. 주요 비교는 `attention_scaffold`, `idf_scaffold`, `random_scaffold`, `position_prior_scaffold`, `position_only`다. `attention_scaffold` 모델에는 wrong-document, same-position random, position-only 평가 control을 추가로 적용한다.
+
+근거/출처:
+
+- `docs/v2/experiments/s1-skeleton-use-controls.md`
+- `docs/v2/experiment-roadmap.md`
+- `docs/v2/plan/s2-skeleton-to-text-reconstruction-plan.md`
+
+다음 실험에 주는 의미:
+
+S2의 성공은 open-ended generation 성공이 아니라, 의미 골격 + 위치 보조 구조가 무작위 손상보다 더 좋은 복원 학습 문제를 만든다는 제한된 증거로 해석한다. teacher-forced loss, token F1, ROUGE-L, wrong-document 하락을 분리해 기록한다.
+
 ## 2026-05-05
 
 ### 발견: S1 검색형 의미 골격 사용 검증 통과

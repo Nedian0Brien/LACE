@@ -137,12 +137,13 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0와 S1은 완료됐다.
+S0, S1, S2는 완료됐다.
 
 결과 문서는 다음에 있다.
 
 - [experiments/s0-skeleton-pipeline.md](./experiments/s0-skeleton-pipeline.md)
 - [experiments/s1-skeleton-use-controls.md](./experiments/s1-skeleton-use-controls.md)
+- [experiments/s2-skeleton-to-text-reconstruction.md](./experiments/s2-skeleton-to-text-reconstruction.md)
 
 핵심 판단:
 
@@ -151,17 +152,19 @@ S0와 S1은 완료됐다.
 3. S1에서 `attention_correct`는 `random_same_count`, `wrong_document`, `position_only`, `same_position_random`보다 강했다.
 4. 하지만 `position_prior`도 강하므로 S2에서는 위치 보조 구조와 위치 전용 control을 함께 유지한다.
 5. `remove_topk`가 `remove_lowk`보다 더 치명적이라는 순서 주장은 아직 확인되지 않았다.
+6. S2에서 `attention_scaffold`는 `random_scaffold`, `position_only`, wrong-document control보다 강했다.
+7. 다만 `idf_scaffold`는 loss가 가장 낮고, `position_prior_scaffold`는 keyword recall이 매우 높아서 scorer와 위치 편향 분리는 계속 필요하다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S2: skeleton-to-text reconstruction
+S3: anchor baseline comparison
 ```
 
 산출물:
 
-- `kaggle/v2_s2/run_v2_s2.py`
-- `kaggle/v2_s2/kernel-metadata.json`
-- `scripts/push_kaggle_v2_s2.sh`
-- `docs/v2/plan/s2-skeleton-to-text-reconstruction-plan.md`
-- `docs/v2/experiments/s2-skeleton-to-text-reconstruction.md`
+- `kaggle/v2_s3/run_v2_s3.py`
+- `kaggle/v2_s3/kernel-metadata.json`
+- `scripts/push_kaggle_v2_s3.sh`
+- `docs/v2/plan/s3-anchor-baseline-comparison-plan.md`
+- `docs/v2/experiments/s3-anchor-baseline-comparison.md`
