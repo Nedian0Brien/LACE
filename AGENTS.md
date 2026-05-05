@@ -30,3 +30,5 @@ Do not use test-driven development (TDD) in this research project.
 For this repo, prefer direct implementation plus focused verification after the change. Tests are still useful when they clarify behavior or protect a risky metric/gate, but do not follow a red-green TDD loop and do not require failing tests before implementation.
 
 At the end of each completed task, automatically commit and push the completed work unless the user explicitly says not to. The commit should include the relevant code, experiment plan/result documents, and verification updates for that task, while preserving unrelated user changes.
+
+When running a Kaggle-backed experiment, consult `docs/experiments/kaggle-experiment-workflow.md` before planning, implementing, pushing, downloading outputs, or reporting results.
