@@ -18,6 +18,7 @@ v1이 continuous latent token-budget compression을 먼저 탐색했다면, v2�
 | [v1-carryover.md](./v1-carryover.md) | v1에서 얻은 성과와 v2로 계승할 실험 규율 |
 | [kaggle-experiment-workflow.md](./kaggle-experiment-workflow.md) | v2 Kaggle 실험 문서화/실행 절차 |
 | [document-alignment.md](./document-alignment.md) | v1에서 v2로 문서 기준을 옮긴 결정 기록 |
+| [research-timeline.md](./research-timeline.md) | v2 연구 질문, 결정, 발견, caveat의 시간순 기록 |
 
 ## v2의 중심 주장
 
