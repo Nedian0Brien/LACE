@@ -45,3 +45,9 @@
 - 질문: S4로 진행.
 - 답변 요약: `S4-importance ordered reverse diffusion`을 계획, 구현, Kaggle 실행, 결과 다운로드까지 진행했다. `random_schedule`은 종합 score와 표면 복원에서 이겼지만, `importance_schedule`은 의미 보존/확장 지표에서 더 강했다. 다음은 `S4a: delta-token reverse objective`로 정리했다.
 - 반영 문서: [[concepts/lace/s4-importance-ordered-reverse-diffusion]]
+
+## 2026-05-06 query | S4a 연구 진행
+
+- 질문: S4a 실험을 진행하고, 결과가 좋지 않으면 구조 개선 방안을 탐구.
+- 답변 요약: `S4a-delta token reverse objective`를 계획, 구현, Kaggle 실행, 결과 다운로드까지 진행했다. 전체 state가 아니라 delta token/span만 예측하도록 바꾸자 `importance_schedule`이 random과 position-only를 모두 이겼다. 다만 entity recall과 repetition은 남은 병목으로 기록했다.
+- 반영 문서: [[concepts/lace/s4a-delta-token-reverse-objective]]

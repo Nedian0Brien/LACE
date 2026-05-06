@@ -721,6 +721,7 @@ a { color: inherit; text-decoration: none; }
         Forward terminal state는 의미를 담은 골격이고, 역방향 학습은 골격을 다시 문장으로 확장합니다.
         S0–S2a 단계는 통과됐고, S3 계열은 probe confound를 분해했습니다.
         S4는 importance-ordered reverse diffusion을 실행했고, random은 표면 score에서 우세했지만 importance는 의미 보존·확장 지표에서 더 강했습니다.
+        S4a는 delta-token objective로 바꾸자 importance가 random과 position-only를 모두 이겼습니다.
       </p>
       <blockquote class="hero__quote">
         Semantic skeleton + positional scaffold creates a better reverse trajectory than random corruption.
@@ -729,7 +730,7 @@ a { color: inherit; text-decoration: none; }
         <span class="badge badge--brand">v2 track</span>
         <span class="badge badge--green">S0 · S1 · S2 · S2a 통과</span>
         <span class="badge badge--red">S3 핵심 gate 실패</span>
-        <span class="badge badge--yel">S4 process 결과 완료</span>
+        <span class="badge badge--green">S4a objective 통과</span>
         <span class="badge">last update 2026-05-06</span>
       </div>
     </div>
@@ -813,18 +814,18 @@ a { color: inherit; text-decoration: none; }
   <div class="status-strip reveal-stagger">
     <div class="card kpi">
       <div class="t-label kpi__label">현재 단계</div>
-      <div class="kpi__value">S4 결과 완료</div>
-      <div class="kpi__hint">random surface 우위 · importance semantic 우위</div>
+      <div class="kpi__value">S4a 통과</div>
+      <div class="kpi__hint">importance delta objective 우위</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">다음 마일스톤</div>
-      <div class="kpi__value">S4a</div>
-      <div class="kpi__hint">delta-token reverse objective</div>
+      <div class="kpi__value">S4b / S4c</div>
+      <div class="kpi__hint">multi-step rollout · span infilling</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">마지막 업데이트</div>
       <div class="kpi__value">05-06</div>
-      <div class="kpi__hint">2026-05-06 15:35 KST</div>
+      <div class="kpi__hint">2026-05-06 16:34 KST</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">데이터 / 백본</div>
@@ -984,7 +985,25 @@ a { color: inherit; text-decoration: none; }
       <h3 class="phase__title">역방향 확장 과정</h3>
       <div class="phase__metric">
         random score 0.5607<br/>
-        importance semantic metrics 우위
+        S4a objective 보정으로 이동
+      </div>
+      <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
+    </article>
+
+    <article class="phase phase--pending" tabindex="0">
+      <div class="phase__head">
+        <div class="phase__id-row">
+          <span class="phase__icon phase__icon--done" aria-hidden="true">
+            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/><path class="check" d="M5.6 9.4 L8 11.6 L12.5 6.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="phase__id">S4a</span>
+        </div>
+        <span class="badge badge--green">OBJECTIVE</span>
+      </div>
+      <h3 class="phase__title">Delta-token 예측</h3>
+      <div class="phase__metric">
+        importance score 0.6366<br/>
+        random 0.5073 · position-only 0.5889
       </div>
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
@@ -1471,6 +1490,64 @@ a { color: inherit; text-decoration: none; }
         <span><code>random_schedule</code>은 loss/F1/ROUGE-L에서 더 좋았습니다. 하지만 <code>importance_schedule</code>은 content retention, expansion recall, entity recall이 모두 높아 S4a에서는 전체 state가 아니라 새로 추가될 delta token/span만 예측해야 합니다.</span>
       </div>
     </div>
+
+    <!-- S4a card -->
+    <div class="card metric-card">
+      <div class="metric-card__head">
+        <h3 class="metric-card__title">S4a · Delta-token objective</h3>
+        <span class="badge badge--green">overall_pass</span>
+      </div>
+      <p class="metric-card__sub">다음 상태 전체를 다시 생성하지 않고 newly unmasked delta token/span만 예측. S4에서 갈라진 surface score와 semantic signal을 objective 수준에서 분리합니다.</p>
+
+      <div class="metric-card__legend">
+        <span><span class="legend-dot" style="background:hsl(var(--blue-60));"></span>importance</span>
+        <span><span class="legend-dot" style="background:hsl(var(--neutral-50));"></span>random</span>
+        <span><span class="legend-dot" style="background:hsl(var(--red-50));"></span>position-only</span>
+      </div>
+
+      <div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:63.66%;"></div></div>
+          <span class="bar-row__value">0.6366</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:50.73%;"></div></div>
+          <span class="bar-row__value">0.5073</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">position-only score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--red" style="width:58.89%;"></div></div>
+          <span class="bar-row__value">0.5889</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance TF acc</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:15.77%;"></div></div>
+          <span class="bar-row__value">0.1577</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random TF acc</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:10.92%;"></div></div>
+          <span class="bar-row__value">0.1092</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance repetition</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:15.84%;"></div></div>
+          <span class="bar-row__value">0.1584</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random repetition</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:10.62%;"></div></div>
+          <span class="bar-row__value">0.1062</span>
+        </div>
+      </div>
+
+      <div class="metric-card__caveat">
+        <strong>Caveat</strong>
+        <span><code>importance_schedule</code>은 aggregate delta objective에서 이겼지만, entity recall은 random이 높고 repetition은 importance가 더 나쁩니다. 다음은 S5가 아니라 rollout과 span-infilling 구조 보정입니다.</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1485,6 +1562,17 @@ a { color: inherit; text-decoration: none; }
   </div>
 
   <div class="timeline reveal">
+    <div class="timeline__row">
+      <div class="timeline__date">2026-05-06<br/>16:34 KST</div>
+      <div class="timeline__body">
+        <div class="timeline__row-head">
+          <span class="badge badge--green">finding</span>
+          <h3 class="timeline__title">S4a delta-token objective 통과</h3>
+        </div>
+        <p class="timeline__desc"><code>importance_schedule</code> score 0.6366과 TF Delta Acc 0.1577이 <code>random_schedule</code> 0.5073, 0.1092보다 높았습니다. <code>position_only</code>도 score 0.5889로 강하지만 importance가 넘어섰고, 남은 병목은 entity recall과 repetition입니다.</p>
+      </div>
+    </div>
+
     <div class="timeline__row">
       <div class="timeline__date">2026-05-06<br/>15:35 KST</div>
       <div class="timeline__body">
@@ -1656,13 +1744,13 @@ a { color: inherit; text-decoration: none; }
     <div class="card">
       <div class="row" style="gap:8px;"><span class="badge badge--red">caveat</span><span class="t-mono">생성 미검증</span></div>
       <h3 class="open__title">open-ended generation은 아직 미증명</h3>
-      <p class="open__body">S0–S4는 아직 constrained/proxy 평가입니다. S4도 process-level transition 비교이지 open-ended generation 성공 증거는 아니므로 의미 일관성·반복 제어의 최종 평가는 아직 올리지 않습니다.</p>
+      <p class="open__body">S0–S4a는 아직 constrained/proxy 평가입니다. S4a도 delta-token prediction이지 open-ended generation 성공 증거는 아니므로 의미 일관성·반복 제어의 최종 평가는 아직 올리지 않습니다.</p>
     </div>
 
     <div class="card">
-      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S4a objective</span></div>
-      <h3 class="open__title">새로 추가될 token만 예측하기</h3>
-      <p class="open__body">S4에서는 random이 표면 score에서 높았고 importance는 semantic signal이 높았습니다. 다음에는 전체 state를 다시 생성하지 말고 새로 unmask될 delta token/span만 예측해야 합니다.</p>
+      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S4b / S4c</span></div>
+      <h3 class="open__title">rollout과 span-infilling 구조</h3>
+      <p class="open__body">S4a는 delta objective에서 통과했지만 entity recall과 repetition은 실패했습니다. 다음에는 multi-step rollout으로 누적 drift를 보고, 위치 marker별 span을 채우는 decoder 구조로 반복을 줄여야 합니다.</p>
     </div>
   </div>
 </section>
@@ -1675,7 +1763,7 @@ a { color: inherit; text-decoration: none; }
       <div class="t-h3">v2 track · semantic skeleton + positional scaffold</div>
     </div>
     <div class="row" style="gap:20px;">
-      <span class="footer__meta">last update · 2026-05-06 15:35 KST</span>
+      <span class="footer__meta">last update · 2026-05-06 16:34 KST</span>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/research-timeline.md">research-timeline.md</a>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/experiment-roadmap.md">experiment-roadmap.md</a>
       <a class="btn btn--secondary btn--sm" href="../design/design-system.html">design-system.html</a>

@@ -4,6 +4,32 @@
 
 ## 2026-05-06
 
+### 발견: S4a-delta token reverse objective 결과
+
+추가 시각: 2026-05-06 16:34 KST
+
+맥락:
+
+S4에서는 `random_schedule`이 종합 score와 표면 복원 지표에서 이겼지만, `importance_schedule`은 의미 보존/확장 지표에서 더 강했다. S4a는 이 모호성이 전체 target state를 다시 생성하게 한 objective 때문인지 확인하기 위해 실행했다. 입력은 현재 partial state와 이번 단계에서 채울 위치 marker이고, target은 newly unmasked delta token/span이다.
+
+결과:
+
+S4a는 `process_ready=true`, `overall_pass=true`, `structure_review_needed=false`, `s5_ready=false`였다. `importance_schedule`은 score 0.6366, loss 5.7282, TF Delta Acc 0.1577, Delta F1 0.1700, Delta ROUGE-L 0.1468로 `random_schedule` score 0.5073, loss 6.7063, TF Delta Acc 0.1092, Delta F1 0.1258, Delta ROUGE-L 0.1077보다 높았다. `position_only_schedule`도 score 0.5889로 강했지만, importance가 tolerance 이상 앞섰다.
+
+주의점:
+
+이 결과는 S4의 random 우위가 semantic skeleton 가설 폐기보다 objective mismatch였다는 해석을 강화한다. 다만 entity recall은 random 0.0175가 importance 0.0115보다 높았고, repetition도 importance 0.1584가 random 0.1062보다 나빴다. 또한 position-only가 TF Delta Acc 0.1483으로 importance 0.1577에 가까워 위치 scaffold의 강한 prior는 계속 confound로 남는다.
+
+근거/출처:
+
+- `outputs/v2_s4a/lace_v2_s4a/summary.md`
+- `outputs/v2_s4a/lace_v2_s4a/metrics.json`
+- `docs/v2/experiments/s4a-delta-token-reverse-objective.md`
+
+다음 실험에 주는 의미:
+
+S5 open-ended generation으로 바로 가지 않는다. 다음은 `S4b: multi-step delta rollout` 또는 `S4c: span-infilling reverse decoder`다. S4a의 긍정 신호가 여러 reverse step을 누적해도 유지되는지 확인하고, entity/repetition 병목과 position-only 강세를 구조적으로 줄여야 한다.
+
 ### 발견: S4-importance ordered reverse diffusion 결과
 
 추가 시각: 2026-05-06 15:35 KST

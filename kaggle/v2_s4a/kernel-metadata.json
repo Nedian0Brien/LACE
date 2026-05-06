@@ -1,0 +1,14 @@
+{
+  "id": "dennisparknd/lace-v2-s4a-delta-token-reverse-objective",
+  "title": "LACE V2 S4a Delta Token Reverse Objective",
+  "code_file": "run_v2_s4a.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

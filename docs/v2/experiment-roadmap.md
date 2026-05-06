@@ -190,6 +190,27 @@ S4는 `process_ready=true`, `overall_pass=false`, `s5_ready=false`였다. `rando
 
 다음은 S5가 아니라 `S4a: delta-token reverse objective`다. 전체 target state를 다시 생성하는 대신 새로 unmask될 token/span만 예측하도록 objective를 바꿔야 한다.
 
+## S4a. Delta-Token Reverse Objective
+
+### 질문
+
+다음 상태 전체를 다시 생성하지 않고 새로 unmask될 delta token/span만 예측하게 하면, importance-ordered schedule이 random corruption보다 더 좋은 reverse objective가 되는가?
+
+### 평가 순서
+
+1. 현재 partial state와 이번 단계에서 채울 위치 marker를 encoder 입력으로 준다.
+2. 다음 partial state 전체가 아니라 newly unmasked delta token/span만 decoder target으로 둔다.
+3. `importance_schedule`, `random_schedule`, `position_only_schedule`을 같은 ratio와 같은 budget으로 비교한다.
+4. teacher-forced delta accuracy와 greedy delta generation metric을 분리해서 본다.
+
+### 결과
+
+S4a는 `process_ready=true`, `overall_pass=true`, `structure_review_needed=false`, `s5_ready=false`였다. `importance_schedule`은 loss 5.7282, TF Delta Acc 0.1577, Delta F1 0.1700, ROUGE-L 0.1468, score 0.6366으로 `random_schedule` loss 6.7063, TF Delta Acc 0.1092, Delta F1 0.1258, ROUGE-L 0.1077, score 0.5073보다 높았다. 또한 `position_only_schedule` score 0.5889보다도 높아 content-bearing skeleton 효과가 위치 marker만으로 완전히 설명되지는 않았다.
+
+다만 `position_only_schedule`도 강했고, delta content recall은 position-only 0.0156이 importance 0.0136보다 높았다. Entity recall은 random 0.0175가 importance 0.0115보다 높았고, repetition도 importance 0.1584가 random 0.1062보다 나빴다. 따라서 S4a는 핵심 process claim을 강화하지만 open-ended generation 성공 증거는 아니다.
+
+다음은 S5가 아니라 `S4b: multi-step delta rollout` 또는 `S4c: span-infilling reverse decoder`다. S4a의 긍정 신호를 실제 rollout으로 연결하고, entity/repetition 병목을 구조적으로 줄여야 한다.
+
 ## S5. Open-ended Generation
 
 ### 질문
@@ -207,7 +228,7 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. 따라서 S5로 바로 넘어가지 않고 S4a objective 보정으로 간다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. 따라서 다음은 open-ended S5가 아니라 S4b multi-step delta rollout 또는 S4c span-infilling reverse decoder다.
 
 결과 문서는 다음에 있다.
 
@@ -219,6 +240,7 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s3a-terminal-diagnostic.md](./experiments/s3a-terminal-diagnostic.md)
 - [experiments/s3b-probe-calibration.md](./experiments/s3b-probe-calibration.md)
 - [experiments/s4-importance-ordered-reverse-diffusion.md](./experiments/s4-importance-ordered-reverse-diffusion.md)
+- [experiments/s4a-delta-token-reverse-objective.md](./experiments/s4a-delta-token-reverse-objective.md)
 
 핵심 판단:
 
@@ -235,16 +257,18 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 11. S3a에서는 `attention_terminal`이 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고였다.
 12. S3b에서는 `attention_no_position`이 크게 떨어져 위치 channel의 존재는 중요했지만, `attention_terminal`은 `position_only`, `random_terminal`, `same_position_random_terminal`보다 tolerance 이상 높지 않았고 `attention_shuffled_position`이 최고였다.
 13. S4에서는 `random_schedule`이 종합 score와 Token F1/ROUGE-L에서 높았지만, `importance_schedule`은 target content recall, input retention, expansion recall, original content recall, entity recall에서 모두 random보다 높았다.
+14. S4a에서는 전체 target state가 아니라 newly unmasked delta token/span만 예측하도록 바꾸자 `importance_schedule`이 score 0.6366, TF Delta Acc 0.1577로 `random_schedule` score 0.5073, TF Delta Acc 0.1092를 이겼다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S4a: delta-token reverse objective
+S4b: multi-step delta rollout
+S4c: span-infilling reverse decoder
 ```
 
 산출물:
 
-- 새로 unmask될 token/span만 예측하는 objective
-- schedule-specific target 대신 공통 original/semantic target 평가
-- importance/random/position-only 동일 budget 비교
-- multi-step rollout 전 semantic drift 측정
+- S4a delta objective를 실제 multi-step rollout으로 연결
+- generation 단계별 semantic drift와 repetition 누적 측정
+- entity recall 실패와 position-only 강세를 다루는 span-infilling 구조 보정
+- importance/random/position-only/wrong-document 동일 budget 비교
