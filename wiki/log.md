@@ -15,3 +15,8 @@ sources: [사용자 대화]
 - S2의 핵심 비교인 `attention_scaffold` 대 `random_scaffold`에서 두 지표가 어떻게 해석되는지 기록했다.
 - 관련 개념인 [[concepts/lace/의미-골격|의미 골격]], [[concepts/lace/위치-보조-구조|위치 보조 구조]], [[concepts/lace/s2-의미-골격-문장-복원-학습|S2 의미 골격-문장 복원 학습]] 페이지를 함께 생성했다.
 - 초기 위키 색인 `wiki/index.md`를 생성했다.
+
+## [2026-05-06] ingest | attention_scaffold 구조 설명
+
+- `attention_scaffold`의 실제 입력 구조와 생성 절차를 [[concepts/lace/attention-scaffold|attention_scaffold]]에 수집했다.
+- attention 기반 의미 골격과 위치 보조 구조가 함께 입력된다는 점을 명시했다.
