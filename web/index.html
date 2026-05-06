@@ -78,8 +78,9 @@ img, svg { display: block; max-width: 100%; }
   --dur-1: 120ms;
   --dur-2: 220ms;
 
-  --container: 1320px;
+  --container: 1180px;
   --gutter: 24px;
+  --page-pad: clamp(24px, 8vw, 160px);
 }
 
 /* ---------- Semantic role tokens ---------- */
@@ -155,7 +156,7 @@ a { color: inherit; text-decoration: none; }
 .t-label   { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); }
 
 /* ---------- Layout primitives ---------- */
-.wrap { max-width: var(--container); margin: 0 auto; padding: 0 clamp(20px, 6vw, 96px); }
+.wrap { max-width: var(--container); margin: 0 auto; padding: 0 var(--page-pad); }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
 /* ---------- Buttons ---------- */
@@ -232,7 +233,7 @@ a { color: inherit; text-decoration: none; }
   height: 56px;
   max-width: var(--container);
   margin: 0 auto;
-  padding: 0 clamp(20px, 6vw, 96px);
+  padding: 0 var(--page-pad);
 }
 .topnav__logo {
   display: inline-flex; align-items: center; gap: 8px;
