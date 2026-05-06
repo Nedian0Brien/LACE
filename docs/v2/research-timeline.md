@@ -4,6 +4,32 @@
 
 ## 2026-05-06
 
+### 발견: S4-importance ordered reverse diffusion 결과
+
+추가 시각: 2026-05-06 15:35 KST
+
+맥락:
+
+S4는 문장 exact reconstruction probe가 아니라, 중요도 낮은 token부터 순차적으로 masking하는 forward process의 역과정이 random corruption보다 더 좋은 reverse expansion curriculum을 만드는지 확인하기 위해 실행했다. 조건은 `importance_schedule`, `random_schedule`, `position_only_schedule`이며, reverse transition은 `0.25->0.50`, `0.50->0.75`, `0.75->1.00`이다.
+
+결과:
+
+S4는 `process_ready=true`, `overall_pass=false`, `s5_ready=false`였다. 종합 score는 `random_schedule` 0.5607이 `importance_schedule` 0.4839보다 높았다. Random은 loss 6.0172, Token F1 0.2300, ROUGE-L 0.1712로 표면 복원 지표에서도 높았다. 반면 importance는 target content recall 0.0574, input retention 0.0471, expansion recall 0.0416, original content recall 0.0496, entity recall 0.0831로 의미 보존/확장 지표에서 random보다 모두 높았다.
+
+주의점:
+
+S4는 importance-ordered reverse diffusion이 random보다 더 좋은 language model trajectory라는 증거는 주지 못했다. 하지만 중심 의미를 보존하고 세부 의미 token을 붙이는 방향에서는 importance schedule이 random보다 강한 신호를 보였다. 각 schedule의 target state가 다르므로 Token F1/ROUGE-L의 단순 비교에는 target 난이도와 token frequency 차이가 섞일 수 있다.
+
+근거/출처:
+
+- `outputs/v2_s4/lace_v2_s4/summary.md`
+- `outputs/v2_s4/lace_v2_s4/metrics.json`
+- `docs/v2/experiments/s4-importance-ordered-reverse-diffusion.md`
+
+다음 실험에 주는 의미:
+
+S5 open-ended generation으로 가지 않는다. 다음은 `S4a: delta-token reverse objective`다. 전체 target state를 다시 생성하는 대신 새로 unmask될 token/span만 예측하고, schedule-specific target 외에 공통 original/semantic target 평가를 추가해야 한다.
+
 ### 결정: S3 이후 초점을 문장 복원 probe가 아니라 forward/reverse diffusion process로 재정렬
 
 추가 시각: 2026-05-06 15:09 KST

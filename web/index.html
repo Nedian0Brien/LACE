@@ -719,8 +719,8 @@ a { color: inherit; text-decoration: none; }
       <p class="hero__sub">
         LACE는 diffusion language modeling의 forward process를 무작위 corruption 대신 중요도 기반 압축으로 재정의합니다.
         Forward terminal state는 의미를 담은 골격이고, 역방향 학습은 골격을 다시 문장으로 확장합니다.
-        S0–S2a 단계는 통과됐고, S3 anchor 베이스라인 비교는 핵심 gate를 통과하지 못했습니다.
-        S3a는 content terminal 신호를 일부 회복했지만, S3b는 같은 probe 기준에서 content 우위 margin이 아직 작다는 점을 확인했습니다.
+        S0–S2a 단계는 통과됐고, S3 계열은 probe confound를 분해했습니다.
+        S4는 importance-ordered reverse diffusion을 실행했고, random은 표면 score에서 우세했지만 importance는 의미 보존·확장 지표에서 더 강했습니다.
       </p>
       <blockquote class="hero__quote">
         Semantic skeleton + positional scaffold creates a better reverse trajectory than random corruption.
@@ -729,7 +729,7 @@ a { color: inherit; text-decoration: none; }
         <span class="badge badge--brand">v2 track</span>
         <span class="badge badge--green">S0 · S1 · S2 · S2a 통과</span>
         <span class="badge badge--red">S3 핵심 gate 실패</span>
-        <span class="badge badge--yel">S3b 보정 완료</span>
+        <span class="badge badge--yel">S4 process 결과 완료</span>
         <span class="badge">last update 2026-05-06</span>
       </div>
     </div>
@@ -813,18 +813,18 @@ a { color: inherit; text-decoration: none; }
   <div class="status-strip reveal-stagger">
     <div class="card kpi">
       <div class="t-label kpi__label">현재 단계</div>
-      <div class="kpi__value">S3b 보정 완료</div>
-      <div class="kpi__hint">position channel 확인 · content margin 부족</div>
+      <div class="kpi__value">S4 결과 완료</div>
+      <div class="kpi__hint">random surface 우위 · importance semantic 우위</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">다음 마일스톤</div>
-      <div class="kpi__value">S3c</div>
-      <div class="kpi__hint">low-repetition content-use calibration</div>
+      <div class="kpi__value">S4a</div>
+      <div class="kpi__hint">delta-token reverse objective</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">마지막 업데이트</div>
       <div class="kpi__value">05-06</div>
-      <div class="kpi__hint">2026-05-06 14:54 KST</div>
+      <div class="kpi__hint">2026-05-06 15:35 KST</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">데이터 / 백본</div>
@@ -966,25 +966,25 @@ a { color: inherit; text-decoration: none; }
       <h3 class="phase__title">Probe 보정</h3>
       <div class="phase__metric">
         attention 0.3768 · no-position 0.2828<br/>
-        position-only 0.3735 · S4 보류
+        position-only 0.3735 · process 전환
       </div>
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
 
-    <article class="phase phase--future" tabindex="0">
+    <article class="phase phase--pending" tabindex="0">
       <div class="phase__head">
         <div class="phase__id-row">
-          <span class="phase__icon phase__icon--future" aria-hidden="true">
-            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/></svg>
+          <span class="phase__icon phase__icon--done" aria-hidden="true">
+            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/><path class="check" d="M5.6 9.4 L8 11.6 L12.5 6.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <span class="phase__id">S4</span>
         </div>
-        <span class="badge">FUTURE</span>
+        <span class="badge badge--yel">PROCESS</span>
       </div>
-      <h3 class="phase__title">제약 조건 생성</h3>
+      <h3 class="phase__title">역방향 확장 과정</h3>
       <div class="phase__metric">
-        prefix expansion · masked span<br/>
-        skeleton-to-sentence
+        random score 0.5607<br/>
+        importance semantic metrics 우위
       </div>
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
@@ -1413,6 +1413,64 @@ a { color: inherit; text-decoration: none; }
         <span>위치값을 모두 제거하면 크게 떨어지지만, <code>attention_terminal</code>은 <code>position_only</code>와 거의 같습니다. 현재 probe는 위치 channel에는 민감하지만 content terminal 사용 증거는 아직 약합니다.</span>
       </div>
     </div>
+
+    <!-- S4 card -->
+    <div class="card metric-card">
+      <div class="metric-card__head">
+        <h3 class="metric-card__title">S4 · 역방향 확장 과정</h3>
+        <span class="badge badge--yel">process_ready</span>
+      </div>
+      <p class="metric-card__sub"><code>25% -> 50% -> 75% -> 100%</code> reverse transition에서 importance schedule과 random schedule을 비교. Surface score와 semantic signal을 분리해서 해석합니다.</p>
+
+      <div class="metric-card__legend">
+        <span><span class="legend-dot" style="background:hsl(var(--blue-60));"></span>importance semantic</span>
+        <span><span class="legend-dot" style="background:hsl(var(--neutral-50));"></span>random surface</span>
+        <span><span class="legend-dot" style="background:hsl(var(--red-50));"></span>position-only</span>
+      </div>
+
+      <div>
+        <div class="bar-row">
+          <span class="bar-row__label">random score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:56.07%;"></div></div>
+          <span class="bar-row__value">0.5607</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:48.39%;"></div></div>
+          <span class="bar-row__value">0.4839</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">position-only score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--red" style="width:37.52%;"></div></div>
+          <span class="bar-row__value">0.3752</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance expansion</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:41.55%;"></div></div>
+          <span class="bar-row__value">0.0416</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random expansion</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:20.29%;"></div></div>
+          <span class="bar-row__value">0.0203</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance entity</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:83.10%;"></div></div>
+          <span class="bar-row__value">0.0831</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random entity</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:41.20%;"></div></div>
+          <span class="bar-row__value">0.0412</span>
+        </div>
+      </div>
+
+      <div class="metric-card__caveat">
+        <strong>Caveat</strong>
+        <span><code>random_schedule</code>은 loss/F1/ROUGE-L에서 더 좋았습니다. 하지만 <code>importance_schedule</code>은 content retention, expansion recall, entity recall이 모두 높아 S4a에서는 전체 state가 아니라 새로 추가될 delta token/span만 예측해야 합니다.</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1428,13 +1486,35 @@ a { color: inherit; text-decoration: none; }
 
   <div class="timeline reveal">
     <div class="timeline__row">
+      <div class="timeline__date">2026-05-06<br/>15:35 KST</div>
+      <div class="timeline__body">
+        <div class="timeline__row-head">
+          <span class="badge badge--yel">finding</span>
+          <h3 class="timeline__title">S4 reverse diffusion 과정 비교</h3>
+        </div>
+        <p class="timeline__desc"><code>random_schedule</code> score 0.5607이 <code>importance_schedule</code> 0.4839보다 높았습니다. 다만 importance는 target content 0.0574, input retention 0.0471, expansion recall 0.0416, entity recall 0.0831로 의미 보존·확장 지표에서 random보다 강했습니다.</p>
+      </div>
+    </div>
+
+    <div class="timeline__row">
+      <div class="timeline__date">2026-05-06<br/>15:09 KST</div>
+      <div class="timeline__body">
+        <div class="timeline__row-head">
+          <span class="badge badge--green">decision</span>
+          <h3 class="timeline__title">Forward/Reverse process로 연구 초점 재정렬</h3>
+        </div>
+        <p class="timeline__desc">문장 exact reconstruction보다 중요한 질문은 중요도 낮은 token을 순차적으로 masking한 forward process를 역으로 따라가며 중심 의미 token에서 세부 token으로 확장하는 diffusion language model을 만들 수 있는가입니다. 그래서 S3c probe 보정보다 S4 process-level 비교로 이동했습니다.</p>
+      </div>
+    </div>
+
+    <div class="timeline__row">
       <div class="timeline__date">2026-05-06<br/>14:54 KST</div>
       <div class="timeline__body">
         <div class="timeline__row-head">
           <span class="badge badge--yel">finding</span>
           <h3 class="timeline__title">S3b probe calibration 완료</h3>
         </div>
-        <p class="timeline__desc"><code>attention_no_position</code> score 0.2828은 크게 떨어졌지만, <code>attention_terminal</code> 0.3768은 <code>position_only</code> 0.3735와 <code>random_terminal</code> 0.3724보다 tolerance 이상 높지 않았습니다. 최고 조건은 <code>attention_shuffled_position</code> 0.3799라서 S4는 계속 보류합니다.</p>
+        <p class="timeline__desc"><code>attention_no_position</code> score 0.2828은 크게 떨어졌지만, <code>attention_terminal</code> 0.3768은 <code>position_only</code> 0.3735와 <code>random_terminal</code> 0.3724보다 tolerance 이상 높지 않았습니다. 최고 조건은 <code>attention_shuffled_position</code> 0.3799였고, 당시 probe 기준으로는 S4가 보류됐습니다.</p>
       </div>
     </div>
 
@@ -1576,13 +1656,13 @@ a { color: inherit; text-decoration: none; }
     <div class="card">
       <div class="row" style="gap:8px;"><span class="badge badge--red">caveat</span><span class="t-mono">생성 미검증</span></div>
       <h3 class="open__title">open-ended generation은 아직 미증명</h3>
-      <p class="open__body">S0–S3b는 reconstruction proxy (token F1, ROUGE-L, teacher-forced loss). S3b도 S4 준비 신호가 아니라 진단 결과이므로 open-ended generation의 의미 일관성·반복 제어는 아직 평가 대상으로 올리지 않습니다.</p>
+      <p class="open__body">S0–S4는 아직 constrained/proxy 평가입니다. S4도 process-level transition 비교이지 open-ended generation 성공 증거는 아니므로 의미 일관성·반복 제어의 최종 평가는 아직 올리지 않습니다.</p>
     </div>
 
     <div class="card">
-      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S3c 보정</span></div>
-      <h3 class="open__title">probe가 무엇을 쓰는가</h3>
-      <p class="open__body">S3b에서 위치 channel의 존재는 중요했지만, content terminal 우위 margin은 작았습니다. 다음에는 반복을 줄인 constrained reconstruction과 terminal content-use metric을 추가해야 합니다.</p>
+      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S4a objective</span></div>
+      <h3 class="open__title">새로 추가될 token만 예측하기</h3>
+      <p class="open__body">S4에서는 random이 표면 score에서 높았고 importance는 semantic signal이 높았습니다. 다음에는 전체 state를 다시 생성하지 말고 새로 unmask될 delta token/span만 예측해야 합니다.</p>
     </div>
   </div>
 </section>
@@ -1595,7 +1675,7 @@ a { color: inherit; text-decoration: none; }
       <div class="t-h3">v2 track · semantic skeleton + positional scaffold</div>
     </div>
     <div class="row" style="gap:20px;">
-      <span class="footer__meta">last update · 2026-05-06 14:54 KST</span>
+      <span class="footer__meta">last update · 2026-05-06 15:35 KST</span>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/research-timeline.md">research-timeline.md</a>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/experiment-roadmap.md">experiment-roadmap.md</a>
       <a class="btn btn--secondary btn--sm" href="../design/design-system.html">design-system.html</a>

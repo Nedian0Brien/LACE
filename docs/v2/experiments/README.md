@@ -12,6 +12,7 @@ s2a-positional-encoding.md
 s3-anchor-baseline-comparison.md
 s3a-terminal-diagnostic.md
 s3b-probe-calibration.md
+s4-importance-ordered-reverse-diffusion.md
 ```
 
 결과 문서는 다음을 반드시 분리해서 해석한다.

@@ -171,20 +171,24 @@ eval: predicted anchor / gold anchor oracle
 
 S3b는 `diagnostic_ready=true`, `s4_ready=false`였다. `attention_no_position`은 score 0.2828로 크게 떨어졌지만, `attention_terminal` score 0.3768은 `position_only` 0.3735, `random_terminal` 0.3724, `same_position_random_terminal` 0.3638보다 tolerance 0.02 이상 높지 않았다. 최고 조건은 `attention_shuffled_position` score 0.3799였다. 따라서 현재 probe는 위치 channel의 존재에는 민감하지만, 의미 terminal content 사용 증거는 아직 약하다.
 
-## S4. Constrained Generation
+## S4. Importance-Ordered Reverse Diffusion
 
 ### 질문
 
-Skeleton이 constrained generation에서 의미 일관성과 skeleton 충실도를 개선하는가?
+중요도 낮은 token부터 순차적으로 mask하는 forward process의 역과정이 random corruption schedule보다 더 좋은 reverse expansion curriculum을 만드는가?
 
 ### 평가 순서
 
-1. prefix-conditioned expansion
-2. masked span reconstruction
-3. skeleton-to-sentence generation
-4. short constrained generation
+1. `25% -> 50%` reverse transition
+2. `50% -> 75%` reverse transition
+3. `75% -> 100%` reverse transition
+4. schedule-level trajectory metric 비교
 
-Open-ended generation은 이 단계가 통과된 뒤 진행한다.
+### 결과
+
+S4는 `process_ready=true`, `overall_pass=false`, `s5_ready=false`였다. `random_schedule`은 loss 6.0172, Token F1 0.2300, ROUGE-L 0.1712, score 0.5607로 종합 score에서 `importance_schedule` score 0.4839보다 높았다. 하지만 `importance_schedule`은 target content recall 0.0574, input retention 0.0471, expansion recall 0.0416, original content recall 0.0496, entity recall 0.0831로 같은 의미 계열 지표에서 random보다 모두 높았다. 따라서 "더 좋은 language model trajectory"는 아직 입증하지 못했지만, 중심 의미 보존과 세부 의미 확장 신호는 importance schedule 쪽이 강했다.
+
+다음은 S5가 아니라 `S4a: delta-token reverse objective`다. 전체 target state를 다시 생성하는 대신 새로 unmask될 token/span만 예측하도록 objective를 바꿔야 한다.
 
 ## S5. Open-ended Generation
 
@@ -203,7 +207,7 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a는 진단 조건을 실행해 content terminal 신호를 일부 회복했지만, position-only와 predicted-anchor confound가 남았다. S3b는 같은 모델 입력 ablation으로 position channel의 필요성을 확인했지만, content terminal 우위 margin은 충분하지 않았다. 따라서 S4로 바로 넘어가지 않는다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. 따라서 S5로 바로 넘어가지 않고 S4a objective 보정으로 간다.
 
 결과 문서는 다음에 있다.
 
@@ -214,6 +218,7 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s3-anchor-baseline-comparison.md](./experiments/s3-anchor-baseline-comparison.md)
 - [experiments/s3a-terminal-diagnostic.md](./experiments/s3a-terminal-diagnostic.md)
 - [experiments/s3b-probe-calibration.md](./experiments/s3b-probe-calibration.md)
+- [experiments/s4-importance-ordered-reverse-diffusion.md](./experiments/s4-importance-ordered-reverse-diffusion.md)
 
 핵심 판단:
 
@@ -229,16 +234,17 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 10. S3에서는 `importance_ordered_forward_no_anchor`가 `random_forward_anchor_prediction`과는 tolerance 안에서 비슷했지만, `random_forward_no_anchor`보다 낮았다. 따라서 S4로 바로 넘어가지 않는다.
 11. S3a에서는 `attention_terminal`이 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고였다.
 12. S3b에서는 `attention_no_position`이 크게 떨어져 위치 channel의 존재는 중요했지만, `attention_terminal`은 `position_only`, `random_terminal`, `same_position_random_terminal`보다 tolerance 이상 높지 않았고 `attention_shuffled_position`이 최고였다.
+13. S4에서는 `random_schedule`이 종합 score와 Token F1/ROUGE-L에서 높았지만, `importance_schedule`은 target content recall, input retention, expansion recall, original content recall, entity recall에서 모두 random보다 높았다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S3c: low-repetition content-use calibration
+S4a: delta-token reverse objective
 ```
 
 산출물:
 
-- 반복을 줄이는 constrained reconstruction 설정
-- position-only 분해 control
-- terminal content-use metric 강화
-- anchor 조건의 핵심 경로 제외 여부 판단
+- 새로 unmask될 token/span만 예측하는 objective
+- schedule-specific target 대신 공통 original/semantic target 평가
+- importance/random/position-only 동일 budget 비교
+- multi-step rollout 전 semantic drift 측정

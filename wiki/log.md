@@ -63,3 +63,9 @@ sources: [사용자 대화]
 - 사용자의 문제 제기를 바탕으로 [[concepts/lace/forward-reverse-process-본질|Forward-Reverse Process 본질]]을 생성했다.
 - 문장 exact reconstruction이 아니라 중요도 기반 forward masking schedule과 reverse expansion process가 random corruption보다 더 좋은 diffusion language model을 만드는지가 핵심임을 기록했다.
 - 다음 실험 초점을 S3c 지엽적 probe 보정보다 process-level schedule/objective 비교로 옮겼다.
+
+## [2026-05-06] ingest | S4 importance-ordered reverse diffusion 결과
+
+- S4 결과를 [[concepts/lace/s4-importance-ordered-reverse-diffusion|S4-importance ordered reverse diffusion]]에 수집했다.
+- `random_schedule`이 종합 score와 표면 복원 지표에서 높았지만, `importance_schedule`은 target content recall, input retention, expansion recall, original content recall, entity recall에서 모두 높았다는 분화된 결과를 기록했다.
+- 다음 방향을 S5가 아니라 `S4a: delta-token reverse objective`로 정리했다.

@@ -39,3 +39,9 @@
 - 질문: 문장 exact reconstruction보다 중요도 기반 forward masking과 reverse expansion으로 더 나은 diffusion language model을 만들 수 있느냐가 본질이라는 문제 제기.
 - 답변 요약: S3 계열은 측정 장치 점검으로 한정하고, 이후 초점을 importance-ordered masking schedule과 reverse expansion objective의 process-level 비교로 재정렬했다.
 - 반영 문서: [[concepts/lace/forward-reverse-process-본질]]
+
+## 2026-05-06 query | S4 연구 진행
+
+- 질문: S4로 진행.
+- 답변 요약: `S4-importance ordered reverse diffusion`을 계획, 구현, Kaggle 실행, 결과 다운로드까지 진행했다. `random_schedule`은 종합 score와 표면 복원에서 이겼지만, `importance_schedule`은 의미 보존/확장 지표에서 더 강했다. 다음은 `S4a: delta-token reverse objective`로 정리했다.
+- 반영 문서: [[concepts/lace/s4-importance-ordered-reverse-diffusion]]
