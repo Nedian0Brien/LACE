@@ -4,6 +4,27 @@
 
 ## 2026-05-06
 
+### 질문: S2-G-LOSS-FINITE는 무엇을 의미하는가
+
+추가 시각: 2026-05-06 09:06 KST
+
+맥락:
+
+S2 결과 문서의 gate 표에서 `S2-G-LOSS-FINITE=true`가 "모든 주요 조건의 teacher-forced loss가 유한했다"로만 적혀 있어, 이 항목이 성능 우위를 뜻하는지 실행 안정성을 뜻하는지 직관적으로 불분명했다.
+
+정리:
+
+`S2-G-LOSS-FINITE`는 성능 우위 gate가 아니라 수치 안정성 gate다. teacher-forced loss가 `NaN`, `inf`, `-inf`로 깨지지 않고 모든 주요 조건에서 정상적인 유한 숫자로 계산됐다는 뜻이다.
+
+근거/출처:
+
+- `docs/v2/experiments/s2-skeleton-to-text-reconstruction.md`
+- `outputs/v2_s2/lace_v2_s2/summary.md`
+
+다음 실험에 주는 의미:
+
+앞으로 gate 문서화에서는 "실험이 정상 실행됐는가"를 확인하는 안정성 gate와 "어떤 조건이 더 좋은가"를 판단하는 성능 비교 gate를 분리해서 설명한다.
+
 ### 발견: S2 의미 골격-문장 복원 학습 통과
 
 추가 시각: 2026-05-06 08:48 KST

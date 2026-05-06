@@ -42,6 +42,10 @@ S2는 `overall_pass=true`, `next_ready=true`로 통과했다.
 | `S2-G-ATTENTION-BEATS-POSITION` | true | attention 의미 골격이 위치 전용 입력보다 강했다. |
 | `S2-G-WRONG-DOC-DROPS` | true | attention 모델에 다른 문서 골격을 넣으면 성능이 크게 떨어졌다. |
 
+`S2-G-LOSS-FINITE`는 성능 우위를 말하는 gate가 아니라 실행 안정성을 확인하는 gate다. 여기서 teacher-forced loss는 모델이 정답 문장의 이전 token들을 입력받은 상태에서 다음 정답 token에 얼마나 높은 확률을 주는지 계산한 손실값이다. 즉 자유 생성 결과를 채점하는 것이 아니라, 정답 경로 위에서 모델의 확률 계산이 정상적으로 되는지 확인한다.
+
+`finite`는 loss가 `NaN`, `inf`, `-inf`처럼 깨진 값이 아니라 정상적인 유한 숫자라는 뜻이다. S2에서는 `attention_scaffold` 2.7333, `idf_scaffold` 2.4851, `random_scaffold` 3.2445, `position_prior_scaffold` 2.7386, `position_only` 3.8216으로 모든 주요 조건이 정상 숫자였다. 따라서 이 gate는 "실험이 수치적으로 터지지 않았다"는 뜻이며, 어떤 조건이 더 좋은지는 `S2-G-ATTENTION-BEATS-RANDOM`, `S2-G-ATTENTION-BEATS-POSITION`, Token F1, ROUGE-L 같은 비교 지표에서 판단한다.
+
 학습 조건별 결과는 다음이다.
 
 | 조건 | Loss | PPL | Token F1 | ROUGE-L | Keyword Recall | Skeleton Coverage | Nonempty |
