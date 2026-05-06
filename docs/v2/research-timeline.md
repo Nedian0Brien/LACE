@@ -4,6 +4,55 @@
 
 ## 2026-05-06
 
+### 발견: S3-anchor baseline comparison 핵심 gate 실패
+
+추가 시각: 2026-05-06 11:11 KST
+
+맥락:
+
+S3는 중요한 token을 forward terminal state로 직접 보존하는 방식이 random forward 뒤에 anchor를 예측해 붙이는 방식보다 더 좋은 reverse trajectory를 만드는지 확인했다. S2a 결과에 따라 기본 위치 표현은 `sinusoidal_absolute`를 사용했고, anchor 조건에는 gold anchor가 아니라 terminal에서 예측한 anchor를 붙였다.
+
+결과:
+
+S3는 `overall_pass=false`, `s4_ready=false`였다. `importance_ordered_forward_no_anchor`는 score 0.4356, Token F1 0.1515, ROUGE-L 0.1441이었다. `random_forward_anchor_prediction`은 score 0.4418, Token F1 0.1559, ROUGE-L 0.1460이었다. 최고 조건은 `random_forward_no_anchor`로 score 0.4467, Token F1 0.1612, ROUGE-L 0.1455였다.
+
+주의점:
+
+`importance_ordered_forward_no_anchor`는 `random_forward_anchor_prediction`과 tolerance 0.02 안에서 비슷했으므로 anchor prediction baseline에 크게 밀린 것은 아니다. 하지만 `random_forward_no_anchor`보다 낮았기 때문에, 현재 S3 설정에서는 importance terminal state가 random terminal state보다 더 좋은 reverse trajectory라는 핵심 주장을 강화하지 못했다.
+
+근거/출처:
+
+- `outputs/v2_s3/lace_v2_s3/summary.md`
+- `outputs/v2_s3/lace_v2_s3/metrics.json`
+- `docs/v2/experiments/s3-anchor-baseline-comparison.md`
+
+다음 실험에 주는 의미:
+
+S4 constrained generation으로 바로 넘어가지 않는다. 다음 후보는 `S3a-terminal diagnostic`이다. 여기서는 `random_forward_no_anchor`가 왜 가장 높았는지, `gold_anchor_oracle`과 `same_position_random`, `position_only`, `idf_terminal`, `attention_terminal` 비교로 terminal 정보량과 위치 편향, anchor predictor 병목을 분리한다.
+
+### 결정: S3-anchor baseline comparison에 들어간다
+
+추가 시각: 2026-05-06 11:05 KST
+
+맥락:
+
+S2는 의미 골격 + 위치 보조 구조가 무작위 골격보다 더 좋은 복원 학습 문제를 만든다는 제한된 증거를 제공했다. S2a는 S3의 기본 위치 보조 구조 후보로 `sinusoidal_absolute`를 식별했다. 다음 질문은 semantic skeleton을 forward terminal state로 보존하는 방식이, random forward 뒤에 anchor를 예측해 붙이는 방식보다 더 좋은 reverse trajectory를 만드는가다.
+
+결정:
+
+S3 실험 이름은 `S3-anchor baseline comparison`으로 둔다. 핵심 비교는 `random_forward_anchor_prediction`, `importance_ordered_forward_no_anchor`, `importance_ordered_forward_anchor_prediction`, `random_forward_no_anchor` 네 조건이다.
+
+근거/출처:
+
+- `docs/v2/experiment-roadmap.md`
+- `docs/v2/experiments/s2-skeleton-to-text-reconstruction.md`
+- `docs/v2/experiments/s2a-positional-encoding.md`
+- `docs/v2/plan/s3-anchor-baseline-comparison-plan.md`
+
+다음 실험에 주는 의미:
+
+`importance_ordered_forward_no_anchor`가 `random_forward_anchor_prediction`보다 좋거나 거의 비슷하고, `random_forward_no_anchor`보다 좋으면 v2 핵심 주장인 semantic skeleton terminal state의 장점이 강화된다. `importance_ordered_forward_anchor_prediction`이 가장 좋으면 skeleton terminal state와 anchor prediction이 상보적이라는 후속 방향을 남긴다.
+
 ### 발견: S2a-positional encoding 비교 통과
 
 추가 시각: 2026-05-06 10:09 KST

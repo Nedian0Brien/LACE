@@ -36,7 +36,7 @@ v2는 다음 문장을 중심 주장으로 둔다.
 
 즉, 중요한 token은 reverse denoising을 돕는 보조 anchor가 아니라, forward process가 도달해야 하는 semantic skeleton terminal state다.
 
-`S0: semantic skeleton extraction and preservation validation`, `S1: skeleton-use controls`, `S2: skeleton-to-text reconstruction`, `S2a: positional encoding comparison`은 완료됐다. 다음 실험은 `S3: anchor baseline comparison`이다.
+`S0: semantic skeleton extraction and preservation validation`, `S1: skeleton-use controls`, `S2: skeleton-to-text reconstruction`, `S2a: positional encoding comparison`은 통과했다. `S3: anchor baseline comparison`은 실행됐지만 `importance_ordered_forward_no_anchor`가 `random_forward_no_anchor`를 이기지 못해 핵심 gate를 통과하지 못했다. 다음 실험은 S4가 아니라 `S3a: terminal diagnostic`이다.
 
 ## 실험 실행
 

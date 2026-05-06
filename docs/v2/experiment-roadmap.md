@@ -124,6 +124,26 @@ D. Random forward + no anchor prediction
 
 `B > A`이면 v2 핵심 주장이 강해진다. `B ≈ A`라도 더 단순하고 해석 가능한 trajectory라는 주장이 가능하다. `C`가 가장 좋으면 skeleton forward와 anchor prediction이 상보적이라는 후속 방향이 생긴다.
 
+## S3a. Terminal Diagnostic
+
+### 질문
+
+S3에서 `random_forward_no_anchor`가 가장 좋았던 이유가 무엇인가?
+
+### 진단 대상
+
+- `attention_terminal`
+- `idf_terminal`
+- `random_terminal`
+- `same_position_random_terminal`
+- `position_only`
+- `gold_anchor_oracle`
+- `predicted_anchor`
+
+### 성공 기준
+
+`attention_terminal` 또는 `idf_terminal`이 같은 위치/같은 개수 random terminal보다 좋아야 한다. `gold_anchor_oracle`이 크게 좋다면 anchor predictor 품질 병목이고, oracle도 약하면 현재 reverse model 또는 reconstruction proxy가 terminal 정보량 차이를 잘 반영하지 못하는 것이다.
+
 ## S4. Constrained Generation
 
 ### 질문
@@ -156,7 +176,7 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 완료됐다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다.
 
 결과 문서는 다음에 있다.
 
@@ -164,6 +184,7 @@ S0, S1, S2, S2a는 완료됐다.
 - [experiments/s1-skeleton-use-controls.md](./experiments/s1-skeleton-use-controls.md)
 - [experiments/s2-skeleton-to-text-reconstruction.md](./experiments/s2-skeleton-to-text-reconstruction.md)
 - [experiments/s2a-positional-encoding.md](./experiments/s2a-positional-encoding.md)
+- [experiments/s3-anchor-baseline-comparison.md](./experiments/s3-anchor-baseline-comparison.md)
 
 핵심 판단:
 
@@ -176,17 +197,18 @@ S0, S1, S2, S2a는 완료됐다.
 7. 다만 `idf_scaffold`는 loss가 가장 낮고, `position_prior_scaffold`는 keyword recall이 매우 높아서 scorer와 위치 편향 분리는 계속 필요하다.
 8. S2의 `front/middle/back`은 정식 positional encoding이 아니라 coarse tag였으므로 S2a에서 learned/sinusoidal/relative/rotary 방식을 비교한다.
 9. S2a에서는 `sinusoidal_absolute`가 가장 좋은 positional scaffold 후보였다. 다만 `coarse_bins` 대비 개선 폭은 작고 생성 품질은 아직 낮다.
+10. S3에서는 `importance_ordered_forward_no_anchor`가 `random_forward_anchor_prediction`과는 tolerance 안에서 비슷했지만, `random_forward_no_anchor`보다 낮았다. 따라서 S4로 바로 넘어가지 않는다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S3: anchor baseline comparison
+S3a: terminal diagnostic
 ```
 
 산출물:
 
-- `kaggle/v2_s3/run_v2_s3.py`
-- `kaggle/v2_s3/kernel-metadata.json`
-- `scripts/push_kaggle_v2_s3.sh`
-- `docs/v2/plan/s3-anchor-baseline-comparison-plan.md`
-- `docs/v2/experiments/s3-anchor-baseline-comparison.md`
+- `kaggle/v2_s3a/run_v2_s3a.py`
+- `kaggle/v2_s3a/kernel-metadata.json`
+- `scripts/push_kaggle_v2_s3a.sh`
+- `docs/v2/plan/s3a-terminal-diagnostic-plan.md`
+- `docs/v2/experiments/s3a-terminal-diagnostic.md`

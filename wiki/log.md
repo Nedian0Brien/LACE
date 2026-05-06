@@ -36,3 +36,8 @@ sources: [사용자 대화]
 
 - S2a 문서 안에 있던 `sinusoidal_absolute` 설명을 [[concepts/lace/sinusoidal-absolute|sinusoidal_absolute]] 독립 개념 문서로 분리했다.
 - S2a 문서는 실험 결과 중심으로 유지하고, 위치 부호화 방식 자체의 설명은 새 문서로 연결했다.
+
+## [2026-05-06] ingest | S3 anchor baseline comparison 결과
+
+- S3 결과를 [[concepts/lace/s3-anchor-baseline-comparison|S3-anchor baseline comparison]]에 수집했다.
+- `importance_ordered_forward_no_anchor`가 `random_forward_no_anchor`보다 낮아 S3 핵심 gate가 실패했고, 다음 단계가 S4가 아니라 S3a 진단 실험이라는 해석을 기록했다.

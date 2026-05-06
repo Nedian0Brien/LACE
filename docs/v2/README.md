@@ -57,4 +57,6 @@ S2는 [experiments/s2-skeleton-to-text-reconstruction.md](./experiments/s2-skele
 
 S2a는 [experiments/s2a-positional-encoding.md](./experiments/s2a-positional-encoding.md)에 기록했다. S2a에서 `sinusoidal_absolute`가 가장 좋은 위치 보조 구조 후보로 식별됐지만, `coarse_bins` 대비 개선 폭은 작고 생성 품질은 아직 낮다.
 
-다음 실험은 `S3: anchor baseline comparison`이다. 여기서는 중요한 token을 terminal state로 남기는 방식과 anchor를 보조 조건으로 쓰는 방식을 직접 비교한다.
+S3는 [experiments/s3-anchor-baseline-comparison.md](./experiments/s3-anchor-baseline-comparison.md)에 기록했다. S3에서 `importance_ordered_forward_no_anchor`는 `random_forward_anchor_prediction`과 tolerance 안에서 비슷했지만, `random_forward_no_anchor`보다 낮아 `overall_pass=false`, `s4_ready=false`였다.
+
+따라서 다음 실험은 S4가 아니라 `S3a: terminal diagnostic`이다. 여기서는 `random_forward_no_anchor`가 왜 가장 강했는지, 그리고 현재 복원 proxy가 terminal 정보량 차이를 충분히 반영하는지 진단한다.
