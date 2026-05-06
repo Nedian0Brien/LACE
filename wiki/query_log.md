@@ -27,3 +27,9 @@
 - 질문: A안으로 S3a terminal diagnostic 진행.
 - 답변 요약: `S3a-terminal diagnostic`을 계획, 구현, Kaggle 실행, 결과 다운로드까지 진행했다. `diagnostic_ready=true`, `s4_ready=false`였고, attention terminal은 random/same-position control보다 높았지만 position-only와 predicted-anchor confound가 남았다.
 - 반영 문서: [[concepts/lace/s3a-terminal-diagnostic]]
+
+## 2026-05-06 query | S3b 연구 진행
+
+- 질문: S3b probe calibration 진행.
+- 답변 요약: `S3b-probe calibration`을 계획, 구현, Kaggle 실행, 결과 다운로드까지 진행했다. 같은 reverse probe에서 `attention_no_position`은 크게 낮아졌지만 `attention_terminal`은 position-only/random/same-position random보다 tolerance 이상 높지 않아 S4 진입은 보류했다.
+- 반영 문서: [[concepts/lace/s3b-probe-calibration]]

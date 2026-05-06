@@ -4,6 +4,32 @@
 
 ## 2026-05-06
 
+### 발견: S3b-probe calibration 결과
+
+추가 시각: 2026-05-06 14:54 KST
+
+맥락:
+
+S3b는 S3a의 조건별 재학습 confound를 줄이기 위해 실행했다. `attention_terminal`로 reverse model을 한 번만 학습한 뒤, 평가 시점에 `attention_no_position`, `attention_shuffled_position`, `position_only`, `random_terminal`, `same_position_random_terminal`, predicted/gold anchor 조건으로 입력만 바꿨다.
+
+결과:
+
+S3b는 `diagnostic_ready=true`, `s4_ready=false`였다. `attention_no_position`은 score 0.2828로 `attention_terminal` 0.3768보다 크게 낮아 위치 channel의 존재가 중요하다는 점은 확인됐다. 하지만 `attention_terminal`은 `position_only` 0.3735, `random_terminal` 0.3724, `same_position_random_terminal` 0.3638보다 tolerance 0.02 이상 높지 않았다. 최고 조건은 `attention_shuffled_position` score 0.3799였다. Anchor 조건은 모두 크게 낮았고, `random_terminal_gold_anchor_oracle` 0.2453이 `random_terminal_predicted_anchor` 0.2443보다 약간 높았다.
+
+주의점:
+
+S3b는 위치 보조 구조가 완전히 무시되지는 않는다는 점을 확인했지만, 현재 reverse probe가 의미 terminal content를 충분히 사용한다는 증거는 약하다. 생성 sample의 repetition도 높아 lexical metric 차이를 semantic generation 품질로 확대 해석하면 안 된다.
+
+근거/출처:
+
+- `outputs/v2_s3b/lace_v2_s3b/summary.md`
+- `outputs/v2_s3b/lace_v2_s3b/metrics.json`
+- `docs/v2/experiments/s3b-probe-calibration.md`
+
+다음 실험에 주는 의미:
+
+S4 constrained generation으로 바로 넘어가지 않는다. 다음은 반복을 줄이는 constrained reconstruction 설정, position-only 분해 control, terminal content-use metric 강화를 포함하는 S3c 성격의 probe 보정이 적절하다. Anchor 조건은 당분간 핵심 경로에서 내린다.
+
 ### 발견: S3a-terminal diagnostic 결과
 
 추가 시각: 2026-05-06 13:38 KST

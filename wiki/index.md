@@ -20,6 +20,7 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s3-anchor-baseline-comparison|S3-anchor baseline comparison]] - semantic terminal state와 predicted anchor baseline을 비교했지만 핵심 gate를 통과하지 못한 실험.
 - [[concepts/lace/s3-이후-방법론-부족점|S3 이후 방법론 부족점]] - S3 실패 이후 더 나은 방법론을 만들기 전에 분해해야 할 측정·baseline·scorer·metric 결핍.
 - [[concepts/lace/s3a-terminal-diagnostic|S3a-terminal diagnostic]] - S3 실패 후 terminal 정보량, 위치 편향, anchor oracle/predicted anchor 병목을 분리한 진단 실험.
+- [[concepts/lace/s3b-probe-calibration|S3b-probe calibration]] - 같은 reverse probe에서 입력만 바꾸어 위치 channel과 terminal content 사용 증거를 분리한 보정 실험.
 
 ## 연구 실험
 
@@ -28,3 +29,4 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s3-anchor-baseline-comparison|S3-anchor baseline comparison]] - `importance_ordered_forward_no_anchor`가 `random_forward_no_anchor`를 이기지 못해 S3a 진단으로 이어진 실험.
 - [[concepts/lace/s3-이후-방법론-부족점|S3 이후 방법론 부족점]] - S4로 넘어가기 전에 S3a에서 분리해야 할 terminal 정보량, 위치 편향, anchor predictor 병목, metric 민감도 문제.
 - [[concepts/lace/s3a-terminal-diagnostic|S3a-terminal diagnostic]] - `attention_terminal`이 random/same-position control보다 높았지만 `position_only`와 predicted anchor confound가 남은 실험.
+- [[concepts/lace/s3b-probe-calibration|S3b-probe calibration]] - `attention_no_position`은 크게 하락했지만 `attention_terminal`의 content 우위 margin은 충분하지 않아 S4 보류를 재확인한 실험.

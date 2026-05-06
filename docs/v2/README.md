@@ -59,4 +59,6 @@ S2a는 [experiments/s2a-positional-encoding.md](./experiments/s2a-positional-enc
 
 S3는 [experiments/s3-anchor-baseline-comparison.md](./experiments/s3-anchor-baseline-comparison.md)에 기록했다. S3에서 `importance_ordered_forward_no_anchor`는 `random_forward_anchor_prediction`과 tolerance 안에서 비슷했지만, `random_forward_no_anchor`보다 낮아 `overall_pass=false`, `s4_ready=false`였다.
 
-S3a는 [experiments/s3a-terminal-diagnostic.md](./experiments/s3a-terminal-diagnostic.md)에 기록했다. S3a에서 `attention_terminal`은 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고 조건이었다. 따라서 S4로 바로 넘어가지 않고, 다음은 같은 학습 모델 입력 ablation과 metric 보정을 포함하는 `S3b: probe calibration`으로 둔다.
+S3a는 [experiments/s3a-terminal-diagnostic.md](./experiments/s3a-terminal-diagnostic.md)에 기록했다. S3a에서 `attention_terminal`은 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고 조건이었다.
+
+S3b는 [experiments/s3b-probe-calibration.md](./experiments/s3b-probe-calibration.md)에 기록했다. S3b는 같은 reverse model을 `attention_terminal`로 한 번만 학습한 뒤 평가 입력만 바꿨다. `attention_no_position`은 크게 떨어져 위치 channel의 존재는 중요해 보였지만, `attention_terminal`은 `position_only`, `random_terminal`, `same_position_random_terminal`보다 tolerance 0.02 이상 높지 않았다. 따라서 `diagnostic_ready=true`, `s4_ready=false`로 두고, 다음은 반복을 줄이고 content-use metric을 강화하는 S3c 성격의 probe 보정으로 둔다.

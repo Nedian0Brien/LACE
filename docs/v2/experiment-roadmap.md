@@ -148,6 +148,29 @@ S3에서 `random_forward_no_anchor`가 가장 좋았던 이유가 무엇인가?
 
 S3a는 `diagnostic_ready=true`, `s4_ready=false`였다. `attention_terminal`은 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고 조건이었다. 따라서 content terminal 신호는 일부 회복됐지만, 위치 scaffold와 표면 prior confound가 남아 S4로 바로 넘어가지 않는다.
 
+## S3b. Probe Calibration
+
+### 질문
+
+조건별로 새로 학습한 reverse probe가 아니라, 같은 reverse probe를 고정했을 때도 `attention_terminal` 입력이 position-only, random terminal, same-position random보다 충분히 좋은가?
+
+### 핵심 비교
+
+```text
+train: attention_terminal
+eval: attention_terminal / attention_no_position / attention_shuffled_position
+eval: random_terminal / same_position_random_terminal / position_only
+eval: predicted anchor / gold anchor oracle
+```
+
+### 성공 기준
+
+`attention_terminal`이 `position_only`, `random_terminal`, `same_position_random_terminal`보다 tolerance 이상 높아야 한다. `attention_no_position`이 낮아지면 위치 channel 자체의 필요성은 확인되지만, `attention_shuffled_position`도 낮아져야 정확한 위치 정렬 사용 주장이 강해진다.
+
+### 결과
+
+S3b는 `diagnostic_ready=true`, `s4_ready=false`였다. `attention_no_position`은 score 0.2828로 크게 떨어졌지만, `attention_terminal` score 0.3768은 `position_only` 0.3735, `random_terminal` 0.3724, `same_position_random_terminal` 0.3638보다 tolerance 0.02 이상 높지 않았다. 최고 조건은 `attention_shuffled_position` score 0.3799였다. 따라서 현재 probe는 위치 channel의 존재에는 민감하지만, 의미 terminal content 사용 증거는 아직 약하다.
+
 ## S4. Constrained Generation
 
 ### 질문
@@ -180,7 +203,7 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a는 진단 조건을 실행해 content terminal 신호를 일부 회복했지만, position-only와 predicted-anchor confound가 남아 S4로 바로 넘어가지 않는다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a는 진단 조건을 실행해 content terminal 신호를 일부 회복했지만, position-only와 predicted-anchor confound가 남았다. S3b는 같은 모델 입력 ablation으로 position channel의 필요성을 확인했지만, content terminal 우위 margin은 충분하지 않았다. 따라서 S4로 바로 넘어가지 않는다.
 
 결과 문서는 다음에 있다.
 
@@ -190,6 +213,7 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s2a-positional-encoding.md](./experiments/s2a-positional-encoding.md)
 - [experiments/s3-anchor-baseline-comparison.md](./experiments/s3-anchor-baseline-comparison.md)
 - [experiments/s3a-terminal-diagnostic.md](./experiments/s3a-terminal-diagnostic.md)
+- [experiments/s3b-probe-calibration.md](./experiments/s3b-probe-calibration.md)
 
 핵심 판단:
 
@@ -204,16 +228,17 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 9. S2a에서는 `sinusoidal_absolute`가 가장 좋은 positional scaffold 후보였다. 다만 `coarse_bins` 대비 개선 폭은 작고 생성 품질은 아직 낮다.
 10. S3에서는 `importance_ordered_forward_no_anchor`가 `random_forward_anchor_prediction`과는 tolerance 안에서 비슷했지만, `random_forward_no_anchor`보다 낮았다. 따라서 S4로 바로 넘어가지 않는다.
 11. S3a에서는 `attention_terminal`이 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고였다.
+12. S3b에서는 `attention_no_position`이 크게 떨어져 위치 channel의 존재는 중요했지만, `attention_terminal`은 `position_only`, `random_terminal`, `same_position_random_terminal`보다 tolerance 이상 높지 않았고 `attention_shuffled_position`이 최고였다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S3b: probe calibration
+S3c: low-repetition content-use calibration
 ```
 
 산출물:
 
-- same-model input ablation runner
-- gold anchor length/segment ablation
-- position-only matched control
-- repetition/entity metric additions
+- 반복을 줄이는 constrained reconstruction 설정
+- position-only 분해 control
+- terminal content-use metric 강화
+- anchor 조건의 핵심 경로 제외 여부 판단
