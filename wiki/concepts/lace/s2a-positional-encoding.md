@@ -20,6 +20,16 @@ S2a-positional encoding은 [[concepts/lace/attention-scaffold|attention_scaffold
 - `relative_position_bias`
 - `rotary_position`
 
+## `sinusoidal_absolute`의 의미
+
+`sinusoidal_absolute`는 token의 원래 절대 위치를 사인/코사인 파형 값으로 바꾼 뒤, token embedding에 더하는 위치 부호화 방식이다.
+
+직관적으로는 각 token에 "나는 원문에서 몇 번째 근처에 있던 단서다"라는 좌표표를 붙이는 것이다. `front/middle/back`처럼 세 구간만 알려주는 방식보다 더 세밀하고, learned embedding처럼 위치표 자체를 새로 학습하지 않아도 된다.
+
+이 방식에서 `absolute`는 선택된 skeleton token들 사이의 상대 순서가 아니라 원래 문장 안의 token index를 쓴다는 뜻이다. `sinusoidal`은 그 index를 고정된 여러 주기의 사인/코사인 값으로 표현한다는 뜻이다.
+
+LACE 관점에서는 [[concepts/lace/의미-골격|의미 골격]] token이 가진 내용 단서에 원문 위치 좌표를 함께 붙여, decoder가 "이 단어들은 대략 어떤 흐름으로 문장에 다시 놓여야 하는가"를 추정하기 쉽게 만드는 역할을 한다.
+
 ## 핵심 결과
 
 가장 좋은 조건은 `sinusoidal_absolute`였다.
