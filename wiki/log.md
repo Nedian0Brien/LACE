@@ -57,3 +57,9 @@ sources: [사용자 대화]
 - S3b 결과를 [[concepts/lace/s3b-probe-calibration|S3b-probe calibration]]에 수집했다.
 - 같은 reverse probe에서 평가 입력만 바꿨을 때 `attention_no_position`은 크게 떨어졌지만, `attention_terminal`이 `position_only`, `random_terminal`, `same_position_random_terminal`보다 충분히 높지는 않아 content terminal 사용 증거가 아직 약하다는 해석을 기록했다.
 - 다음 방향을 S4가 아니라 반복 감소와 content-use metric 강화를 포함한 S3c 성격의 보정으로 정리했다.
+
+## [2026-05-06] query synthesis | Forward-Reverse Process 본질 재정렬
+
+- 사용자의 문제 제기를 바탕으로 [[concepts/lace/forward-reverse-process-본질|Forward-Reverse Process 본질]]을 생성했다.
+- 문장 exact reconstruction이 아니라 중요도 기반 forward masking schedule과 reverse expansion process가 random corruption보다 더 좋은 diffusion language model을 만드는지가 핵심임을 기록했다.
+- 다음 실험 초점을 S3c 지엽적 probe 보정보다 process-level schedule/objective 비교로 옮겼다.

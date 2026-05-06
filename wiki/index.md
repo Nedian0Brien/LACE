@@ -14,6 +14,7 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/복원-평가지표-token-f1-rouge-l|복원 평가 지표 - Token F1과 ROUGE-L]] - S2 의미 골격-문장 복원 학습에서 생성문과 정답문의 겹침을 해석하는 핵심 지표.
 - [[concepts/lace/의미-골격|의미 골격]] - LACE v2에서 forward process가 도달하는 content-bearing terminal state.
 - [[concepts/lace/위치-보조-구조|위치 보조 구조]] - 의미 골격을 문장으로 펼칠 때 위치와 순서 흐름을 보조하는 구조.
+- [[concepts/lace/forward-reverse-process-본질|Forward-Reverse Process 본질]] - 중요도 기반 masking schedule과 그 역과정으로 문장을 확장하는 diffusion language model이라는 v2 핵심 문제의 재정의.
 - [[concepts/lace/attention-scaffold|attention_scaffold]] - attention 수신 점수로 고른 의미 골격과 위치 보조 구조를 결합한 S2 핵심 입력 조건.
 - [[concepts/lace/sinusoidal-absolute|sinusoidal_absolute]] - 원래 token index를 사인/코사인 파형 좌표로 바꿔 의미 골격에 더하는 절대 위치 부호화 방식.
 - [[concepts/lace/s2a-positional-encoding|S2a-positional encoding]] - S3 전에 위치 보조 구조 후보를 learned/sinusoidal/relative/rotary 방식으로 비교한 실험.

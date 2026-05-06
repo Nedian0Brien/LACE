@@ -33,3 +33,9 @@
 - 질문: S3b probe calibration 진행.
 - 답변 요약: `S3b-probe calibration`을 계획, 구현, Kaggle 실행, 결과 다운로드까지 진행했다. 같은 reverse probe에서 `attention_no_position`은 크게 낮아졌지만 `attention_terminal`은 position-only/random/same-position random보다 tolerance 이상 높지 않아 S4 진입은 보류했다.
 - 반영 문서: [[concepts/lace/s3b-probe-calibration]]
+
+## 2026-05-06 query | 연구 본질 재정렬
+
+- 질문: 문장 exact reconstruction보다 중요도 기반 forward masking과 reverse expansion으로 더 나은 diffusion language model을 만들 수 있느냐가 본질이라는 문제 제기.
+- 답변 요약: S3 계열은 측정 장치 점검으로 한정하고, 이후 초점을 importance-ordered masking schedule과 reverse expansion objective의 process-level 비교로 재정렬했다.
+- 반영 문서: [[concepts/lace/forward-reverse-process-본질]]

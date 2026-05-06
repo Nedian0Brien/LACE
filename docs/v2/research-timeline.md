@@ -4,6 +4,28 @@
 
 ## 2026-05-06
 
+### 결정: S3 이후 초점을 문장 복원 probe가 아니라 forward/reverse diffusion process로 재정렬
+
+추가 시각: 2026-05-06 15:09 KST
+
+맥락:
+
+S3b까지는 attention terminal이 random 계열보다 약간 높고, 위치 channel이 완전히 무시되지는 않는다는 점을 확인했다. 하지만 사용자는 "문장을 그대로 복원할 수 있느냐"가 연구의 본질이 아니며, 핵심은 중요성이 낮은 token을 순차적으로 masking하는 forward process와 그 역과정으로 문장을 확장하는 diffusion language model을 만들 수 있느냐라고 정리했다.
+
+결정:
+
+이후 실험 초점은 exact reconstruction probe의 수치 개선이 아니라, importance-ordered masking schedule이 random corruption schedule보다 더 나은 reverse generation process를 제공하는지로 둔다. 모델은 문장의 중심 의미를 담는 뼈대 token을 먼저 다루고, 이후 세부 의미와 표면 token을 단계적으로 붙여 문장을 확장하는 능력을 학습해야 한다.
+
+근거/출처:
+
+- 사용자 대화
+- `docs/v2/experiments/s3b-probe-calibration.md`
+- `wiki/concepts/lace/forward-reverse-process-본질.md`
+
+다음 실험에 주는 의미:
+
+다음 단계는 S3c의 지엽적 probe 보정보다, `importance-ordered forward schedule`과 `reverse expansion objective`를 명시한 process-level 실험 설계가 되어야 한다. 비교군은 동일 mask ratio와 동일 model budget의 random masking diffusion이며, 평가는 원문 exact reconstruction보다 trajectory coherence, semantic drift, skeleton faithfulness, generation quality, repetition/diversity를 중심으로 설계한다.
+
 ### 발견: S3b-probe calibration 결과
 
 추가 시각: 2026-05-06 14:54 KST
