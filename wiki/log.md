@@ -41,3 +41,8 @@ sources: [사용자 대화]
 
 - S3 결과를 [[concepts/lace/s3-anchor-baseline-comparison|S3-anchor baseline comparison]]에 수집했다.
 - `importance_ordered_forward_no_anchor`가 `random_forward_no_anchor`보다 낮아 S3 핵심 gate가 실패했고, 다음 단계가 S4가 아니라 S3a 진단 실험이라는 해석을 기록했다.
+
+## [2026-05-06] query synthesis | S3 이후 방법론 부족점
+
+- S3 실패 이후 더 나은 방법론을 만들기 전에 분해해야 할 결핍을 [[concepts/lace/s3-이후-방법론-부족점|S3 이후 방법론 부족점]]에 정리했다.
+- 핵심 부족점은 `better reverse trajectory` 운영 정의, random terminal baseline 강도, 약한 predicted anchor baseline, scorer 선택, reverse probe 민감도, 위치 편향/content 사용 분리로 정리했다.

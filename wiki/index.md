@@ -18,9 +18,11 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/sinusoidal-absolute|sinusoidal_absolute]] - 원래 token index를 사인/코사인 파형 좌표로 바꿔 의미 골격에 더하는 절대 위치 부호화 방식.
 - [[concepts/lace/s2a-positional-encoding|S2a-positional encoding]] - S3 전에 위치 보조 구조 후보를 learned/sinusoidal/relative/rotary 방식으로 비교한 실험.
 - [[concepts/lace/s3-anchor-baseline-comparison|S3-anchor baseline comparison]] - semantic terminal state와 predicted anchor baseline을 비교했지만 핵심 gate를 통과하지 못한 실험.
+- [[concepts/lace/s3-이후-방법론-부족점|S3 이후 방법론 부족점]] - S3 실패 이후 더 나은 방법론을 만들기 전에 분해해야 할 측정·baseline·scorer·metric 결핍.
 
 ## 연구 실험
 
 - [[concepts/lace/s2-의미-골격-문장-복원-학습|S2 의미 골격-문장 복원 학습]] - `attention_scaffold`와 `random_scaffold` 비교를 통해 짧은 복원 학습에서 의미 골격의 이점을 확인한 실험.
 - [[concepts/lace/s2a-positional-encoding|S2a-positional encoding]] - `sinusoidal_absolute`를 S3 기본 위치 보조 구조 후보로 식별한 위치 표현 비교 실험.
 - [[concepts/lace/s3-anchor-baseline-comparison|S3-anchor baseline comparison]] - `importance_ordered_forward_no_anchor`가 `random_forward_no_anchor`를 이기지 못해 S3a 진단으로 이어진 실험.
+- [[concepts/lace/s3-이후-방법론-부족점|S3 이후 방법론 부족점]] - S4로 넘어가기 전에 S3a에서 분리해야 할 terminal 정보량, 위치 편향, anchor predictor 병목, metric 민감도 문제.

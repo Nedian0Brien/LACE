@@ -15,3 +15,9 @@
 - 질문: S3 실험에 들어가기.
 - 답변 요약: `S3-anchor baseline comparison`을 계획, 구현, Kaggle 실행, 결과 다운로드까지 진행했다. 결과는 `overall_pass=false`, `s4_ready=false`였고, 다음 단계는 S3a terminal diagnostic으로 정리했다.
 - 반영 문서: [[concepts/lace/s3-anchor-baseline-comparison]]
+
+## 2026-05-06 query | S3 이후 부족한 점
+
+- 질문: 본격적인 연구 방법론을 고민하기 전에, 현재 부족한 것이 무엇인지 정리.
+- 답변 요약: S3 실패는 가설 폐기가 아니라 terminal state 정보량, 위치 편향, anchor predictor 병목, lexical metric 민감도, scorer 선택 문제가 아직 분리되지 않았다는 신호로 해석했다.
+- 반영 문서: [[concepts/lace/s3-이후-방법론-부족점]]

@@ -4,6 +4,28 @@
 
 ## 2026-05-06
 
+### 질문: S3 이후 본격적인 방법론 설계 전에 부족한 것은 무엇인가
+
+추가 시각: 2026-05-06 12:32 KST
+
+맥락:
+
+S3는 `overall_pass=false`, `s4_ready=false`였고, `random_forward_no_anchor`가 가장 높은 score를 얻었다. 이 결과는 곧바로 S4 generation으로 넘어가기 어렵다는 뜻이지만, semantic skeleton 가설 자체를 폐기할 만큼 원인이 분해된 것도 아니다.
+
+정리:
+
+현재 부족한 것은 더 큰 모델 하나가 아니라 식별 방법론이다. 특히 `better reverse trajectory`의 운영 정의, random terminal baseline의 실제 강도, predicted anchor baseline의 약함, scorer 선택, reverse probe의 terminal 정보 민감도, 위치 편향과 content 사용 분리가 아직 충분하지 않다.
+
+근거/출처:
+
+- `docs/v2/experiments/s3-anchor-baseline-comparison.md`
+- `outputs/v2_s3/lace_v2_s3/summary.md`
+- `wiki/concepts/lace/s3-이후-방법론-부족점.md`
+
+다음 실험에 주는 의미:
+
+다음 단계는 방법론을 바로 크게 바꾸기보다 `S3a-terminal diagnostic`으로 측정 장치를 분해하는 것이다. `gold_anchor_oracle`, `predicted_anchor`, `attention_terminal`, `idf_terminal`, `random_terminal`, `same_position_random_terminal`, `position_only`를 가까운 조건으로 비교해 terminal 정보량, 위치 편향, anchor predictor 병목, metric 민감도를 분리한다.
+
 ### 발견: S3-anchor baseline comparison 핵심 gate 실패
 
 추가 시각: 2026-05-06 11:11 KST
