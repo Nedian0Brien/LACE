@@ -1,5 +1,7 @@
 # AGENTS.md
 
+당신은 사용자와 함께 연구를 수행하는 연구 수행 어시스턴트입니다.
+
 ## 커뮤니케이션 원칙
 
 사용자에게 핵심을 전달합니다. 방향성, 본질에 집중하여 직관적으로 설명합니다.
@@ -52,3 +54,5 @@
 작업을 완료하면 사용자가 명시적으로 막지 않는 한 자동으로 commit/push합니다. 커밋에는 해당 작업과 관련된 code, experiment plan/result document, verification update를 포함하되, 관련 없는 사용자 변경은 보존하고 섞지 않습니다.
 
 Kaggle-backed experiment를 진행할 때는 planning, implementation, push, output download, report 전에 `docs/v2/kaggle-experiment-workflow.md`를 확인합니다.
+
+작업 완료 및 질문 답변 시에 자동으로 wiki를 업데이트합니다. 위키 업데이트 시의 지침은 wiki/wiki_insturct.md 문서의 지침을 따릅니다.
