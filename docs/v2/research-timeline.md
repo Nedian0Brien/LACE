@@ -4,6 +4,30 @@
 
 ## 2026-05-06
 
+### 결정: v2 연구 진행 현황 페이지를 web/index.html에 둔다
+
+추가 시각: 2026-05-06 09:48 KST
+
+맥락:
+
+연구 상태가 `docs/v2/research-timeline.md`, `docs/v2/experiment-roadmap.md`, `wiki/concepts/lace/`에 분산돼 있어 한눈에 "지금 어디까지 왔는가"를 파악하기 어려웠다. `AGENTS.md`는 진행 상황을 `web/index.html`에 업데이트하고 `design/design-system.html` 디자인 시스템을 따르도록 요구한다. 기존 `web/` 디렉터리는 비어 있었다.
+
+결정:
+
+`web/index.html`에 v2 트랙 단일 진입점 정적 페이지를 만든다. 페이지는 다음 섹션으로 구성한다 — hero (가설 한글 표기 + 영어 원문 병기), at-a-glance status strip, S0–S5 phase 카드 (done · pending · future 색 매핑), 핵심 개념 3카드 (의미 골격 · 위치 보조 구조 · 역방향 궤적), S1 검색형 사용 검증 metric bar chart, S2 복원 학습 small-multiple bar chart, 최근 timeline 7개, 남은 질문 4개 (위치 편향 · scorer 선택 · 생성 미검증 · S3 우선순위), footer. 모든 수치는 `outputs/v2_s1/lace_v2_s1/summary.md`, `outputs/v2_s2/lace_v2_s2/summary.md`, `research-timeline.md`의 raw 값을 그대로 인용한다. CSS 토큰은 `design/design-system.html`을 그대로 가져오고 다크/라이트 토글은 `localStorage` + `prefers-color-scheme`로 처리한다.
+
+근거/출처:
+
+- `AGENTS.md`
+- `design/design-system.html`
+- `docs/v2/research-timeline.md`
+- `outputs/v2_s1/lace_v2_s1/summary.md`
+- `outputs/v2_s2/lace_v2_s2/summary.md`
+
+다음 실험에 주는 의미:
+
+S2a positional encoding과 S3 anchor baseline이 끝나는 시점에 phase 카드와 timeline 항목, metric bar chart를 갱신한다. open-ended generation 주장으로 넘어가지 않는다는 caveat는 hero quote와 open question 섹션에 명시적으로 유지한다. 페이지는 정적 단일 파일이라 새 조건이 추가될 때 metric bar 한 줄을 늘리는 식으로 점진적으로 확장한다.
+
 ### 질문: front/middle/back 위치 보조 구조는 일반적인가
 
 추가 시각: 2026-05-06 09:46 KST
