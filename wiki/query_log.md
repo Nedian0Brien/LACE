@@ -51,3 +51,9 @@
 - 질문: S4a 실험을 진행하고, 결과가 좋지 않으면 구조 개선 방안을 탐구.
 - 답변 요약: `S4a-delta token reverse objective`를 계획, 구현, Kaggle 실행, 결과 다운로드까지 진행했다. 전체 state가 아니라 delta token/span만 예측하도록 바꾸자 `importance_schedule`이 random과 position-only를 모두 이겼다. 다만 entity recall과 repetition은 남은 병목으로 기록했다.
 - 반영 문서: [[concepts/lace/s4a-delta-token-reverse-objective]]
+
+## 2026-05-06 query | S4b/S4c 병렬 진행
+
+- 질문: S4b와 S4c를 동시에 진행할 수 있을 것 같으니 서브에이전트 두 개로 병렬 수행.
+- 답변 요약: S4b multi-step delta rollout과 S4c span-infilling reverse decoder를 병렬 구현, Kaggle 실행, 결과 다운로드까지 진행했다. S4b는 importance rollout이 random/position-only를 이겼고, S4c는 position-only confound와 content/entity collapse 때문에 실패 진단으로 정리했다.
+- 반영 문서: [[concepts/lace/s4b-multi-step-delta-rollout]], [[concepts/lace/s4c-span-infilling-reverse-decoder]]

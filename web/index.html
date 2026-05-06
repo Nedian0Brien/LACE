@@ -722,6 +722,7 @@ a { color: inherit; text-decoration: none; }
         S0–S2a 단계는 통과됐고, S3 계열은 probe confound를 분해했습니다.
         S4는 importance-ordered reverse diffusion을 실행했고, random은 표면 score에서 우세했지만 importance는 의미 보존·확장 지표에서 더 강했습니다.
         S4a는 delta-token objective로 바꾸자 importance가 random과 position-only를 모두 이겼습니다.
+        S4b에서는 그 우위가 multi-step rollout까지 이어졌고, S4c는 naive marker infilling이 위치·형식 token 지름길로 무너진다는 점을 보여줬습니다.
       </p>
       <blockquote class="hero__quote">
         Semantic skeleton + positional scaffold creates a better reverse trajectory than random corruption.
@@ -730,7 +731,8 @@ a { color: inherit; text-decoration: none; }
         <span class="badge badge--brand">v2 track</span>
         <span class="badge badge--green">S0 · S1 · S2 · S2a 통과</span>
         <span class="badge badge--red">S3 핵심 gate 실패</span>
-        <span class="badge badge--green">S4a objective 통과</span>
+        <span class="badge badge--green">S4b rollout 통과</span>
+        <span class="badge badge--yel">S4c 구조 실패 진단</span>
         <span class="badge">last update 2026-05-06</span>
       </div>
     </div>
@@ -814,18 +816,18 @@ a { color: inherit; text-decoration: none; }
   <div class="status-strip reveal-stagger">
     <div class="card kpi">
       <div class="t-label kpi__label">현재 단계</div>
-      <div class="kpi__value">S4a 통과</div>
-      <div class="kpi__hint">importance delta objective 우위</div>
+      <div class="kpi__value">S4b 통과</div>
+      <div class="kpi__hint">multi-step rollout semantic 우위</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">다음 마일스톤</div>
-      <div class="kpi__value">S4b / S4c</div>
-      <div class="kpi__hint">multi-step rollout · span infilling</div>
+      <div class="kpi__value">S4d 구조 보정</div>
+      <div class="kpi__hint">content-aware span infilling</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">마지막 업데이트</div>
       <div class="kpi__value">05-06</div>
-      <div class="kpi__hint">2026-05-06 16:34 KST</div>
+      <div class="kpi__hint">2026-05-06 17:16 KST</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">데이터 / 백본</div>
@@ -936,7 +938,7 @@ a { color: inherit; text-decoration: none; }
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
 
-    <article class="phase phase--pending" tabindex="0">
+    <article class="phase phase--done" tabindex="0">
       <div class="phase__head">
         <div class="phase__id-row">
           <span class="phase__icon phase__icon--done" aria-hidden="true">
@@ -954,7 +956,7 @@ a { color: inherit; text-decoration: none; }
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
 
-    <article class="phase phase--pending" tabindex="0">
+    <article class="phase phase--done" tabindex="0">
       <div class="phase__head">
         <div class="phase__id-row">
           <span class="phase__icon phase__icon--done" aria-hidden="true">
@@ -972,7 +974,7 @@ a { color: inherit; text-decoration: none; }
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
 
-    <article class="phase phase--pending" tabindex="0">
+    <article class="phase phase--done" tabindex="0">
       <div class="phase__head">
         <div class="phase__id-row">
           <span class="phase__icon phase__icon--done" aria-hidden="true">
@@ -985,12 +987,12 @@ a { color: inherit; text-decoration: none; }
       <h3 class="phase__title">역방향 확장 과정</h3>
       <div class="phase__metric">
         random score 0.5607<br/>
-        S4a objective 보정으로 이동
+        S4a/S4b에서 process 재검증
       </div>
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
 
-    <article class="phase phase--pending" tabindex="0">
+    <article class="phase phase--done" tabindex="0">
       <div class="phase__head">
         <div class="phase__id-row">
           <span class="phase__icon phase__icon--done" aria-hidden="true">
@@ -1004,6 +1006,42 @@ a { color: inherit; text-decoration: none; }
       <div class="phase__metric">
         importance score 0.6366<br/>
         random 0.5073 · position-only 0.5889
+      </div>
+      <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
+    </article>
+
+    <article class="phase phase--done" tabindex="0">
+      <div class="phase__head">
+        <div class="phase__id-row">
+          <span class="phase__icon phase__icon--done" aria-hidden="true">
+            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/><path class="check" d="M5.6 9.4 L8 11.6 L12.5 6.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="phase__id">S4b</span>
+        </div>
+        <span class="badge badge--green">ROLLOUT</span>
+      </div>
+      <h3 class="phase__title">Multi-step rollout</h3>
+      <div class="phase__metric">
+        importance score 0.7336<br/>
+        random 0.6215 · position-only 0.1858
+      </div>
+      <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
+    </article>
+
+    <article class="phase phase--done" tabindex="0">
+      <div class="phase__head">
+        <div class="phase__id-row">
+          <span class="phase__icon phase__icon--done" aria-hidden="true">
+            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/><path class="check" d="M5.6 9.4 L8 11.6 L12.5 6.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="phase__id">S4c</span>
+        </div>
+        <span class="badge badge--red">FAILED</span>
+      </div>
+      <h3 class="phase__title">Span-infilling 구조</h3>
+      <div class="phase__metric">
+        importance acc 0.1414<br/>
+        position-only acc 0.1414
       </div>
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
@@ -1548,6 +1586,117 @@ a { color: inherit; text-decoration: none; }
         <span><code>importance_schedule</code>은 aggregate delta objective에서 이겼지만, entity recall은 random이 높고 repetition은 importance가 더 나쁩니다. 다음은 S5가 아니라 rollout과 span-infilling 구조 보정입니다.</span>
       </div>
     </div>
+
+    <!-- S4b card -->
+    <div class="card metric-card">
+      <div class="metric-card__head">
+        <h3 class="metric-card__title">S4b · Multi-step delta rollout</h3>
+        <span class="badge badge--green">overall_pass</span>
+      </div>
+      <p class="metric-card__sub">S4a의 delta 생성을 실제 current state에 삽입하며 <code>25% -> 50% -> 75% -> 100%</code> 궤적을 평가. Error accumulation을 포함합니다.</p>
+
+      <div class="metric-card__legend">
+        <span><span class="legend-dot" style="background:hsl(var(--blue-60));"></span>importance</span>
+        <span><span class="legend-dot" style="background:hsl(var(--neutral-50));"></span>random</span>
+        <span><span class="legend-dot" style="background:hsl(var(--red-50));"></span>position-only</span>
+      </div>
+
+      <div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance rollout score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:73.36%;"></div></div>
+          <span class="bar-row__value">0.7336</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random rollout score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:62.15%;"></div></div>
+          <span class="bar-row__value">0.6215</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">position-only score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--red" style="width:18.58%;"></div></div>
+          <span class="bar-row__value">0.1858</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance content</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:33.57%;"></div></div>
+          <span class="bar-row__value">0.3357</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random content</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:24.01%;"></div></div>
+          <span class="bar-row__value">0.2401</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance repetition</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:5.01%;"></div></div>
+          <span class="bar-row__value">0.0501</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random repetition</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:11.03%;"></div></div>
+          <span class="bar-row__value">0.1103</span>
+        </div>
+      </div>
+
+      <div class="metric-card__caveat">
+        <strong>Meaning</strong>
+        <span>위치만 주는 control은 final content/entity가 0으로 무너졌습니다. S4b는 현재까지 semantic skeleton process claim을 가장 강하게 지지합니다. 단, 여전히 constrained rollout입니다.</span>
+      </div>
+    </div>
+
+    <!-- S4c card -->
+    <div class="card metric-card">
+      <div class="metric-card__head">
+        <h3 class="metric-card__title">S4c · Span-infilling reverse decoder</h3>
+        <span class="badge badge--red">overall_fail</span>
+      </div>
+      <p class="metric-card__sub">Autoregressive delta 생성 대신 marker 위치별 token id를 직접 분류. 반복을 줄이는 구조였지만 content/entity 복원에는 실패했습니다.</p>
+
+      <div class="metric-card__legend">
+        <span><span class="legend-dot" style="background:hsl(var(--blue-60));"></span>importance</span>
+        <span><span class="legend-dot" style="background:hsl(var(--neutral-50));"></span>random</span>
+        <span><span class="legend-dot" style="background:hsl(var(--red-50));"></span>position-only</span>
+      </div>
+
+      <div>
+        <div class="bar-row">
+          <span class="bar-row__label">position-only score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--red" style="width:30.26%;"></div></div>
+          <span class="bar-row__value">0.3026</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:24.03%;"></div></div>
+          <span class="bar-row__value">0.2403</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random score</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:14.25%;"></div></div>
+          <span class="bar-row__value">0.1425</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">importance mask acc</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:14.14%;"></div></div>
+          <span class="bar-row__value">0.1414</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">position-only mask acc</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--red" style="width:14.14%;"></div></div>
+          <span class="bar-row__value">0.1414</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">content / entity</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--red" style="width:0%;"></div></div>
+          <span class="bar-row__value">0.0000</span>
+        </div>
+      </div>
+
+      <div class="metric-card__caveat">
+        <strong>Caveat</strong>
+        <span>Naive marker infilling은 의미보다 위치·형식 token 분포를 학습했습니다. 다음 구조는 content/entity weighted objective와 contiguous span infilling을 먼저 다뤄야 합니다.</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1562,6 +1711,28 @@ a { color: inherit; text-decoration: none; }
   </div>
 
   <div class="timeline reveal">
+    <div class="timeline__row">
+      <div class="timeline__date">2026-05-06<br/>17:16 KST</div>
+      <div class="timeline__body">
+        <div class="timeline__row-head">
+          <span class="badge badge--green">finding</span>
+          <h3 class="timeline__title">S4b multi-step rollout 통과</h3>
+        </div>
+        <p class="timeline__desc"><code>importance_schedule</code> rollout score 0.7336이 <code>random_schedule</code> 0.6215와 <code>position_only</code> 0.1858을 넘었습니다. Final content 0.3357, entity 0.2855, repetition 0.0501로 의미 보존과 반복 제어가 random보다 좋았습니다.</p>
+      </div>
+    </div>
+
+    <div class="timeline__row">
+      <div class="timeline__date">2026-05-06<br/>17:16 KST</div>
+      <div class="timeline__body">
+        <div class="timeline__row-head">
+          <span class="badge badge--red">finding</span>
+          <h3 class="timeline__title">S4c span-infilling 구조 실패 진단</h3>
+        </div>
+        <p class="timeline__desc"><code>importance_schedule</code>은 random보다 mask accuracy가 높았지만, <code>position_only</code>도 같은 0.1414를 냈고 content/entity recall은 모두 0이었습니다. Naive marker infilling은 의미보다 위치·형식 token shortcut을 학습했습니다.</p>
+      </div>
+    </div>
+
     <div class="timeline__row">
       <div class="timeline__date">2026-05-06<br/>16:34 KST</div>
       <div class="timeline__body">
@@ -1744,13 +1915,13 @@ a { color: inherit; text-decoration: none; }
     <div class="card">
       <div class="row" style="gap:8px;"><span class="badge badge--red">caveat</span><span class="t-mono">생성 미검증</span></div>
       <h3 class="open__title">open-ended generation은 아직 미증명</h3>
-      <p class="open__body">S0–S4a는 아직 constrained/proxy 평가입니다. S4a도 delta-token prediction이지 open-ended generation 성공 증거는 아니므로 의미 일관성·반복 제어의 최종 평가는 아직 올리지 않습니다.</p>
+      <p class="open__body">S0–S4c는 아직 constrained/proxy 평가입니다. S4b도 위치가 주어진 delta insertion rollout이지 open-ended generation 성공 증거는 아니므로 의미 일관성·반복 제어의 최종 평가는 아직 올리지 않습니다.</p>
     </div>
 
     <div class="card">
-      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S4b / S4c</span></div>
-      <h3 class="open__title">rollout과 span-infilling 구조</h3>
-      <p class="open__body">S4a는 delta objective에서 통과했지만 entity recall과 repetition은 실패했습니다. 다음에는 multi-step rollout으로 누적 drift를 보고, 위치 marker별 span을 채우는 decoder 구조로 반복을 줄여야 합니다.</p>
+      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S4d</span></div>
+      <h3 class="open__title">content-aware span 구조</h3>
+      <p class="open__body">S4b는 rollout에서 통과했지만 S4c는 marker별 독립 분류가 위치·형식 token shortcut으로 무너졌습니다. 다음에는 content/entity weighted objective와 contiguous span infilling이 필요합니다.</p>
     </div>
   </div>
 </section>
@@ -1763,7 +1934,7 @@ a { color: inherit; text-decoration: none; }
       <div class="t-h3">v2 track · semantic skeleton + positional scaffold</div>
     </div>
     <div class="row" style="gap:20px;">
-      <span class="footer__meta">last update · 2026-05-06 16:34 KST</span>
+      <span class="footer__meta">last update · 2026-05-06 17:16 KST</span>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/research-timeline.md">research-timeline.md</a>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/experiment-roadmap.md">experiment-roadmap.md</a>
       <a class="btn btn--secondary btn--sm" href="../design/design-system.html">design-system.html</a>

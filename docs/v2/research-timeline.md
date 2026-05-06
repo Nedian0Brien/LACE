@@ -4,6 +4,58 @@
 
 ## 2026-05-06
 
+### 발견: S4b multi-step delta rollout 통과
+
+추가 시각: 2026-05-06 17:16 KST
+
+맥락:
+
+S4a는 새로 unmask될 delta token/span만 예측하게 하자 `importance_schedule`이 random과 position-only를 이겼다. 그러나 한 단계 teacher-forced 성능이 실제 역방향 궤적에서도 유지되는지는 별도 검증이 필요했다.
+
+결과:
+
+S4b는 generated delta를 다음 current state에 삽입하며 `25% -> 50% -> 75% -> 100%` multi-step rollout을 평가했다. `importance_schedule`은 rollout score 0.7336으로 `random_schedule` 0.6215와 `position_only_schedule` 0.1858을 모두 이겼다. Final content recall은 importance 0.3357, random 0.2401, position-only 0.0000이었고, entity recall은 importance 0.2855가 random 0.2050보다 높았다. Repetition은 importance 0.0501이 random 0.1103보다 낮았다.
+
+주의점:
+
+`random_schedule`은 ROUGE-L 0.3259로 importance 0.3099보다 높았다. 또한 S4b는 위치가 주어진 constrained delta insertion이므로 open-ended generation 성공 증거는 아니다.
+
+근거/출처:
+
+- `outputs/v2_s4b/lace_v2_s4b/summary.md`
+- `outputs/v2_s4b/lace_v2_s4b/metrics.json`
+- `docs/v2/experiments/s4b-multi-step-delta-rollout.md`
+
+다음 실험에 주는 의미:
+
+S4b는 현재까지 v2 process claim을 가장 강하게 지지한다. 다만 S5로 바로 가기보다, S4c와 후속 구조 보정을 통해 content/entity token을 더 잘 생성하고 punctuation/whitespace shortcut을 줄여야 한다.
+
+### 발견: S4c naive span-infilling 구조는 position-only confound를 넘지 못함
+
+추가 시각: 2026-05-06 17:16 KST
+
+맥락:
+
+S4a/S4b의 delta decoder에는 반복과 표면 token 편향이 남아 있었다. S4c는 autoregressive delta generation 대신 marker-position infilling 구조로 바꾸면 반복을 줄이고 semantic skeleton content를 더 잘 쓸 수 있는지 확인했다.
+
+결과:
+
+S4c는 `process_ready=true`였지만 `overall_pass=false`였다. `importance_schedule`은 score 0.2403, masked-token accuracy 0.1414로 `random_schedule` score 0.1425, accuracy 0.1121보다 높았다. 그러나 `position_only_schedule`도 masked-token accuracy 0.1414로 같았고 score는 0.3026으로 가장 높았다. Content recall과 entity recall은 세 조건 모두 0이었다.
+
+주의점:
+
+Sample에서는 쉼표, 공백, 짧은 subword 같은 형식 token 예측이 많았고, `duplicate_prediction_rate`가 0.9347로 높았다. 따라서 repetition rate 0.0은 좋은 생성 품질을 뜻하지 않는다.
+
+근거/출처:
+
+- `outputs/v2_s4c/lace_v2_s4c/summary.md`
+- `outputs/v2_s4c/lace_v2_s4c/metrics.json`
+- `docs/v2/experiments/s4c-span-infilling-reverse-decoder.md`
+
+다음 실험에 주는 의미:
+
+S4c는 그대로 확장할 구조가 아니라 실패 진단이다. 다음 구조는 content/entity weighted objective, punctuation/whitespace 분리 metric, contiguous span infilling decoder, same-position/wrong-document control을 포함해야 한다.
+
 ### 발견: S4a-delta token reverse objective 결과
 
 추가 시각: 2026-05-06 16:34 KST

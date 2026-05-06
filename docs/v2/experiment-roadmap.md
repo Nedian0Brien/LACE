@@ -211,6 +211,43 @@ S4a는 `process_ready=true`, `overall_pass=true`, `structure_review_needed=false
 
 다음은 S5가 아니라 `S4b: multi-step delta rollout` 또는 `S4c: span-infilling reverse decoder`다. S4a의 긍정 신호를 실제 rollout으로 연결하고, entity/repetition 병목을 구조적으로 줄여야 한다.
 
+## S4b. Multi-Step Delta Rollout
+
+### 질문
+
+S4a의 one-step delta-token objective 우위가 실제 `25% -> 50% -> 75% -> 100%` rollout에서도 error accumulation을 견디는가?
+
+### 평가 순서
+
+1. 각 transition에서 생성한 delta token을 current state에 삽입한다.
+2. 생성된 state를 다음 transition의 입력으로 넘긴다.
+3. 최종 100% state를 target/original과 비교한다.
+4. final content/entity/repetition/drift를 `importance_schedule`, `random_schedule`, `position_only_schedule`로 비교한다.
+
+### 결과
+
+S4b는 `process_ready=true`, `overall_pass=true`, `structure_review_needed=false`, `s5_ready=false`였다. `importance_schedule`은 rollout score 0.7336으로 `random_schedule` 0.6215와 `position_only_schedule` 0.1858을 모두 넘었다. 최종 content recall은 importance 0.3357, random 0.2401, position-only 0.0000이었고, entity recall도 importance 0.2855가 random 0.2050보다 높았다. Repetition은 importance 0.0501이 random 0.1103보다 낮았고, semantic drift proxy도 importance 0.6438이 random 0.7152보다 낮았다.
+
+다만 `random_schedule`은 ROUGE-L 0.3259로 importance 0.3099보다 높았다. 따라서 random이 표면 순서 겹침 일부에서 강하다는 caveat는 남는다. 하지만 S4b는 현재까지 v2 process claim을 가장 강하게 지지하는 결과다.
+
+## S4c. Span-Infilling Reverse Decoder
+
+### 질문
+
+Autoregressive delta decoder 대신 marker-position infilling 구조를 쓰면 반복을 줄이고 semantic skeleton content를 더 잘 사용할 수 있는가?
+
+### 평가 순서
+
+1. 현재 partial state와 새로 채울 위치 marker를 encoder 입력으로 둔다.
+2. 각 marker hidden state에서 vocab classifier가 원래 token id를 맞힌다.
+3. `importance_schedule`, `random_schedule`, `position_only_schedule`을 masked-token accuracy, content/entity recall, duplicate/repetition으로 비교한다.
+
+### 결과
+
+S4c는 `process_ready=true`, `overall_pass=false`, `structure_review_needed=true`, `s5_ready=false`였다. `importance_schedule`은 score 0.2403과 masked-token accuracy 0.1414로 `random_schedule` score 0.1425, accuracy 0.1121보다 높았다. 하지만 `position_only_schedule`도 masked-token accuracy 0.1414로 같았고, score는 0.3026으로 가장 높았다. 또한 content recall과 entity recall은 세 조건 모두 0이었다.
+
+따라서 naive marker-position infilling은 semantic skeleton을 쓰는 구조로 보기 어렵다. 현재 구조는 의미 content보다 위치, transition 단계, punctuation/whitespace 같은 형식 token 분포를 먼저 학습한다. 다음 구조 보정은 S4b의 rollout 신호를 기준으로 두고, content/entity weighted objective와 contiguous span infilling을 도입해야 한다.
+
 ## S5. Open-ended Generation
 
 ### 질문
@@ -228,7 +265,9 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. 따라서 다음은 open-ended S5가 아니라 S4b multi-step delta rollout 또는 S4c span-infilling reverse decoder다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. 반면 S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다.
+
+따라서 다음은 open-ended S5가 아니라 `S4d` 성격의 구조 보정이다. S4b rollout을 기준선으로 두고, S4c 실패에서 드러난 punctuation/whitespace shortcut과 content/entity token 약화를 직접 다뤄야 한다.
 
 결과 문서는 다음에 있다.
 
@@ -241,6 +280,8 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s3b-probe-calibration.md](./experiments/s3b-probe-calibration.md)
 - [experiments/s4-importance-ordered-reverse-diffusion.md](./experiments/s4-importance-ordered-reverse-diffusion.md)
 - [experiments/s4a-delta-token-reverse-objective.md](./experiments/s4a-delta-token-reverse-objective.md)
+- [experiments/s4b-multi-step-delta-rollout.md](./experiments/s4b-multi-step-delta-rollout.md)
+- [experiments/s4c-span-infilling-reverse-decoder.md](./experiments/s4c-span-infilling-reverse-decoder.md)
 
 핵심 판단:
 
@@ -258,17 +299,19 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 12. S3b에서는 `attention_no_position`이 크게 떨어져 위치 channel의 존재는 중요했지만, `attention_terminal`은 `position_only`, `random_terminal`, `same_position_random_terminal`보다 tolerance 이상 높지 않았고 `attention_shuffled_position`이 최고였다.
 13. S4에서는 `random_schedule`이 종합 score와 Token F1/ROUGE-L에서 높았지만, `importance_schedule`은 target content recall, input retention, expansion recall, original content recall, entity recall에서 모두 random보다 높았다.
 14. S4a에서는 전체 target state가 아니라 newly unmasked delta token/span만 예측하도록 바꾸자 `importance_schedule`이 score 0.6366, TF Delta Acc 0.1577로 `random_schedule` score 0.5073, TF Delta Acc 0.1092를 이겼다.
+15. S4b에서는 generated delta를 다음 step 입력으로 넣는 multi-step rollout에서도 `importance_schedule`이 rollout score 0.7336으로 `random_schedule` 0.6215와 `position_only_schedule` 0.1858을 이겼다.
+16. S4c에서는 marker-position infilling이 random보다 mask accuracy는 높였지만, position-only가 같은 accuracy와 더 높은 score를 보여 semantic content 사용 증거로 방어할 수 없었다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S4b: multi-step delta rollout
-S4c: span-infilling reverse decoder
+S4d: content-aware span rollout
 ```
 
 산출물:
 
-- S4a delta objective를 실제 multi-step rollout으로 연결
-- generation 단계별 semantic drift와 repetition 누적 측정
-- entity recall 실패와 position-only 강세를 다루는 span-infilling 구조 보정
+- S4b rollout의 긍정 신호를 기준선으로 유지
+- S4c의 punctuation/whitespace shortcut을 primary metric에서 분리
+- content word, entity, number, rare token에 더 강한 objective 부여
+- marker별 독립 분류가 아니라 contiguous span 단위 infilling 구조 보정
 - importance/random/position-only/wrong-document 동일 budget 비교

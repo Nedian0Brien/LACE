@@ -24,6 +24,8 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s3b-probe-calibration|S3b-probe calibration]] - 같은 reverse probe에서 입력만 바꾸어 위치 channel과 terminal content 사용 증거를 분리한 보정 실험.
 - [[concepts/lace/s4-importance-ordered-reverse-diffusion|S4-importance ordered reverse diffusion]] - importance schedule이 종합 score에서는 random보다 낮지만 의미 보존/확장 지표에서는 강한 process-level 실험.
 - [[concepts/lace/s4a-delta-token-reverse-objective|S4a-delta token reverse objective]] - 전체 state 대신 newly unmasked delta token/span만 예측하자 importance schedule이 random과 position-only를 이긴 실험.
+- [[concepts/lace/s4b-multi-step-delta-rollout|S4b multi-step delta rollout]] - generated delta를 다음 step 입력으로 넣는 실제 rollout에서 importance schedule이 random과 position-only를 이긴 실험.
+- [[concepts/lace/s4c-span-infilling-reverse-decoder|S4c span-infilling reverse decoder]] - naive marker infilling이 random보다 mask accuracy는 높였지만 position-only confound와 content/entity collapse로 실패한 구조 실험.
 
 ## 연구 실험
 
@@ -35,3 +37,5 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s3b-probe-calibration|S3b-probe calibration]] - `attention_no_position`은 크게 하락했지만 `attention_terminal`의 content 우위 margin은 충분하지 않아 S4 보류를 재확인한 실험.
 - [[concepts/lace/s4-importance-ordered-reverse-diffusion|S4-importance ordered reverse diffusion]] - `25% -> 50% -> 75% -> 100%` reverse transition에서 random은 표면 score, importance는 semantic signal이 강했던 실험.
 - [[concepts/lace/s4a-delta-token-reverse-objective|S4a-delta token reverse objective]] - delta-token objective에서 importance가 score 0.6366으로 random 0.5073과 position-only 0.5889를 넘어선 실험.
+- [[concepts/lace/s4b-multi-step-delta-rollout|S4b multi-step delta rollout]] - final content recall 0.3357, entity recall 0.2855, repetition 0.0501로 random rollout보다 의미 보존과 반복 제어가 나은 실험.
+- [[concepts/lace/s4c-span-infilling-reverse-decoder|S4c span-infilling reverse decoder]] - marker별 독립 token 분류가 의미 span 복원으로 이어지지 않고 위치·형식 token shortcut을 드러낸 실험.

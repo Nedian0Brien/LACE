@@ -75,3 +75,10 @@ sources: [사용자 대화]
 - S4a 결과를 [[concepts/lace/s4a-delta-token-reverse-objective|S4a-delta token reverse objective]]에 수집했다.
 - 전체 target state가 아니라 newly unmasked delta token/span만 예측하게 하자 `importance_schedule`이 score 0.6366, TF Delta Acc 0.1577로 `random_schedule` score 0.5073, TF Delta Acc 0.1092를 이겼다는 결과를 기록했다.
 - Entity recall과 repetition gate는 실패했으므로 다음 방향을 S5가 아니라 `S4b: multi-step delta rollout` 또는 `S4c: span-infilling reverse decoder`로 정리했다.
+
+## [2026-05-06] ingest | S4b/S4c 병렬 실험 결과
+
+- S4b 결과를 [[concepts/lace/s4b-multi-step-delta-rollout|S4b multi-step delta rollout]]에 수집했다.
+- S4b에서 `importance_schedule`이 rollout score 0.7336으로 `random_schedule` 0.6215와 `position_only_schedule` 0.1858을 이긴 결과를 기록했다.
+- S4c 결과를 [[concepts/lace/s4c-span-infilling-reverse-decoder|S4c span-infilling reverse decoder]]에 수집했다.
+- S4c는 random보다 masked-token accuracy가 높았지만 position-only가 같은 accuracy와 더 높은 score를 보여 naive marker infilling을 실패 진단으로 정리했다.
