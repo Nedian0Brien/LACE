@@ -26,6 +26,7 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s4a-delta-token-reverse-objective|S4a-delta token reverse objective]] - 전체 state 대신 newly unmasked delta token/span만 예측하자 importance schedule이 random과 position-only를 이긴 실험.
 - [[concepts/lace/s4b-multi-step-delta-rollout|S4b multi-step delta rollout]] - generated delta를 다음 step 입력으로 넣는 실제 rollout에서 importance schedule이 random과 position-only를 이긴 실험.
 - [[concepts/lace/s4c-span-infilling-reverse-decoder|S4c span-infilling reverse decoder]] - naive marker infilling이 random보다 mask accuracy는 높였지만 position-only confound와 content/entity collapse로 실패한 구조 실험.
+- [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]] - 같은 gap/span 위치 구조에서 실제 semantic skeleton content와 좌우 anchor가 random, position-only, same-position random, wrong-document, no-anchor control을 모두 이긴 구조 실험.
 
 ## 연구 실험
 
@@ -39,3 +40,4 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s4a-delta-token-reverse-objective|S4a-delta token reverse objective]] - delta-token objective에서 importance가 score 0.6366으로 random 0.5073과 position-only 0.5889를 넘어선 실험.
 - [[concepts/lace/s4b-multi-step-delta-rollout|S4b multi-step delta rollout]] - final content recall 0.3357, entity recall 0.2855, repetition 0.0501로 random rollout보다 의미 보존과 반복 제어가 나은 실험.
 - [[concepts/lace/s4c-span-infilling-reverse-decoder|S4c span-infilling reverse decoder]] - marker별 독립 token 분류가 의미 span 복원으로 이어지지 않고 위치·형식 token shortcut을 드러낸 실험.
+- [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]] - rollout score 0.7175로 random 0.6145, same-position random 0.4733, wrong-document 0.0504를 넘어 semantic anchor content 사용 증거를 강화한 실험.

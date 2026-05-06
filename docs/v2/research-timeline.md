@@ -4,6 +4,54 @@
 
 ## 2026-05-06
 
+### 발견: S4d skeleton-conditioned gap/span expansion 통과
+
+추가 시각: 2026-05-06 22:25 KST
+
+맥락:
+
+S4b는 importance 기반 rollout이 random과 position-only보다 좋다는 결과를 보였지만, 같은 위치 구조에서 아무 token content나 넣어도 되는지, 또는 decoder가 gap marker만으로 버티는지는 더 분리해야 했다. S4d는 `current semantic skeleton + left/right semantic anchor + span marker + timestep`으로 새로 열릴 contiguous gap/span만 생성하고, strict control들을 붙였다.
+
+결과:
+
+S4d는 `process_ready=true`, `overall_pass=true`, `structure_review_needed=false`, `s5_ready=false`였다. `importance_schedule` rollout score는 0.7175로 `random_schedule` 0.6145, `position_only_schedule` 0.0133, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이겼다. Final content recall은 importance 0.3340, random 0.2448, same-position random 0.1952였고, entity recall은 importance 0.2988, random 0.2202, same-position random 0.1763이었다.
+
+주의점:
+
+생성문은 아직 자연스럽지 않고 span-level content recall은 0.0172로 낮다. Random은 ROUGE-L 0.3148로 importance 0.3092보다 조금 높다. Version 1은 AMP 학습 중 `nan`으로 실패했고, version 2는 AMP를 끄고 학습률을 낮춰 완료했으므로 runner 비용도 높다.
+
+근거/출처:
+
+- `outputs/v2_s4d/lace_v2_s4d/summary.md`
+- `outputs/v2_s4d/lace_v2_s4d/metrics.json`
+- `docs/v2/experiments/s4d-skeleton-conditioned-gap-span-expansion.md`
+
+다음 실험에 주는 의미:
+
+S4d는 같은 gap/span 위치 구조에서도 실제 semantic skeleton content와 좌우 anchor가 있어야 reverse expansion이 강해진다는 현재까지 가장 강한 구조적 증거다. 다만 S5 open-ended generation으로 바로 가지 않고, generated span의 content/entity recall을 끌어올리는 구조와 shared-condition runner로 비용을 줄이는 방향을 검토한다.
+
+### 결정: S4d를 handcrafted objective가 아니라 skeleton-conditioned gap/span expansion으로 개시
+
+추가 시각: 2026-05-06 21:37 KST
+
+맥락:
+
+S4b는 importance 기반 multi-step rollout이 random과 position-only보다 좋은 고무적인 신호를 보였지만, S4c의 naive span-infilling은 content/entity 0 붕괴와 position-only confound를 넘지 못했다. 사용자는 handcrafted content/entity objective가 실험을 위한 실험이 될 수 있다고 지적했고, 구조 자체로 성능과 해석력을 높이는 방향을 선호했다.
+
+결정:
+
+S4d는 content/entity 중심 loss를 쓰지 않는다. 학습 objective는 일반적인 span token cross entropy로 유지하고, 구조는 `current semantic skeleton + left/right semantic anchor + span marker + timestep`을 입력으로 받아 새로 unmask될 contiguous gap/span만 생성한다. 비교군은 `importance_schedule`, `random_schedule`, `position_only_schedule`, `same_position_random_schedule`, `wrong_document_same_position_schedule`, `no_anchor_gap_only_schedule`로 둔다.
+
+근거/출처:
+
+- 사용자 대화
+- `docs/v2/plan/s4d-skeleton-conditioned-gap-span-expansion-plan.md`
+- `kaggle/v2_s4d/run_v2_s4d.py`
+
+다음 실험에 주는 의미:
+
+S4d의 핵심 확인점은 같은 gap 구조에서 실제 semantic anchor content가 position-only, same-position random, wrong-document, no-anchor control보다 나은 span 생성과 rollout을 만드는지다. 성공하면 S4b의 process-level 신호가 “위치 scaffold만의 효과”가 아니라 skeleton content 사용 증거로 강화된다.
+
 ### 발견: S4b multi-step delta rollout 통과
 
 추가 시각: 2026-05-06 17:16 KST
@@ -54,7 +102,7 @@ Sample에서는 쉼표, 공백, 짧은 subword 같은 형식 token 예측이 많
 
 다음 실험에 주는 의미:
 
-S4c는 그대로 확장할 구조가 아니라 실패 진단이다. 다음 구조는 content/entity weighted objective, punctuation/whitespace 분리 metric, contiguous span infilling decoder, same-position/wrong-document control을 포함해야 한다.
+S4c는 그대로 확장할 구조가 아니라 실패 진단이다. 이후 사용자는 handcrafted content/entity objective를 좋은 선택이 아니라고 보았고, 다음 구조는 일반 CE objective를 유지하되 semantic anchor와 contiguous gap/span expansion, same-position/wrong-document control을 포함하는 방향으로 조정됐다.
 
 ### 발견: S4a-delta token reverse objective 결과
 

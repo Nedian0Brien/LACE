@@ -131,7 +131,7 @@ by position-only control, and semantic content/entity recovery collapses to zero
 우선순위는 다음이다.
 
 1. Primary metric에서 punctuation, whitespace, special-like token을 분리하고 content token/entity token accuracy를 별도 gate로 둔다.
-2. Content word, entity, 숫자, rare token에 loss weight를 부여한다.
+2. Handcrafted content/entity loss를 먼저 쓰기보다, current skeleton과 left/right anchor를 직접 전달하는 구조를 검증한다.
 3. marker별 독립 분류가 아니라 contiguous span 단위 infilling decoder를 사용한다.
-4. `position_only`, `same-position random`, `wrong-document/same-position` control을 S4c 계열에 계속 붙인다.
+4. `position_only`, `same-position random`, `wrong-document/same-position`, `no-anchor` control을 S4c 계열에 계속 붙인다.
 5. S4b rollout을 기준선으로 유지하고, 새 구조가 final content/entity/repetition/drift에서 S4b를 넘는지 본다.

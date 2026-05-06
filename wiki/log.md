@@ -82,3 +82,9 @@ sources: [사용자 대화]
 - S4b에서 `importance_schedule`이 rollout score 0.7336으로 `random_schedule` 0.6215와 `position_only_schedule` 0.1858을 이긴 결과를 기록했다.
 - S4c 결과를 [[concepts/lace/s4c-span-infilling-reverse-decoder|S4c span-infilling reverse decoder]]에 수집했다.
 - S4c는 random보다 masked-token accuracy가 높았지만 position-only가 같은 accuracy와 더 높은 score를 보여 naive marker infilling을 실패 진단으로 정리했다.
+
+## [2026-05-06] ingest | S4d skeleton-conditioned gap/span expansion 결과
+
+- S4d 결과를 [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]]에 수집했다.
+- `importance_schedule` rollout score 0.7175가 `random_schedule` 0.6145, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이긴 결과를 기록했다.
+- S4d는 같은 gap/span 위치 구조에서도 실제 semantic skeleton content와 좌우 anchor가 있어야 reverse expansion이 강해진다는 해석을 강화하지만, open-ended generation 증거는 아니라고 caveat를 남겼다.

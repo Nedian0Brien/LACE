@@ -33,4 +33,4 @@ S4c는 `process_ready=true`였지만 `overall_pass=false`다. 현재 구조는 [
 
 ## 다음 의미
 
-S4c는 그대로 확장할 모델이 아니라 실패 진단이다. 다음 구조는 content/entity weighted objective, punctuation/whitespace 분리 metric, contiguous span infilling decoder, same-position/wrong-document control을 포함해야 한다.
+S4c는 그대로 확장할 모델이 아니라 실패 진단이다. 이후 [[s4d-skeleton-conditioned-gap-span-expansion|S4d]]에서는 handcrafted content/entity objective를 쓰지 않고, 일반 CE objective를 유지한 채 current skeleton, left/right semantic anchor, contiguous gap/span marker, same-position/wrong-document/no-anchor control로 구조를 바꿨다.

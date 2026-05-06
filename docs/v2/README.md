@@ -71,4 +71,6 @@ S4b는 [experiments/s4b-multi-step-delta-rollout.md](./experiments/s4b-multi-ste
 
 S4c는 [experiments/s4c-span-infilling-reverse-decoder.md](./experiments/s4c-span-infilling-reverse-decoder.md)에 기록했다. S4c는 autoregressive delta decoder 대신 marker-position infilling 구조를 시도했다. `importance_schedule`은 random보다 masked-token accuracy가 높았지만, `position_only_schedule`도 같은 accuracy를 냈고 content/entity recall은 모두 0이었다. 따라서 naive marker infilling은 의미 골격 사용 증거가 아니라 위치·형식 token shortcut을 드러낸 실패로 해석한다.
 
-현재 다음 단계는 open-ended S5가 아니다. S4b의 rollout 신호를 기준선으로 삼고, S4c에서 드러난 punctuation/whitespace shortcut, content/entity token 약화, marker별 독립 예측 한계를 다루는 구조 보정을 먼저 수행한다.
+S4d는 [experiments/s4d-skeleton-conditioned-gap-span-expansion.md](./experiments/s4d-skeleton-conditioned-gap-span-expansion.md)에 기록했다. S4d는 current semantic skeleton, left/right anchor role, span marker를 입력으로 새로 열릴 contiguous gap/span만 생성했다. `importance_schedule`은 rollout score 0.7175로 `random_schedule` 0.6145, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이겼다. 따라서 같은 위치 구조에서도 실제 semantic skeleton content와 좌우 anchor가 reverse expansion에 정보를 제공한다는 해석이 가능해졌다.
+
+현재 다음 단계는 open-ended S5가 아니다. S4d의 semantic anchor 사용 신호를 유지하면서 generated span 자체의 content/entity recall을 높이고, 여섯 조건을 별도 모델로 학습하는 비용을 shared-condition runner로 줄이는 구조 보정을 먼저 수행한다.

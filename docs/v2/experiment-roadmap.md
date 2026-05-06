@@ -246,7 +246,28 @@ Autoregressive delta decoder 대신 marker-position infilling 구조를 쓰면 �
 
 S4c는 `process_ready=true`, `overall_pass=false`, `structure_review_needed=true`, `s5_ready=false`였다. `importance_schedule`은 score 0.2403과 masked-token accuracy 0.1414로 `random_schedule` score 0.1425, accuracy 0.1121보다 높았다. 하지만 `position_only_schedule`도 masked-token accuracy 0.1414로 같았고, score는 0.3026으로 가장 높았다. 또한 content recall과 entity recall은 세 조건 모두 0이었다.
 
-따라서 naive marker-position infilling은 semantic skeleton을 쓰는 구조로 보기 어렵다. 현재 구조는 의미 content보다 위치, transition 단계, punctuation/whitespace 같은 형식 token 분포를 먼저 학습한다. 다음 구조 보정은 S4b의 rollout 신호를 기준으로 두고, content/entity weighted objective와 contiguous span infilling을 도입해야 한다.
+따라서 naive marker-position infilling은 semantic skeleton을 쓰는 구조로 보기 어렵다. 현재 구조는 의미 content보다 위치, transition 단계, punctuation/whitespace 같은 형식 token 분포를 먼저 학습한다. 다음 구조 보정은 handcrafted content/entity objective가 아니라, S4b의 rollout 신호를 기준으로 두고 current skeleton과 left/right anchor를 직접 쓰는 contiguous gap/span expansion으로 진행한다.
+
+## S4d. Skeleton-Conditioned Gap/Span Expansion
+
+### 질문
+
+같은 gap/span 위치 구조에서 실제 semantic skeleton content와 left/right anchor가 span 생성과 rollout을 개선하는가?
+
+### 평가 순서
+
+1. 전체 target state가 아니라 새로 열릴 contiguous gap/span만 target으로 둔다.
+2. 입력에는 current skeleton token, position, timestep, span marker, left/right anchor role을 포함한다.
+3. `importance_schedule`, `random_schedule`, `position_only_schedule`, `same_position_random_schedule`, `wrong_document_same_position_schedule`, `no_anchor_gap_only_schedule`을 비교한다.
+4. 생성 span을 current state에 삽입하며 `25% -> 50% -> 75% -> 100%` rollout을 평가한다.
+
+### 결과
+
+S4d는 `process_ready=true`, `overall_pass=true`, `structure_review_needed=false`, `s5_ready=false`였다. `importance_schedule` rollout score는 0.7175로 `random_schedule` 0.6145, `position_only_schedule` 0.0133, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이겼다.
+
+Final content recall은 importance 0.3340, random 0.2448, same-position random 0.1952였고, entity recall은 importance 0.2988, random 0.2202, same-position random 0.1763이었다. 따라서 같은 위치 구조에 아무 content나 넣는 효과가 아니라, 문맥에 맞는 semantic skeleton content와 좌우 anchor가 reverse expansion에 실제 정보를 제공한다는 해석이 가능하다.
+
+다만 생성문은 아직 자연스럽지 않고 span-level content recall은 0.0172로 낮다. 또한 random은 ROUGE-L 0.3148로 importance 0.3092보다 조금 높다. 따라서 S4d는 open-ended generation 성공이 아니라 constrained gap/span expansion에서의 content-use 증거로 해석한다.
 
 ## S5. Open-ended Generation
 
@@ -265,9 +286,9 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. 반면 S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다.
 
-따라서 다음은 open-ended S5가 아니라 `S4d` 성격의 구조 보정이다. S4b rollout을 기준선으로 두고, S4c 실패에서 드러난 punctuation/whitespace shortcut과 content/entity token 약화를 직접 다뤄야 한다.
+따라서 다음도 아직 open-ended S5가 아니다. S4d에서 확인한 semantic anchor 사용 신호를 유지하면서, generated span 자체의 content/entity recall을 높이고 여섯 조건을 별도 모델로 학습하는 비용을 shared-condition runner로 줄여야 한다.
 
 결과 문서는 다음에 있다.
 
@@ -282,6 +303,7 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s4a-delta-token-reverse-objective.md](./experiments/s4a-delta-token-reverse-objective.md)
 - [experiments/s4b-multi-step-delta-rollout.md](./experiments/s4b-multi-step-delta-rollout.md)
 - [experiments/s4c-span-infilling-reverse-decoder.md](./experiments/s4c-span-infilling-reverse-decoder.md)
+- [experiments/s4d-skeleton-conditioned-gap-span-expansion.md](./experiments/s4d-skeleton-conditioned-gap-span-expansion.md)
 
 핵심 판단:
 
@@ -301,17 +323,18 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 14. S4a에서는 전체 target state가 아니라 newly unmasked delta token/span만 예측하도록 바꾸자 `importance_schedule`이 score 0.6366, TF Delta Acc 0.1577로 `random_schedule` score 0.5073, TF Delta Acc 0.1092를 이겼다.
 15. S4b에서는 generated delta를 다음 step 입력으로 넣는 multi-step rollout에서도 `importance_schedule`이 rollout score 0.7336으로 `random_schedule` 0.6215와 `position_only_schedule` 0.1858을 이겼다.
 16. S4c에서는 marker-position infilling이 random보다 mask accuracy는 높였지만, position-only가 같은 accuracy와 더 높은 score를 보여 semantic content 사용 증거로 방어할 수 없었다.
+17. S4d에서는 같은 gap/span 위치 구조에서도 `importance_schedule`이 rollout score 0.7175로 `random_schedule` 0.6145, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이겼다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S4d: content-aware span rollout
+S4e: shared-condition span expansion and generated-span content improvement
 ```
 
 산출물:
 
-- S4b rollout의 긍정 신호를 기준선으로 유지
-- S4c의 punctuation/whitespace shortcut을 primary metric에서 분리
-- content word, entity, number, rare token에 더 강한 objective 부여
-- marker별 독립 분류가 아니라 contiguous span 단위 infilling 구조 보정
-- importance/random/position-only/wrong-document 동일 budget 비교
+- S4d의 stricter controls를 유지
+- 여섯 schedule을 별도 모델이 아니라 condition embedding이 있는 shared model로 학습
+- generated span의 content/entity recall을 별도 gate로 강화
+- punctuation/whitespace/subword artifact를 primary interpretation에서 분리
+- S5로 넘기기 전 constrained expansion 품질을 먼저 개선

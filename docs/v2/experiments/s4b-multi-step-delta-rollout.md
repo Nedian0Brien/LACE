@@ -138,7 +138,7 @@ repetition, and drift metrics.
 다만 다음 단계는 곧바로 S5가 아니라 구조 보정이다. 우선순위는 다음이다.
 
 1. `S4c` 결과와 함께 해석해 token-level infilling 구조가 왜 위치/형식 token 지름길로 무너지는지 분해한다.
-2. Content-bearing token, entity, 숫자, rare token에 더 높은 loss weight를 주는 `content-aware delta objective`를 만든다.
+2. Handcrafted content/entity loss보다, current skeleton과 left/right semantic anchor를 직접 쓰는 구조를 먼저 확인한다.
 3. 쉼표, 공백, subword fragment 같은 형식 token을 primary score에서 분리하고, semantic token metric을 gate 중심에 둔다.
 4. 위치 marker별 독립 예측이 아니라 contiguous span 단위의 작은 decoder 또는 insertion transformer를 사용한다.
 5. 다음 구조가 안정화되면 S5에서 open-ended generation으로 넘어가되, S4b metric을 reference trajectory gate로 유지한다.
