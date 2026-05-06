@@ -56,3 +56,5 @@
 Kaggle-backed experiment를 진행할 때는 planning, implementation, push, output download, report 전에 `docs/v2/kaggle-experiment-workflow.md`를 확인합니다.
 
 작업 완료 및 질문 답변 시에 자동으로 wiki를 업데이트합니다. 위키 업데이트 시의 지침은 wiki/wiki_insturct.md 문서의 지침을 따릅니다.
+
+연구 진행 상황을 web/index.html 파일에 업데이트합니다. 이때 design/design-system.html 디자인 시스템을 따라서 세심하게 디자인합니다.
