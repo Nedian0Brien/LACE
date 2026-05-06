@@ -32,6 +32,19 @@ restore text | condition: attention_scaffold | positions: front front middle bac
 
 따라서 `attention_scaffold`는 token 내용만 주는 입력이 아니다. 내용 단서와 위치 단서를 함께 주는 복원 입력이다.
 
+## front/middle/back 위치 표현의 성격
+
+`front`, `middle`, `back`으로 위치를 넣는 방식은 일반적인 표준 위치 부호화 방식이라기보다, S2에서 사용한 거친 위치 보조 구조다.
+
+일반적인 transformer 모델에서는 token index에 대한 learned positional embedding, sinusoidal positional encoding, relative position bias, rotary position embedding 같은 방식이 더 흔하다. 이런 방식들은 모델 내부 표현에 위치 정보를 직접 넣는다.
+
+반면 S2의 `front/middle/back`은 모델 내부 위치 부호화가 아니라, 입력 문자열에 사람이 읽을 수 있는 coarse 위치 tag를 붙인 것이다. 목적은 정교한 위치 모델링이 아니라 다음 두 가지였다.
+
+- 의미 골격 token들이 원문에서 대략 어느 구간에 있었는지 알려준다.
+- `position_only`, `same_position_random`, `wrong_document` control을 쉽게 만들 수 있게 한다.
+
+따라서 S2 결과를 해석할 때는 `front/middle/back`을 일반적인 positional encoding으로 보면 안 된다. 이것은 실험용 위치 scaffold이며, 다음 단계에서는 더 세밀한 상대 위치, 원래 token index, gap 크기, learned positional scaffold 같은 대안을 비교할 수 있다.
+
 ## S2에서의 의미
 
 S2에서 `attention_scaffold`는 `random_scaffold`보다 Token F1과 ROUGE-L이 높았다.

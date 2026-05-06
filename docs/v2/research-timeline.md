@@ -4,6 +4,28 @@
 
 ## 2026-05-06
 
+### 질문: front/middle/back 위치 보조 구조는 일반적인가
+
+추가 시각: 2026-05-06 09:46 KST
+
+맥락:
+
+S2의 `attention_scaffold`는 attention 기반 의미 골격 token과 함께 `front`, `middle`, `back` 위치 tag를 입력 문자열에 넣었다. 이 방식이 일반적인 positional encoding인지, 아니면 실험용 보조 구조인지 구분할 필요가 생겼다.
+
+정리:
+
+`front`, `middle`, `back`은 일반적인 transformer 위치 부호화 방식이라기보다 S2에서 사용한 coarse 위치 보조 구조다. 일반적인 위치 부호화는 learned positional embedding, sinusoidal positional encoding, relative position bias, rotary position embedding처럼 모델 내부 표현에 위치 정보를 넣는 방식이 더 흔하다. S2의 방식은 입력 문자열에 대략적인 위치 구간을 붙이는 실험용 scaffold다.
+
+근거/출처:
+
+- `kaggle/v2_s2/run_v2_s2.py`
+- `wiki/concepts/lace/attention-scaffold.md`
+- `wiki/concepts/lace/위치-보조-구조.md`
+
+다음 실험에 주는 의미:
+
+S3 이후에는 `front/middle/back`을 최종 위치 표현으로 고정하지 않는다. 더 세밀한 상대 위치, 원래 token index, gap 크기, learned positional scaffold 같은 대안을 비교 후보로 둔다.
+
 ### 질문: S2-G-LOSS-FINITE는 무엇을 의미하는가
 
 추가 시각: 2026-05-06 09:06 KST
