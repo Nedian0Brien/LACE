@@ -4,6 +4,32 @@
 
 ## 2026-05-06
 
+### 발견: S3a-terminal diagnostic 결과
+
+추가 시각: 2026-05-06 13:38 KST
+
+맥락:
+
+S3a는 S3에서 `random_forward_no_anchor`가 가장 높았던 이유를 분리하기 위해 실행했다. 조건은 `attention_terminal`, `idf_terminal`, `random_terminal`, `same_position_random_terminal`, `position_only`, `random_terminal_predicted_anchor`, `random_terminal_gold_anchor_oracle`이다.
+
+결과:
+
+S3a는 `diagnostic_ready=true`, `s4_ready=false`였다. `attention_terminal`은 score 0.4351, Token F1 0.1540, ROUGE-L 0.1406으로 `random_terminal` score 0.4014와 `same_position_random_terminal` score 0.3429보다 높았다. 하지만 `position_only`도 score 0.4275로 가까웠고, 최고 조건은 `random_terminal_predicted_anchor` score 0.4489였다. `random_terminal_gold_anchor_oracle`은 score 0.4115로 predicted anchor보다 낮았다.
+
+주의점:
+
+S3에서 보였던 random terminal 우위는 S3a에서 약해졌으므로 content terminal 신호는 일부 회복됐다. 하지만 position-only가 너무 가깝고, 낮은 품질의 predicted anchor가 최고 조건이었기 때문에 현재 reverse probe와 lexical metric은 여전히 표면 prior와 위치 scaffold에 민감하다. 이 결과만으로 S4 constrained generation으로 넘어가면 안 된다.
+
+근거/출처:
+
+- `outputs/v2_s3a/lace_v2_s3a/summary.md`
+- `outputs/v2_s3a/lace_v2_s3a/metrics.json`
+- `docs/v2/experiments/s3a-terminal-diagnostic.md`
+
+다음 실험에 주는 의미:
+
+다음 후보는 `S3b-probe calibration`이다. 같은 학습 모델에 평가 입력만 바꾸는 ablation, gold anchor 길이/segment ablation, position-only matched control, 반복률과 entity recall metric을 추가해 reverse probe가 terminal content를 실제로 쓰는지 확인한다.
+
 ### 질문: S3 이후 본격적인 방법론 설계 전에 부족한 것은 무엇인가
 
 추가 시각: 2026-05-06 12:32 KST

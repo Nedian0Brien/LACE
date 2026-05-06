@@ -144,6 +144,10 @@ S3에서 `random_forward_no_anchor`가 가장 좋았던 이유가 무엇인가?
 
 `attention_terminal` 또는 `idf_terminal`이 같은 위치/같은 개수 random terminal보다 좋아야 한다. `gold_anchor_oracle`이 크게 좋다면 anchor predictor 품질 병목이고, oracle도 약하면 현재 reverse model 또는 reconstruction proxy가 terminal 정보량 차이를 잘 반영하지 못하는 것이다.
 
+### 결과
+
+S3a는 `diagnostic_ready=true`, `s4_ready=false`였다. `attention_terminal`은 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고 조건이었다. 따라서 content terminal 신호는 일부 회복됐지만, 위치 scaffold와 표면 prior confound가 남아 S4로 바로 넘어가지 않는다.
+
 ## S4. Constrained Generation
 
 ### 질문
@@ -176,7 +180,7 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a는 진단 조건을 실행해 content terminal 신호를 일부 회복했지만, position-only와 predicted-anchor confound가 남아 S4로 바로 넘어가지 않는다.
 
 결과 문서는 다음에 있다.
 
@@ -185,6 +189,7 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s2-skeleton-to-text-reconstruction.md](./experiments/s2-skeleton-to-text-reconstruction.md)
 - [experiments/s2a-positional-encoding.md](./experiments/s2a-positional-encoding.md)
 - [experiments/s3-anchor-baseline-comparison.md](./experiments/s3-anchor-baseline-comparison.md)
+- [experiments/s3a-terminal-diagnostic.md](./experiments/s3a-terminal-diagnostic.md)
 
 핵심 판단:
 
@@ -198,17 +203,17 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 8. S2의 `front/middle/back`은 정식 positional encoding이 아니라 coarse tag였으므로 S2a에서 learned/sinusoidal/relative/rotary 방식을 비교한다.
 9. S2a에서는 `sinusoidal_absolute`가 가장 좋은 positional scaffold 후보였다. 다만 `coarse_bins` 대비 개선 폭은 작고 생성 품질은 아직 낮다.
 10. S3에서는 `importance_ordered_forward_no_anchor`가 `random_forward_anchor_prediction`과는 tolerance 안에서 비슷했지만, `random_forward_no_anchor`보다 낮았다. 따라서 S4로 바로 넘어가지 않는다.
+11. S3a에서는 `attention_terminal`이 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고였다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S3a: terminal diagnostic
+S3b: probe calibration
 ```
 
 산출물:
 
-- `kaggle/v2_s3a/run_v2_s3a.py`
-- `kaggle/v2_s3a/kernel-metadata.json`
-- `scripts/push_kaggle_v2_s3a.sh`
-- `docs/v2/plan/s3a-terminal-diagnostic-plan.md`
-- `docs/v2/experiments/s3a-terminal-diagnostic.md`
+- same-model input ablation runner
+- gold anchor length/segment ablation
+- position-only matched control
+- repetition/entity metric additions

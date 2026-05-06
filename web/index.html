@@ -720,7 +720,7 @@ a { color: inherit; text-decoration: none; }
         LACE는 diffusion language modeling의 forward process를 무작위 corruption 대신 중요도 기반 압축으로 재정의합니다.
         Forward terminal state는 의미를 담은 골격이고, 역방향 학습은 골격을 다시 문장으로 확장합니다.
         S0–S2a 단계는 통과됐고, S3 anchor 베이스라인 비교는 핵심 gate를 통과하지 못했습니다.
-        다음은 random terminal이 왜 강했는지 분리하는 S3a 진단입니다.
+        S3a 진단은 content terminal 신호를 일부 회복했지만, 위치 scaffold와 predicted-anchor confound가 남아 있습니다.
       </p>
       <blockquote class="hero__quote">
         Semantic skeleton + positional scaffold creates a better reverse trajectory than random corruption.
@@ -729,7 +729,7 @@ a { color: inherit; text-decoration: none; }
         <span class="badge badge--brand">v2 track</span>
         <span class="badge badge--green">S0 · S1 · S2 · S2a 통과</span>
         <span class="badge badge--red">S3 핵심 gate 실패</span>
-        <span class="badge badge--yel">S3a 진단 필요</span>
+        <span class="badge badge--yel">S3a 진단 완료</span>
         <span class="badge">last update 2026-05-06</span>
       </div>
     </div>
@@ -813,18 +813,18 @@ a { color: inherit; text-decoration: none; }
   <div class="status-strip reveal-stagger">
     <div class="card kpi">
       <div class="t-label kpi__label">현재 단계</div>
-      <div class="kpi__value">S3 실패</div>
-      <div class="kpi__hint">anchor baseline 핵심 gate 미통과</div>
+      <div class="kpi__value">S3a 진단 완료</div>
+      <div class="kpi__hint">content signal 회복 · S4 보류</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">다음 마일스톤</div>
-      <div class="kpi__value">S3a</div>
-      <div class="kpi__hint">terminal diagnostic</div>
+      <div class="kpi__value">S3b</div>
+      <div class="kpi__hint">probe calibration</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">마지막 업데이트</div>
       <div class="kpi__value">05-06</div>
-      <div class="kpi__hint">2026-05-06 11:11 KST</div>
+      <div class="kpi__hint">2026-05-06 13:38 KST</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">데이터 / 백본</div>
@@ -917,7 +917,7 @@ a { color: inherit; text-decoration: none; }
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
 
-    <article class="phase phase--pending" tabindex="0">
+    <article class="phase phase--done" tabindex="0">
       <div class="phase__head">
         <div class="phase__id-row">
           <span class="phase__icon phase__icon--pending" aria-hidden="true">
@@ -938,17 +938,17 @@ a { color: inherit; text-decoration: none; }
     <article class="phase phase--pending" tabindex="0">
       <div class="phase__head">
         <div class="phase__id-row">
-          <span class="phase__icon phase__icon--pending" aria-hidden="true">
-            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/><circle class="dot" cx="9" cy="9" r="2.4"/></svg>
+          <span class="phase__icon phase__icon--done" aria-hidden="true">
+            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/><path class="check" d="M5.6 9.4 L8 11.6 L12.5 6.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <span class="phase__id">S3a</span>
         </div>
-        <span class="badge badge--yel">NEXT</span>
+        <span class="badge badge--green">DIAG</span>
       </div>
       <h3 class="phase__title">Terminal 진단</h3>
       <div class="phase__metric">
-        gold anchor · position-only<br/>
-        same-position random 분리
+        attention score 0.4351<br/>
+        random 0.4014 · position-only 0.4275
       </div>
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
@@ -1294,6 +1294,54 @@ a { color: inherit; text-decoration: none; }
         <span><code>importance_ordered_forward_no_anchor</code>는 <code>random_forward_anchor_prediction</code>과 tolerance 안에서 비슷했지만, <code>random_forward_no_anchor</code>보다 낮았습니다. S4가 아니라 S3a 진단이 필요합니다.</span>
       </div>
     </div>
+
+    <!-- S3a card -->
+    <div class="card metric-card">
+      <div class="metric-card__head">
+        <h3 class="metric-card__title">S3a · Terminal 진단</h3>
+        <span class="badge badge--yel">s4_hold</span>
+      </div>
+      <p class="metric-card__sub">S3의 random terminal 우위를 content terminal, same-position random, position-only, predicted/gold anchor 조건으로 분해한 진단.</p>
+
+      <div class="metric-card__legend">
+        <span><span class="legend-dot" style="background:hsl(var(--blue-60));"></span>content terminal</span>
+        <span><span class="legend-dot" style="background:hsl(var(--neutral-50));"></span>control</span>
+        <span><span class="legend-dot" style="background:hsl(var(--yellow-50));"></span>confound</span>
+      </div>
+
+      <div>
+        <div class="bar-row">
+          <span class="bar-row__label">random+pred anchor</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:44.89%;"></div></div>
+          <span class="bar-row__value">0.4489</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">attention terminal</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--brand" style="width:43.51%;"></div></div>
+          <span class="bar-row__value">0.4351</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">position-only</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--yel" style="width:42.75%;"></div></div>
+          <span class="bar-row__value">0.4275</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">random terminal</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--neutral" style="width:40.14%;"></div></div>
+          <span class="bar-row__value">0.4014</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-row__label">same-position random</span>
+          <div class="bar-row__track"><div class="bar-row__fill bar-row__fill--red" style="width:34.29%;"></div></div>
+          <span class="bar-row__value">0.3429</span>
+        </div>
+      </div>
+
+      <div class="metric-card__caveat">
+        <strong>Caveat</strong>
+        <span><code>attention_terminal</code>은 random control보다 높지만 <code>position_only</code>와 가깝습니다. <code>random_terminal_predicted_anchor</code>가 최고라서 S4 전에는 probe calibration이 필요합니다.</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1308,6 +1356,17 @@ a { color: inherit; text-decoration: none; }
   </div>
 
   <div class="timeline reveal">
+    <div class="timeline__row">
+      <div class="timeline__date">2026-05-06<br/>13:38 KST</div>
+      <div class="timeline__body">
+        <div class="timeline__row-head">
+          <span class="badge badge--yel">finding</span>
+          <h3 class="timeline__title">S3a terminal diagnostic 완료</h3>
+        </div>
+        <p class="timeline__desc"><code>attention_terminal</code> score 0.4351이 <code>random_terminal</code> 0.4014와 <code>same_position_random_terminal</code> 0.3429보다 높았습니다. 다만 <code>position_only</code> 0.4275가 가깝고 <code>random_terminal_predicted_anchor</code>가 0.4489로 최고여서 S4는 보류합니다.</p>
+      </div>
+    </div>
+
     <div class="timeline__row">
       <div class="timeline__date">2026-05-06<br/>11:11 KST</div>
       <div class="timeline__body">
@@ -1435,13 +1494,13 @@ a { color: inherit; text-decoration: none; }
     <div class="card">
       <div class="row" style="gap:8px;"><span class="badge badge--red">caveat</span><span class="t-mono">생성 미검증</span></div>
       <h3 class="open__title">open-ended generation은 아직 미증명</h3>
-      <p class="open__body">S0–S3는 reconstruction proxy (token F1, ROUGE-L, teacher-forced loss). S3도 핵심 gate를 통과하지 못했으므로 open-ended generation의 의미 일관성·반복 제어는 아직 평가 대상으로 올리지 않습니다.</p>
+      <p class="open__body">S0–S3a는 reconstruction proxy (token F1, ROUGE-L, teacher-forced loss). S3a도 S4 준비 신호가 아니라 진단 결과이므로 open-ended generation의 의미 일관성·반복 제어는 아직 평가 대상으로 올리지 않습니다.</p>
     </div>
 
     <div class="card">
-      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S3a 진단</span></div>
-      <h3 class="open__title">random terminal이 왜 강했나</h3>
-      <p class="open__body">S3에서 최고 조건은 <code>random_forward_no_anchor</code>였습니다. 다음에는 <code>gold_anchor_oracle</code>, <code>same_position_random</code>, <code>position_only</code>, <code>idf_terminal</code>을 추가해 terminal 정보량과 위치 편향, anchor predictor 병목을 분리해야 합니다.</p>
+      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S3b 보정</span></div>
+      <h3 class="open__title">probe가 무엇을 쓰는가</h3>
+      <p class="open__body">S3a에서 <code>attention_terminal</code>은 random control보다 높았지만 <code>position_only</code>가 가까웠고 predicted anchor가 최고였습니다. 다음에는 같은 학습 모델에서 입력만 바꾸는 ablation과 반복률·entity metric을 추가해야 합니다.</p>
     </div>
   </div>
 </section>

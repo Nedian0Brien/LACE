@@ -59,4 +59,4 @@ S2a는 [experiments/s2a-positional-encoding.md](./experiments/s2a-positional-enc
 
 S3는 [experiments/s3-anchor-baseline-comparison.md](./experiments/s3-anchor-baseline-comparison.md)에 기록했다. S3에서 `importance_ordered_forward_no_anchor`는 `random_forward_anchor_prediction`과 tolerance 안에서 비슷했지만, `random_forward_no_anchor`보다 낮아 `overall_pass=false`, `s4_ready=false`였다.
 
-따라서 다음 실험은 S4가 아니라 `S3a: terminal diagnostic`이다. 여기서는 `random_forward_no_anchor`가 왜 가장 강했는지, 그리고 현재 복원 proxy가 terminal 정보량 차이를 충분히 반영하는지 진단한다.
+S3a는 [experiments/s3a-terminal-diagnostic.md](./experiments/s3a-terminal-diagnostic.md)에 기록했다. S3a에서 `attention_terminal`은 `random_terminal`과 `same_position_random_terminal`보다 높았지만, `position_only`와 차이가 작고 `random_terminal_predicted_anchor`가 최고 조건이었다. 따라서 S4로 바로 넘어가지 않고, 다음은 같은 학습 모델 입력 ablation과 metric 보정을 포함하는 `S3b: probe calibration`으로 둔다.

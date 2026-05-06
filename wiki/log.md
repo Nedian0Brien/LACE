@@ -46,3 +46,8 @@ sources: [사용자 대화]
 
 - S3 실패 이후 더 나은 방법론을 만들기 전에 분해해야 할 결핍을 [[concepts/lace/s3-이후-방법론-부족점|S3 이후 방법론 부족점]]에 정리했다.
 - 핵심 부족점은 `better reverse trajectory` 운영 정의, random terminal baseline 강도, 약한 predicted anchor baseline, scorer 선택, reverse probe 민감도, 위치 편향/content 사용 분리로 정리했다.
+
+## [2026-05-06] ingest | S3a terminal diagnostic 결과
+
+- S3a 결과를 [[concepts/lace/s3a-terminal-diagnostic|S3a-terminal diagnostic]]에 수집했다.
+- `attention_terminal`이 `random_terminal`과 `same_position_random_terminal`보다 높아 content terminal 신호는 회복됐지만, `position_only`와의 차이가 작고 `random_terminal_predicted_anchor`가 최고여서 S4 진입은 보류한다는 해석을 기록했다.
