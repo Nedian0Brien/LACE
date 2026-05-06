@@ -55,4 +55,6 @@ S1은 [experiments/s1-skeleton-use-controls.md](./experiments/s1-skeleton-use-co
 
 S2는 [experiments/s2-skeleton-to-text-reconstruction.md](./experiments/s2-skeleton-to-text-reconstruction.md)에 기록했다. S2에서 `attention_scaffold`는 `random_scaffold`, `position_only`, wrong-document control보다 강했고, `next_ready=true`로 통과했다.
 
+S2a는 [experiments/s2a-positional-encoding.md](./experiments/s2a-positional-encoding.md)에 기록했다. S2a에서 `sinusoidal_absolute`가 가장 좋은 위치 보조 구조 후보로 식별됐지만, `coarse_bins` 대비 개선 폭은 작고 생성 품질은 아직 낮다.
+
 다음 실험은 `S3: anchor baseline comparison`이다. 여기서는 중요한 token을 terminal state로 남기는 방식과 anchor를 보조 조건으로 쓰는 방식을 직접 비교한다.

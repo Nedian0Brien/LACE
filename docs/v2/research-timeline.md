@@ -4,6 +4,53 @@
 
 ## 2026-05-06
 
+### 발견: S2a-positional encoding 비교 통과
+
+추가 시각: 2026-05-06 10:09 KST
+
+맥락:
+
+S2의 `front/middle/back` 위치 tag는 실험용 coarse scaffold였으므로, S3로 넘어가기 전에 더 정석적인 positional encoding 후보를 비교했다. 의미 골격 token 선택은 attention 기반으로 고정하고, 위치 표현만 바꿨다.
+
+결과:
+
+S2a는 `overall_pass=true`, `s3_ready=true`로 통과했다. `sinusoidal_absolute`가 loss 6.0715, Token F1 0.1661, ROUGE-L 0.1509로 가장 좋은 후보였다. `coarse_bins`는 loss 6.0901, Token F1 0.1533, ROUGE-L 0.1425였고, `no_position`은 loss 6.1323, Token F1 0.1218, ROUGE-L 0.1109였다.
+
+주의점:
+
+`sinusoidal_absolute`가 가장 좋았지만 `coarse_bins` 대비 개선 폭은 작다. 또한 생성 샘플은 반복과 표면적 단어 겹침이 많고, keyword recall과 skeleton coverage가 낮다. 따라서 S2a는 위치 표현 후보를 고르는 probe이지, generation 품질 성공 증거가 아니다.
+
+근거/출처:
+
+- `outputs/v2_s2a/lace_v2_s2a/summary.md`
+- `docs/v2/experiments/s2a-positional-encoding.md`
+
+다음 실험에 주는 의미:
+
+S3의 기본 위치 보조 구조 후보는 `sinusoidal_absolute`로 둔다. 다만 S3에서는 가능하면 `coarse_bins`도 ablation으로 유지해 위치 표현 개선 폭이 실제 anchor 비교에서도 유지되는지 확인한다.
+
+### 결정: S3 전에 S2a-positional encoding을 수행한다
+
+추가 시각: 2026-05-06 09:52 KST
+
+맥락:
+
+S2에서 사용한 `front`, `middle`, `back` 위치 tag는 정식 transformer positional encoding이라기보다 실험용 coarse scaffold였다. S3 anchor baseline comparison으로 넘어가기 전에 위치 보조 구조를 더 정교하게 만들 수 있는지 비교할 필요가 생겼다.
+
+결정:
+
+S3 전에 `S2a-positional encoding` 실험을 수행한다. 의미 골격 token 선택은 attention 기반으로 고정하고, 위치 표현만 `learned_absolute`, `sinusoidal_absolute`, `relative_position_bias`, `rotary_position`으로 비교한다. 해석용 baseline으로 `no_position`과 `coarse_bins`를 포함한다.
+
+근거/출처:
+
+- `docs/v2/experiments/s2-skeleton-to-text-reconstruction.md`
+- `wiki/concepts/lace/attention-scaffold.md`
+- `docs/v2/plan/s2a-positional-encoding-plan.md`
+
+다음 실험에 주는 의미:
+
+S2a에서 가장 좋은 위치 표현을 S3의 기본 positional scaffold 후보로 넘긴다. 실패하면 S3는 기존 coarse tag를 유지하되, 위치 보조 구조가 임시 구현이라는 caveat를 명시한다.
+
 ### 결정: v2 연구 진행 현황 페이지를 web/index.html에 둔다
 
 추가 시각: 2026-05-06 09:48 KST

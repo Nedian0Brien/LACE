@@ -21,6 +21,11 @@ sources: [사용자 대화]
 - `attention_scaffold`의 실제 입력 구조와 생성 절차를 [[concepts/lace/attention-scaffold|attention_scaffold]]에 수집했다.
 - attention 기반 의미 골격과 위치 보조 구조가 함께 입력된다는 점을 명시했다.
 
+## [2026-05-06] ingest | S2a positional encoding 비교
+
+- `learned_absolute`, `sinusoidal_absolute`, `relative_position_bias`, `rotary_position` 비교 결과를 [[concepts/lace/s2a-positional-encoding|S2a-positional encoding]]에 수집했다.
+- `sinusoidal_absolute`가 가장 좋은 S3 위치 보조 구조 후보로 식별됐지만, coarse bin 대비 개선 폭은 작고 생성 품질 증거는 아니라는 caveat를 기록했다.
+
 ## [2026-05-06] structure | v2 연구 진행 현황 페이지 신설
 
 - `web/index.html`에 v2 트랙 단일 진입점 페이지를 만들었다. 기존 위키 개념 ([[concepts/lace/의미-골격|의미 골격]], [[concepts/lace/위치-보조-구조|위치 보조 구조]], [[concepts/lace/attention-scaffold|attention_scaffold]], [[concepts/lace/s2-의미-골격-문장-복원-학습|S2 복원 학습]]) 과 `docs/v2/research-timeline.md` 의 raw 수치를 종합한 synthesis view다.

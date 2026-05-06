@@ -456,14 +456,14 @@ a { color: inherit; text-decoration: none; }
   <p class="hero__sub">
     LACE는 diffusion language modeling의 forward process를 무작위 corruption 대신 중요도 기반 압축으로 재정의합니다.
     Forward terminal state는 의미를 담은 골격이고, 역방향 학습은 골격을 다시 문장으로 확장합니다.
-    S0–S2 단계가 통과됐고, 다음은 S3 anchor 베이스라인 비교입니다.
+    S0–S2a 단계가 통과됐고, 다음은 S3 anchor 베이스라인 비교입니다.
   </p>
   <blockquote class="hero__quote">
     Semantic skeleton + positional scaffold creates a better reverse trajectory than random corruption.
   </blockquote>
   <div class="hero__tagrow">
     <span class="badge badge--brand">v2 track</span>
-    <span class="badge badge--green">S0 · S1 · S2 통과</span>
+    <span class="badge badge--green">S0 · S1 · S2 · S2a 통과</span>
     <span class="badge badge--yel">S3 진입 직전</span>
     <span class="badge">last update 2026-05-06</span>
   </div>
@@ -474,8 +474,8 @@ a { color: inherit; text-decoration: none; }
   <div class="status-strip">
     <div class="card kpi">
       <div class="t-label kpi__label">현재 단계</div>
-      <div class="kpi__value">S2 통과</div>
-      <div class="kpi__hint">의미 골격→문장 복원 학습</div>
+      <div class="kpi__value">S2a 통과</div>
+      <div class="kpi__hint">positional encoding 비교</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">다음 마일스톤</div>
@@ -485,7 +485,7 @@ a { color: inherit; text-decoration: none; }
     <div class="card kpi">
       <div class="t-label kpi__label">마지막 업데이트</div>
       <div class="kpi__value">05-06</div>
-      <div class="kpi__hint">2026-05-06 09:06 KST</div>
+      <div class="kpi__hint">2026-05-06 10:09 KST</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">데이터 / 백본</div>
@@ -539,6 +539,18 @@ a { color: inherit; text-decoration: none; }
       <div class="phase__metric">
         attention F1 0.3830 / RL 0.3117<br/>
         random F1 0.2286 / RL 0.1789
+      </div>
+    </article>
+
+    <article class="phase phase--done">
+      <div class="phase__head">
+        <span class="phase__id">S2a</span>
+        <span class="badge badge--green">DONE</span>
+      </div>
+      <h3 class="phase__title">위치 부호화 비교</h3>
+      <div class="phase__metric">
+        sinusoidal F1 0.1661 / RL 0.1509<br/>
+        coarse F1 0.1533 / RL 0.1425
       </div>
     </article>
 
@@ -805,6 +817,17 @@ a { color: inherit; text-decoration: none; }
 
   <div class="timeline">
     <div class="timeline__row">
+      <div class="timeline__date">2026-05-06<br/>10:09 KST</div>
+      <div class="timeline__body">
+        <div class="timeline__row-head">
+          <span class="badge badge--green">finding</span>
+          <h3 class="timeline__title">S2a positional encoding 비교 통과</h3>
+        </div>
+        <p class="timeline__desc"><code>sinusoidal_absolute</code>가 F1 0.1661, ROUGE-L 0.1509, loss 6.0715로 최고 후보. <code>coarse_bins</code> 대비 개선 폭은 작아 S3에서는 ablation으로 함께 유지합니다.</p>
+      </div>
+    </div>
+
+    <div class="timeline__row">
       <div class="timeline__date">2026-05-06<br/>09:06 KST</div>
       <div class="timeline__body">
         <div class="timeline__row-head">
@@ -909,7 +932,7 @@ a { color: inherit; text-decoration: none; }
     <div class="card">
       <div class="row" style="gap:8px;"><span class="badge badge--red">caveat</span><span class="t-mono">생성 미검증</span></div>
       <h3 class="open__title">open-ended generation은 아직 미증명</h3>
-      <p class="open__body">S0–S2는 reconstruction proxy (token F1, ROUGE-L, teacher-forced loss). open-ended generation의 의미 일관성·반복 제어는 S4–S5에서 별도 평가합니다. 현재 단계에서 큰 생성 주장으로 넘어가지 않습니다.</p>
+      <p class="open__body">S0–S2a는 reconstruction proxy (token F1, ROUGE-L, teacher-forced loss). open-ended generation의 의미 일관성·반복 제어는 S4–S5에서 별도 평가합니다. 현재 단계에서 큰 생성 주장으로 넘어가지 않습니다.</p>
     </div>
 
     <div class="card">

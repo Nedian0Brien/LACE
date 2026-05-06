@@ -86,6 +86,25 @@ x_t -> x_0
 
 importance-guided skeleton reverse가 random masking reverse보다 semantic preservation과 reconstruction에서 좋아야 한다.
 
+## S2a. Positional Encoding Comparison
+
+### 질문
+
+S2의 `front/middle/back` 위치 tag보다 더 정석적인 positional encoding이 의미 골격-문장 복원에 도움이 되는가?
+
+### 비교 조건
+
+- no position
+- coarse front/middle/back bins
+- learned positional embedding
+- sinusoidal positional encoding
+- relative position bias
+- rotary position embedding
+
+### 성공 기준
+
+정식 positional encoding 후보 중 하나가 `no_position`과 `coarse_bins`보다 token F1 또는 ROUGE-L에서 좋아야 한다. 통과하면 S3의 기본 위치 보조 구조로 넘긴다.
+
 ## S3. Anchor Baseline Comparison
 
 ### 질문
@@ -137,13 +156,14 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2는 완료됐다.
+S0, S1, S2, S2a는 완료됐다.
 
 결과 문서는 다음에 있다.
 
 - [experiments/s0-skeleton-pipeline.md](./experiments/s0-skeleton-pipeline.md)
 - [experiments/s1-skeleton-use-controls.md](./experiments/s1-skeleton-use-controls.md)
 - [experiments/s2-skeleton-to-text-reconstruction.md](./experiments/s2-skeleton-to-text-reconstruction.md)
+- [experiments/s2a-positional-encoding.md](./experiments/s2a-positional-encoding.md)
 
 핵심 판단:
 
@@ -154,6 +174,8 @@ S0, S1, S2는 완료됐다.
 5. `remove_topk`가 `remove_lowk`보다 더 치명적이라는 순서 주장은 아직 확인되지 않았다.
 6. S2에서 `attention_scaffold`는 `random_scaffold`, `position_only`, wrong-document control보다 강했다.
 7. 다만 `idf_scaffold`는 loss가 가장 낮고, `position_prior_scaffold`는 keyword recall이 매우 높아서 scorer와 위치 편향 분리는 계속 필요하다.
+8. S2의 `front/middle/back`은 정식 positional encoding이 아니라 coarse tag였으므로 S2a에서 learned/sinusoidal/relative/rotary 방식을 비교한다.
+9. S2a에서는 `sinusoidal_absolute`가 가장 좋은 positional scaffold 후보였다. 다만 `coarse_bins` 대비 개선 폭은 작고 생성 품질은 아직 낮다.
 
 다음 Kaggle 실험 후보는 다음이다.
 

@@ -8,6 +8,7 @@
 s0-skeleton-pipeline.md
 s1-skeleton-use-controls.md
 s2-skeleton-to-text-reconstruction.md
+s2a-positional-encoding.md
 ```
 
 결과 문서는 다음을 반드시 분리해서 해석한다.
