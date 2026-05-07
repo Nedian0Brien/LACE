@@ -124,3 +124,9 @@ sources: [사용자 대화]
 - S5 결과를 [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]]에 수집했다.
 - `oracle_plan_schedule`은 span content recall 0.4144, entity recall 0.1191, artifact rate 0.1699로 S4g의 span collapse를 회복했고 rollout score 1.4027로 no-plan, random-plan, wrong-document, position-only control을 모두 이겼다.
 - 하지만 `predicted_plan_schedule`은 plan recall 0.0146으로 random plan 0.0459보다 낮고 no-plan rollout과 거의 같아, S6가 아니라 S5 내부 learned semantic planner가 다음 병목임을 기록했다.
+
+## [2026-05-07] interpretation | S5 predicted plan 실패 해석 보정
+
+- 사용자의 지적을 반영해 [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]]에 scale/data/capacity caveat를 추가했다.
+- S5 version 1의 predicted plan 실패는 semantic plan 구조 폐기가 아니라, `t5-small`, 768 train samples, condition별 3,000 example cap, 1 epoch, heuristic planner 조건의 한계로 읽는 편이 더 방어 가능하다고 기록했다.
+- 다음 방향은 S6가 아니라 S5 내부 learned semantic planner scale-up으로 정리했다.

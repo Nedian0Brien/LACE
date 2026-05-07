@@ -4,6 +4,28 @@
 
 ## 2026-05-07
 
+### 해석 보정: S5 predicted plan 실패는 구조 폐기보다 scale/data/capacity 부족으로도 읽어야 함
+
+추가 시각: 2026-05-07 15:37 KST
+
+맥락:
+
+S5 version 1에서 `predicted_plan_schedule`은 plan recall 0.0146으로 실패했다. 사용자는 모델이 본 데이터가 턱없이 적고 모델 규모도 작기 때문에 이 실패가 자연스럽다고 지적했다.
+
+해석:
+
+이 지적은 타당하다. S5의 predicted plan 실패를 곧바로 semantic plan 구조의 실패로 읽으면 과도하다. 이번 runner는 `t5-small`, train samples 768, condition별 train example cap 3,000, 1 epoch 조건이며, predicted plan도 learned planner가 아니라 anchor/context 기반 heuristic이었다. 따라서 S5의 방어 가능한 결론은 "semantic plan bridge가 틀렸다"가 아니라, "oracle plan은 강하지만 현재 규모와 heuristic planner로는 plan을 스스로 예측하지 못한다"이다.
+
+근거/출처:
+
+- 사용자 해석
+- `docs/v2/experiments/s5-semantic-plan-bridge.md`
+- `outputs/v2_s5/lace_v2_s5/metrics.json`
+
+다음 실험에 주는 의미:
+
+다음 S5 iteration은 open-ended generation이 아니라 learned semantic planner scale-up이어야 한다. 단, 무작정 S6로 가지 않고 plan prediction 자체를 별도 gate로 둔다. 최소 확인 사항은 data scale 증가, planner capacity 증가, content-applicable span 기준 plan recall/F1, 그리고 predicted-plan rollout이 no-plan/random/wrong-document plan보다 오르는지다.
+
 ### 발견: S5 Semantic Plan Bridge는 oracle plan에서 span collapse를 회복했지만 predicted plan은 실패
 
 추가 시각: 2026-05-07 15:33 KST

@@ -88,6 +88,19 @@ S5 version 1은 [[s4g-pretrained-decoder-semantic-span-expansion|S4g]]의 pretra
 
 또한 `shuffled_plan_schedule`이 rollout score 1.3989로 oracle 1.4027과 거의 같았으므로, 이번 plan 효과는 순서 있는 문장 계획이라기보다 content word bag 제공 효과에 가깝다.
 
+## 해석 보정
+
+S5 version 1의 predicted plan 실패는 semantic plan 구조 자체의 폐기 근거로 읽으면 안 된다. 이번 실행은 `t5-small`, train samples 768, condition별 train example cap 3,000, 1 epoch 조건이었고, predicted plan은 learned planner가 아니라 anchor/context 기반 heuristic이었다.
+
+따라서 방어 가능한 해석은 다음이다.
+
+```text
+oracle plan은 강하다.
+하지만 현재 작은 규모와 heuristic planner로는 그 plan을 스스로 찾지 못한다.
+```
+
+다음 S5 iteration은 open-ended generation이 아니라 learned semantic planner scale-up이어야 한다. 이때 plan prediction 자체를 별도 gate로 두고, content-applicable span 기준 plan recall/F1과 predicted-plan rollout 개선을 함께 확인해야 한다.
+
 ## 관련 문서
 
 - `web/s5-semantic-plan-bridge.html`
