@@ -288,7 +288,7 @@ S4e는 `process_ready=true`, `overall_pass=false`, `structure_review_needed=true
 
 Final content recall은 importance 0.3464, random 0.2404였고, final entity recall도 importance 0.2976이 random 0.2137보다 높았다. 이는 S4d의 우위가 조건별 모델 분리 때문만은 아니라는 해석을 강화한다.
 
-하지만 S4e의 본래 개선 목표였던 span-level content/entity는 실패했다. Importance span content recall은 0.0029로 S4d 0.0172보다 낮았고, span entity recall은 0.0013으로 S4d 0.0047보다 낮았다. Artifact rate도 importance 0.6906으로 random 0.5259보다 높았다. 따라서 다음은 S5 scale-up이 아니라 generated span 자체의 의미 정보량을 높이는 구조 개선이다.
+하지만 S4e의 본래 개선 목표였던 span-level content/entity는 실패했다. Importance span content recall은 0.0029로 S4d 0.0172보다 낮았고, span entity recall은 0.0013으로 S4d 0.0047보다 낮았다. Artifact rate도 importance 0.6906으로 random 0.5259보다 높았다. 따라서 다음은 open-ended scale-up이 아니라 generated span 자체의 의미 정보량을 높이는 구조 개선이다.
 
 ## S4g. Pretrained Decoder Semantic Span Expansion
 
@@ -310,9 +310,44 @@ S4g는 `process_ready=true`, `overall_pass=false`, `structure_review_needed=true
 
 Final content recall은 importance 0.3432, random 0.2582였고, final entity recall은 importance 0.2901, random 0.2260이었다. 따라서 pretrained decoder 조건에서도 semantic skeleton과 anchor가 있는 trajectory의 final rollout 우위는 유지됐다.
 
-하지만 S4g가 해결하려던 span-level semantic generation은 실패했다. Importance span content recall과 span entity recall은 모두 0.0000이고, artifact rate는 0.9961로 S4e 0.6906보다 나빠졌다. 따라서 S4e의 실패를 작은 decoder 규모 문제로만 설명하기 어렵다. 다음은 S5 scale-up이 아니라 span target 단위 재구성, content/function token 분리, anchor-conditioned decoder 구조 개선이다.
+하지만 S4g가 해결하려던 span-level semantic generation은 실패했다. Importance span content recall과 span entity recall은 모두 0.0000이고, artifact rate는 0.9961로 S4e 0.6906보다 나빠졌다. 따라서 S4e의 실패를 작은 decoder 규모 문제로만 설명하기 어렵다. 다음은 open-ended scale-up이 아니라 span target 단위 재구성, content/function token 분리, anchor-conditioned decoder 구조 개선이다.
 
-## S5. Open-ended Generation
+## S5. Semantic Plan Bridge
+
+### 질문
+
+Semantic chunk 또는 plan이라는 중간 표현을 주거나 예측하게 하면, generated span 자체의 content/entity recall을 높이고 artifact를 줄일 수 있는가?
+
+### 명명 규칙
+
+과거 대화에서 `S4h`라고 부르던 구조 후보는 구현 phase명이 아니라 S5의 설계 후보로 승격한다. `S4h-0`, `S4h-1`처럼 가지치기하지 않고, S5 하나의 phase 안에서 stage로 관리한다. 세부 규칙은 [experiment-naming-rules.md](./experiment-naming-rules.md)를 따른다.
+
+### 평가 순서
+
+1. `stage_1_oracle_plan`: 원문에서 자동 추출한 oracle semantic plan을 realizer에 제공했을 때 span content/entity가 오르는지 확인한다.
+2. `stage_2_plan_prediction`: skeleton과 anchor만으로 semantic plan을 예측할 수 있는지 확인한다.
+3. `stage_3_predicted_plan_rollout`: 예측된 plan을 surface realizer에 넣어 multi-step rollout에서도 도움이 되는지 확인한다.
+
+### 비교 조건
+
+- oracle semantic plan
+- random semantic plan
+- same-position random plan
+- wrong-document plan
+- no-plan
+- position-only plan
+- shuffled plan
+
+### 성공 기준
+
+S5의 첫 gate는 open-ended generation이 아니다. 다음이 확인되어야 한다.
+
+- `importance_schedule`이 strict controls를 계속 이긴다.
+- generated-span-only content/entity recall이 S4g의 0.0000에서 유의하게 오른다.
+- artifact rate가 S4g의 0.9961에서 크게 내려간다.
+- final rollout score가 S4d/S4e/S4g보다 크게 퇴행하지 않는다.
+
+## S6. Open-ended Generation
 
 ### 질문
 
@@ -331,7 +366,7 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다. S4e에서는 이 우위가 shared-condition model에서도 유지됐지만, generated span 자체의 content/entity recall은 S4d보다 낮아졌다. S4g에서는 pretrained decoder를 붙여도 final rollout 우위는 유지됐지만 span content/entity recall은 0.0000으로 더 무너졌고 artifact rate는 0.9961까지 올랐다.
 
-따라서 다음도 아직 open-ended S5가 아니다. S4d/S4e/S4g에서 확인한 semantic anchor 사용 신호를 유지하면서, generated span 자체의 content/entity recall을 높여야 한다. 우선순위는 span target 단위 재구성, content/function token 분리, anchor-conditioned decoder, 조건별 균형 샘플링이다.
+따라서 다음도 아직 open-ended generation이 아니다. S4d/S4e/S4g에서 확인한 semantic anchor 사용 신호를 유지하면서, generated span 자체의 content/entity recall을 높여야 한다. 코드네임 가지치기를 막기 위해 다음 구현 phase는 `S5: Semantic Plan Bridge`로 승격하고, oracle plan, plan prediction, predicted-plan rollout은 S5 내부 stage로 관리한다.
 
 결과 문서는 다음에 있다.
 
@@ -375,13 +410,14 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S4h: content-aware span target decomposition
+S5: Semantic Plan Bridge
 ```
 
 산출물:
 
 - S4d/S4e/S4g의 strict controls를 유지
+- `stage_1_oracle_plan`, `stage_2_plan_prediction`, `stage_3_predicted_plan_rollout`을 하나의 phase 안에서 관리
 - content token span과 function/punctuation span을 분리해 평가
 - span target을 subword 조각이 아니라 단어 또는 의미 chunk 단위로 구성
 - left/right anchor를 span query가 직접 참고하는 구조 검토
-- S5로 넘기기 전 generated span의 content/entity collapse를 먼저 해결
+- S6 open-ended generation으로 넘기기 전 generated span의 content/entity collapse를 먼저 해결

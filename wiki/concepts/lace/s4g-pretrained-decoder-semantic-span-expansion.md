@@ -61,7 +61,7 @@ semantic skeleton의 final rollout 우위는 pretrained decoder 조건에서도 
 
 ## 다음 질문
 
-S4g 이후 S5 open-ended generation으로 바로 가면 artifact와 content/entity collapse를 더 큰 비용으로 반복할 가능성이 높다. 다음 질문은 다음이다.
+S4g 이후 open-ended generation으로 바로 가면 artifact와 content/entity collapse를 더 큰 비용으로 반복할 가능성이 높다. 코드네임 규칙상 다음 구조 개선 phase는 [[s5-semantic-plan-bridge|S5 Semantic Plan Bridge]]로 두고, open-ended generation은 그 이후 phase로 미룬다. 다음 질문은 다음이다.
 
 ```text
 semantic skeleton의 final rollout 우위를 유지하면서,

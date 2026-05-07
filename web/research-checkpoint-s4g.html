@@ -482,7 +482,7 @@ button, input, textarea, select { font: inherit; }
     </div>
     <div class="spacer"></div>
     <a class="btn" href="./index.html">진행 현황</a>
-    <a class="btn" href="./s4h-structure-explainer.html">S4h 구조 설명</a>
+    <a class="btn" href="./s5-semantic-plan-bridge.html">S5 구조 설명</a>
   </div>
 </nav>
 
@@ -499,9 +499,9 @@ button, input, textarea, select { font: inherit; }
     </div>
     <aside class="hero-card">
       <div class="hero-card__label">current gate</div>
-      <div class="hero-card__value">S5 보류</div>
+      <div class="hero-card__value">S6 보류</div>
       <p class="hero-card__body">
-        S4g에서 pretrained decoder를 써도 span content/entity recall은 0.0000이다. 다음은 scale-up이 아니라 target/decoder 구조 개선이다.
+        S4g에서 pretrained decoder를 써도 span content/entity recall은 0.0000이다. 다음은 open-ended scale-up이 아니라 S5 Semantic Plan Bridge다.
       </p>
     </aside>
   </div>
@@ -527,7 +527,7 @@ button, input, textarea, select { font: inherit; }
       </div>
       <div class="kpi kpi--warn">
         <div class="kpi__label">next stage</div>
-        <div class="kpi__value">S4h</div>
+        <div class="kpi__value">S5</div>
         <div class="kpi__hint">content-aware span target decomposition</div>
       </div>
     </div>
@@ -580,7 +580,7 @@ button, input, textarea, select { font: inherit; }
         <div class="phase__note">rollout 우위는 유지됐지만 span content/entity는 0, artifact는 0.9961이었다.</div>
       </div>
       <div class="phase phase--next">
-        <div class="phase__id">S4h</div>
+        <div class="phase__id">S5</div>
         <div class="phase__title">target/decoder 구조 개선</div>
         <div class="phase__note">단어/chunk target, content/function 분리, anchor-conditioned decoder를 검토한다.</div>
       </div>
@@ -690,7 +690,7 @@ button, input, textarea, select { font: inherit; }
       <article class="panel">
         <div class="panel__top">
           <div>
-            <h3 class="panel__title">S5 readiness</h3>
+            <h3 class="panel__title">S6 readiness</h3>
             <div class="panel__caption">open-ended generation으로 갈 최소 조건이 아직 충족되지 않았다.</div>
           </div>
           <span class="tag tag--bad">not ready</span>
@@ -700,7 +700,7 @@ button, input, textarea, select { font: inherit; }
             <tr><td>process_ready</td><td>true</td></tr>
             <tr><td>overall_pass</td><td>false</td></tr>
             <tr><td>structure_review_needed</td><td>true</td></tr>
-            <tr><td>s5_ready</td><td>false</td></tr>
+            <tr><td>open_ended_ready</td><td>false</td></tr>
           </tbody>
         </table>
       </article>
@@ -762,14 +762,14 @@ button, input, textarea, select { font: inherit; }
   <section class="wrap section" id="next">
     <div class="callout callout--next">
       <div class="eyebrow">next experiment gate</div>
-      <h2 class="h2">S4h는 scale-up이 아니라 span target과 decoder 구조를 바꿔야 한다</h2>
+      <h2 class="h2">S5는 scale-up이 아니라 span target과 decoder 구조를 바꿔야 한다</h2>
       <p>
         다음 실험은 content/function token을 분리하고, subword 조각 대신 단어 또는 의미 chunk 단위 target을 만들며,
         span query가 left/right anchor representation을 직접 참고하는 구조를 검토해야 한다.
         최종 rollout score와 generated-span content score는 계속 분리해서 본다.
       </p>
       <p>
-        이 구조를 한국어 예문과 시각 예시로 풀어낸 설명 문서는 <a href="./s4h-structure-explainer.html" style="color:var(--purple); font-weight:800;">S4h 구조 설명서</a>에 정리했다.
+        이 구조를 한국어 예문과 시각 예시로 풀어낸 설명 문서는 <a href="./s5-semantic-plan-bridge.html" style="color:var(--purple); font-weight:800;">S5 구조 설명서</a>에 정리했다.
       </p>
     </div>
   </section>

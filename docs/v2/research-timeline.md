@@ -4,27 +4,49 @@
 
 ## 2026-05-07
 
-### 결정: S4h 구조 설명서를 통해 hierarchical span expansion 후보를 구체화
+### 결정: 실험 코드네임 가지치기 방지 규칙 확정
+
+추가 시각: 2026-05-07 14:46 KST
+
+맥락:
+
+S4a-S4g 이후 다음 구조 후보를 `S4h-0`, `S4h-1`, `S4h-2`처럼 부르면 실험 이름이 연구 질문보다 구현 가지치기를 반영하게 된다. 사용자는 코드네임이 계속 뻗어나가며 복잡해지는 문제를 지적했고, 규칙을 명확히 정의할 필요가 있다고 했다.
+
+결정:
+
+코드네임은 구현 세부가 아니라 연구 질문의 위상을 나타내도록 정리한다. 새 연구 질문 또는 독립 gate가 생기면 letter suffix를 더 붙이지 않고 다음 정수 phase로 승격한다. 이에 따라 과거 대화에서 `S4h`라고 부르던 구조 후보는 구현 phase명이 아니라 `S5: Semantic Plan Bridge`로 승격한다. oracle plan, plan prediction, predicted-plan rollout은 `S5a/S5b`가 아니라 S5 내부의 `stage_1`, `stage_2`, `stage_3`로 관리한다. Open-ended generation은 S5가 통과한 뒤의 `S6`로 둔다.
+
+근거/출처:
+
+- `docs/v2/experiment-naming-rules.md`
+- `docs/v2/experiment-roadmap.md`
+- `web/s5-semantic-plan-bridge.html`
+
+다음 실험에 주는 의미:
+
+다음 Kaggle runner는 `kaggle/v2_s5/run_v2_s5.py`, 계획서는 `docs/v2/plan/s5-semantic-plan-bridge-plan.md`, 결과 문서는 `docs/v2/experiments/s5-semantic-plan-bridge.md`를 사용한다. 세부 stage는 같은 phase 안에서 관리한다.
+
+### 결정: S5 Semantic Plan Bridge 설명서를 통해 hierarchical span expansion 후보를 구체화
 
 추가 시각: 2026-05-07 14:34 KST
 
 맥락:
 
-S4g 이후 사용자는 구조적 문제 진단에는 동의했지만, 어떤 구조를 만들어야 하는지 직관적으로 감이 오지 않는다고 했다. 따라서 S4h 후보 구조를 단순 설명이 아니라 한국어 문장 예시와 시각적 흐름으로 정리할 필요가 생겼다.
+S4g 이후 사용자는 구조적 문제 진단에는 동의했지만, 어떤 구조를 만들어야 하는지 직관적으로 감이 오지 않는다고 했다. 따라서 다음 구조 후보를 단순 설명이 아니라 한국어 문장 예시와 시각적 흐름으로 정리할 필요가 생겼다.
 
 결정:
 
-`S4h: anchor-conditioned hierarchical span expansion`을 설명 후보 구조로 문서화했다. 핵심은 reverse process가 곧바로 subword/punctuation 조각을 맞히지 않고, 먼저 gap query가 left/right anchor와 global skeleton을 직접 참고해 content word/chunk 단위 semantic plan을 만들고, 이후 surface realizer가 조사, 어미, punctuation을 붙여 문장 span으로 실현하는 것이다.
+`S5: Semantic Plan Bridge`의 구조 후보를 문서화했다. 핵심은 reverse process가 곧바로 subword/punctuation 조각을 맞히지 않고, 먼저 gap query가 left/right anchor와 global skeleton을 직접 참고해 content word/chunk 단위 semantic plan을 만들고, 이후 surface realizer가 조사, 어미, punctuation을 붙여 문장 span으로 실현하는 것이다.
 
 근거/출처:
 
-- `web/s4h-structure-explainer.html`
+- `web/s5-semantic-plan-bridge.html`
 - `web/research-checkpoint-s4g.html`
 - `docs/v2/experiments/s4g-pretrained-decoder-semantic-span-expansion.md`
 
 다음 실험에 주는 의미:
 
-S4h 구현 시 gate는 final rollout score만 보지 않는다. `importance_schedule`이 strict controls를 계속 이기는지, generated-span-only content/entity recall이 S4g의 0.0000에서 오르는지, artifact rate가 S4g의 0.9961에서 내려가는지를 분리해서 봐야 한다.
+S5 구현 시 gate는 final rollout score만 보지 않는다. `importance_schedule`이 strict controls를 계속 이기는지, generated-span-only content/entity recall이 S4g의 0.0000에서 오르는지, artifact rate가 S4g의 0.9961에서 내려가는지를 분리해서 봐야 한다.
 
 ### 발견: S4g pretrained decoder는 rollout 우위를 유지했지만 span semantic generation을 해결하지 못함
 

@@ -105,10 +105,16 @@ sources: [사용자 대화]
 
 - `web/research-checkpoint-s4g.html`을 생성해 S0부터 S4g까지의 연구 상태를 process signal, span semantic collapse, S5 readiness, 다음 구조 개선 gate로 나누어 시각화했다.
 - `web/index.html`에 S4g 결과 카드, 최신 타임라인 항목, 체크포인트 링크를 추가했다.
-- 체크포인트는 `design/design-system.html`의 중립 색상, 단색 accent, dense metric card 스타일을 따르되, S4g 이후 핵심 판단인 "S5 보류, S4h 구조 개선"이 첫 화면에서 보이도록 구성했다.
+- 체크포인트는 `design/design-system.html`의 중립 색상, 단색 accent, dense metric card 스타일을 따르되, S4g 이후 핵심 판단인 "open-ended generation 보류, S5 구조 개선"이 첫 화면에서 보이도록 구성했다.
 
-## [2026-05-07] structure | S4h 구조 설명 HTML 생성
+## [2026-05-07] structure | S5 Semantic Plan Bridge 설명 HTML 생성
 
-- `web/s4h-structure-explainer.html`을 생성해 [[concepts/lace/s4h-anchor-conditioned-hierarchical-span-expansion|S4h anchor-conditioned hierarchical span expansion]] 구조를 한국어 문장 예시와 시각 흐름으로 설명했다.
-- 설명서는 S4g의 구조적 문제를 subword/punctuation 조각 복원으로 진단하고, S4h를 content chunk planning과 surface realization의 계층형 reverse process로 제시한다.
-- `web/index.html`과 `web/research-checkpoint-s4g.html`에서 S4h 설명서로 이동하는 링크를 추가했다.
+- `web/s5-semantic-plan-bridge.html`을 생성해 [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]] 구조를 한국어 문장 예시와 시각 흐름으로 설명했다.
+- 설명서는 S4g의 구조적 문제를 subword/punctuation 조각 복원으로 진단하고, S5를 content chunk planning과 surface realization의 계층형 reverse process로 제시한다.
+- `web/index.html`과 `web/research-checkpoint-s4g.html`에서 S5 설명서로 이동하는 링크를 추가했다.
+
+## [2026-05-07] structure | v2 실험 코드네임 규칙 확정
+
+- `docs/v2/experiment-naming-rules.md`를 생성해 `S{n}`은 독립 연구 질문 또는 phase gate, `stage`는 같은 phase 안의 내부 단계, `condition`은 같은 runner 안의 비교 조건으로 정의했다.
+- 과거에 `S4h`라고 부르던 구조 후보를 구현 phase명으로 쓰지 않고 `S5: Semantic Plan Bridge`로 승격했다.
+- open-ended generation은 S5가 통과한 뒤의 `S6`로 정리했다.

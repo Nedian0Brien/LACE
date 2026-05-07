@@ -15,6 +15,8 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/의미-골격|의미 골격]] - LACE v2에서 forward process가 도달하는 content-bearing terminal state.
 - [[concepts/lace/위치-보조-구조|위치 보조 구조]] - 의미 골격을 문장으로 펼칠 때 위치와 순서 흐름을 보조하는 구조.
 - [[concepts/lace/forward-reverse-process-본질|Forward-Reverse Process 본질]] - 중요도 기반 masking schedule과 그 역과정으로 문장을 확장하는 diffusion language model이라는 v2 핵심 문제의 재정의.
+- [[concepts/lace/v2-experiment-naming-rules|v2 experiment naming rules]] - 실험 코드네임이 과도하게 가지치기되지 않도록 `S{n}`, stage, condition, gate의 역할을 분리한 규칙.
+- [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]] - subword 조각 복원 대신 anchor-conditioned gap query가 content chunk를 먼저 계획하고 surface span으로 실현하는 다음 phase.
 - [[concepts/lace/attention-scaffold|attention_scaffold]] - attention 수신 점수로 고른 의미 골격과 위치 보조 구조를 결합한 S2 핵심 입력 조건.
 - [[concepts/lace/sinusoidal-absolute|sinusoidal_absolute]] - 원래 token index를 사인/코사인 파형 좌표로 바꿔 의미 골격에 더하는 절대 위치 부호화 방식.
 - [[concepts/lace/s2a-positional-encoding|S2a-positional encoding]] - S3 전에 위치 보조 구조 후보를 learned/sinusoidal/relative/rotary 방식으로 비교한 실험.
@@ -29,7 +31,6 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]] - 같은 gap/span 위치 구조에서 실제 semantic skeleton content와 좌우 anchor가 random, position-only, same-position random, wrong-document, no-anchor control을 모두 이긴 구조 실험.
 - [[concepts/lace/s4e-shared-condition-semantic-span-expansion|S4e shared-condition semantic span expansion]] - S4d의 rollout 우위가 공유 모델에서도 유지됐지만 generated span content/entity 개선에는 실패한 구조 실험.
 - [[concepts/lace/s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]] - pretrained `t5-small` decoder에서도 rollout 우위는 유지됐지만 span content/entity recall 0과 artifact 0.9961로 구조 병목을 확인한 실험.
-- [[concepts/lace/s4h-anchor-conditioned-hierarchical-span-expansion|S4h anchor-conditioned hierarchical span expansion]] - subword 조각 복원 대신 anchor-conditioned gap query가 content chunk를 먼저 계획하고 surface span으로 실현하는 다음 구조 후보.
 
 ## 연구 실험
 
@@ -46,4 +47,4 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]] - rollout score 0.7175로 random 0.6145, same-position random 0.4733, wrong-document 0.0504를 넘어 semantic anchor content 사용 증거를 강화한 실험.
 - [[concepts/lace/s4e-shared-condition-semantic-span-expansion|S4e shared-condition semantic span expansion]] - shared-condition model에서도 rollout score 0.7569로 strict control을 이겼지만 span content recall은 0.0029로 낮아 구조 개선 필요성을 확인한 실험.
 - [[concepts/lace/s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]] - pretrained decoder로도 `importance_schedule` rollout score 0.7314가 strict control을 이겼지만 span content/entity recall은 0.0000으로 무너져 S5 scale-up 보류를 강화한 실험.
-- [[concepts/lace/s4h-anchor-conditioned-hierarchical-span-expansion|S4h anchor-conditioned hierarchical span expansion]] - S4g 이후 다음 실험 후보를 한국어 예시와 시각 설명으로 구체화한 구조 설계.
+- [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]] - S4g 이후 다음 실험 후보를 한국어 예시와 시각 설명으로 구체화하고, 코드네임 가지치기를 막기 위해 새 phase로 승격한 구조 설계.

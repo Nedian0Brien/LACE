@@ -15,6 +15,7 @@ v1이 continuous latent token-budget compression을 먼저 탐색했다면, v2�
 | [연구기획서.md](./연구기획서.md) | v2의 기본 연구계획서 |
 | [research-questions.md](./research-questions.md) | v2에서 검증해야 할 연구 질문과 성공/실패 조건 |
 | [experiment-roadmap.md](./experiment-roadmap.md) | v2 실험 phase 구조와 다음 실행 우선순위 |
+| [experiment-naming-rules.md](./experiment-naming-rules.md) | 실험 코드네임이 과도하게 가지치기되지 않도록 하는 phase/stage 명명 규칙 |
 | [v1-carryover.md](./v1-carryover.md) | v1에서 얻은 성과와 v2로 계승할 실험 규율 |
 | [kaggle-experiment-workflow.md](./kaggle-experiment-workflow.md) | v2 Kaggle 실험 문서화/실행 절차 |
 | [document-alignment.md](./document-alignment.md) | v1에서 v2로 문서 기준을 옮긴 결정 기록 |
@@ -77,4 +78,4 @@ S4e는 [experiments/s4e-shared-condition-semantic-span-expansion.md](./experimen
 
 S4g는 [experiments/s4g-pretrained-decoder-semantic-span-expansion.md](./experiments/s4g-pretrained-decoder-semantic-span-expansion.md)에 기록했다. S4g는 S4e의 작은 custom decoder를 pretrained `t5-small` seq2seq decoder로 바꿔, span collapse가 언어 prior 부족 때문인지 확인했다. `importance_schedule`은 rollout score 0.7314로 `random_schedule` 0.6404, `same_position_random_schedule` 0.4580, `wrong_document_same_position_schedule` -0.0021, `no_anchor_gap_only_schedule` -0.0513을 모두 이겼다. 하지만 span content/entity recall은 모두 0.0000이고 artifact rate는 0.9961로 S4e보다 나빠졌다.
 
-현재 다음 단계는 open-ended S5가 아니다. S4g는 semantic skeleton의 final rollout 우위가 pretrained decoder 조건에서도 유지됨을 보였지만, generated span 자체의 content/entity collapse가 단순히 decoder 규모 문제만은 아님을 확인했다. 따라서 다음은 span target 단위 재구성, content/function token 분리, anchor-conditioned decoder 구조, 조건별 균형 샘플링 같은 구조 개선이다.
+현재 다음 단계는 open-ended generation이 아니다. 실험 이름 가지치기를 줄이기 위해 과거에 `S4h`라고 부르던 구조 후보는 구현 phase명이 아니라 `S5: Semantic Plan Bridge`의 설계 후보로 승격한다. S4g는 semantic skeleton의 final rollout 우위가 pretrained decoder 조건에서도 유지됨을 보였지만, generated span 자체의 content/entity collapse가 단순히 decoder 규모 문제만은 아님을 확인했다. 따라서 S5는 span target 단위 재구성, content/function token 분리, anchor-conditioned decoder 구조, 조건별 균형 샘플링을 하나의 phase 안에서 stage로 검증한다.

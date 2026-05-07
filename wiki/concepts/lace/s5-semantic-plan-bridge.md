@@ -1,15 +1,15 @@
 ---
-title: "S4h anchor-conditioned hierarchical span expansion"
+title: "S5 Semantic Plan Bridge"
 type: "concept"
-tags: [LACE, v2, S4h, semantic-skeleton, span-expansion, anchor-attention, hierarchical-decoder]
+tags: [LACE, v2, S5, semantic-skeleton, span-expansion, anchor-attention, hierarchical-decoder]
 created: 2026-05-07
 updated: 2026-05-07
-sources: [web/s4h-structure-explainer.html, docs/v2/experiments/s4g-pretrained-decoder-semantic-span-expansion.md]
+sources: [web/s5-semantic-plan-bridge.html, docs/v2/experiments/s4g-pretrained-decoder-semantic-span-expansion.md, docs/v2/experiment-naming-rules.md]
 ---
 
-# S4h anchor-conditioned hierarchical span expansion
+# S5 Semantic Plan Bridge
 
-S4h는 [[s4g-pretrained-decoder-semantic-span-expansion|S4g]] 이후 제안된 다음 구조 후보다. S4g는 pretrained decoder를 사용해도 span content/entity recall이 0.0000으로 무너졌으므로, 문제를 모델 크기보다 target 단위와 reverse 구조의 문제로 본다.
+S5는 [[s4g-pretrained-decoder-semantic-span-expansion|S4g]] 이후 제안된 다음 phase다. 과거 대화에서 `S4h`라고 부르던 구조 후보는 구현 코드네임이 아니라 S5의 설계 후보로 승격한다. S4g는 pretrained decoder를 사용해도 span content/entity recall이 0.0000으로 무너졌으므로, 문제를 모델 크기보다 target 단위와 reverse 구조의 문제로 본다.
 
 핵심 아이디어는 다음이다.
 
@@ -21,7 +21,7 @@ subword/punctuation 조각을 바로 맞히지 않는다.
 
 ## 구조
 
-S4h는 다섯 부분으로 구성한다.
+S5는 다섯 부분으로 구성한다.
 
 | 구성 | 역할 |
 |---|---|
@@ -39,7 +39,7 @@ S4h는 다섯 부분으로 구성한다.
 고양이 / 창가 / 잠들었다
 ```
 
-S4g식 target은 쉼표, 조사, subword 조각을 바로 맞히게 만들 수 있다. S4h는 먼저 다음과 같은 의미 chunk를 만든다.
+S4g식 target은 쉼표, 조사, subword 조각을 바로 맞히게 만들 수 있다. S5는 먼저 다음과 같은 의미 chunk를 만든다.
 
 ```text
 검은
@@ -54,7 +54,7 @@ S4g식 target은 쉼표, 조사, subword 조각을 바로 맞히게 만들 수 �
 
 ## 실험 gate
 
-S4h는 final rollout score만으로 통과시키면 안 된다. S4g에서 final content/entity가 높아 보여도 generated span content/entity는 0.0000이었기 때문이다.
+S5는 final rollout score만으로 통과시키면 안 된다. S4g에서 final content/entity가 높아 보여도 generated span content/entity는 0.0000이었기 때문이다.
 
 통과 조건은 다음을 분리해서 본다.
 
@@ -65,6 +65,7 @@ S4h는 final rollout score만으로 통과시키면 안 된다. S4g에서 final 
 
 ## 관련 문서
 
-- `web/s4h-structure-explainer.html`
+- `web/s5-semantic-plan-bridge.html`
+- `docs/v2/experiment-naming-rules.md`
 - [[s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]]
 - [[forward-reverse-process-본질|Forward-Reverse Process 본질]]

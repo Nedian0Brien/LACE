@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>LACE v2 · S4h 구조 설명서</title>
-<meta name="description" content="S4h anchor-conditioned hierarchical span expansion 구조를 한국어 예문과 시각 예시로 설명하는 문서." />
+<title>LACE v2 · S5 Semantic Plan Bridge</title>
+<meta name="description" content="S5 Semantic Plan Bridge 구조를 한국어 예문과 시각 예시로 설명하는 문서." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -515,10 +515,10 @@ strong { font-weight: 800; }
 <header class="hero">
   <div class="wrap hero__grid">
     <div>
-      <div class="eyebrow">S4h design explainer · anchor-conditioned hierarchical span expansion</div>
+      <div class="eyebrow">S5 design explainer · Semantic Plan Bridge</div>
       <h1 class="h1">token 조각 복원이 아니라, 의미 chunk를 먼저 세우고 문장을 확장한다.</h1>
       <p class="lead">
-        S4g는 pretrained decoder를 붙여도 새 span을 의미 있게 생성하지 못했다. 그래서 S4h의 핵심은 모델을 더 키우는 것이 아니라,
+        S4g는 pretrained decoder를 붙여도 새 span을 의미 있게 생성하지 못했다. 그래서 S5의 핵심은 모델을 더 키우는 것이 아니라,
         reverse process의 단위를 subword 조각에서 의미 있는 word/chunk 단위로 바꾸는 것이다.
       </p>
       <div class="claim">핵심 직관: 뼈대 토큰 사이의 빈칸을 "쉼표 하나"로 맞히는 문제가 아니라, "이 자리에는 어떤 의미 단위가 들어가야 하는가"를 먼저 맞히는 문제로 바꾼다.</div>
@@ -570,7 +570,7 @@ strong { font-weight: 800; }
 
       <article class="panel right">
         <div class="panel__top">
-          <h3 class="panel__title">S4h식 target</h3>
+          <h3 class="panel__title">S5식 target</h3>
           <span class="tag tag--green">semantic unit</span>
         </div>
         <div class="sentence">
@@ -596,7 +596,7 @@ strong { font-weight: 800; }
     <div class="section__head">
       <div>
         <div class="eyebrow">02 · proposed structure</div>
-        <h2 class="h2">S4h: anchor-conditioned hierarchical span expansion</h2>
+        <h2 class="h2">S5: Semantic Plan Bridge</h2>
         <p class="sub">구조는 다섯 부분으로 나눈다. 중요한 점은 gap 하나가 독립 token 위치가 아니라, 좌우 anchor 사이에 있는 의미 query가 된다는 것이다.</p>
       </div>
     </div>
@@ -635,7 +635,7 @@ strong { font-weight: 800; }
       <div>
         <div class="eyebrow">03 · visual model</div>
         <h2 class="h2">anchor는 prompt 설명이 아니라 query가 직접 참고하는 표현이다</h2>
-        <p class="sub">S4g에서는 anchor 정보가 문자열 prompt 안에 들어갔다. S4h에서는 gap query가 anchor representation을 직접 보는 구조로 바뀐다.</p>
+        <p class="sub">S4g에서는 anchor 정보가 문자열 prompt 안에 들어갔다. S5에서는 gap query가 anchor representation을 직접 보는 구조로 바뀐다.</p>
       </div>
     </div>
 
@@ -859,7 +859,7 @@ strong { font-weight: 800; }
     <div class="section__head">
       <div>
         <div class="eyebrow">06 · experiment gates</div>
-        <h2 class="h2">S4h가 확인해야 할 것</h2>
+        <h2 class="h2">S5가 확인해야 할 것</h2>
         <p class="sub">이 구조가 좋은 연구 실험이 되려면 final score만 보면 안 된다. S4g에서 이미 final score와 span generation이 분리된다는 걸 봤기 때문이다.</p>
       </div>
     </div>
@@ -908,7 +908,7 @@ strong { font-weight: 800; }
 
 <footer class="footer">
   <div class="wrap">
-    LACE v2 · S4h structure explainer · source context: S4g checkpoint and v2 experiment roadmap
+    LACE v2 · S5 Semantic Plan Bridge · source context: S4g checkpoint and v2 experiment roadmap
   </div>
 </footer>
 </body>

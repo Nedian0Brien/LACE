@@ -703,7 +703,7 @@ a { color: inherit; text-decoration: none; }
         <span id="theme-toggle-label">Dark</span>
       </button>
       <a class="btn btn--secondary btn--sm" href="./research-checkpoint-s4g.html">S4g 체크포인트</a>
-      <a class="btn btn--secondary btn--sm" href="./s4h-structure-explainer.html">S4h 구조 설명</a>
+      <a class="btn btn--secondary btn--sm" href="./s5-semantic-plan-bridge.html">S5 구조 설명</a>
       <a class="btn btn--primary btn--sm" href="#timeline">최근 진행</a>
     </div>
   </div>
@@ -829,7 +829,7 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">다음 마일스톤</div>
-      <div class="kpi__value">S4h 구조 개선</div>
+      <div class="kpi__value">S5 구조 개선</div>
       <div class="kpi__hint">target 단위 재구성 · anchor-conditioned decoder</div>
     </div>
     <div class="card kpi">
@@ -850,7 +850,7 @@ a { color: inherit; text-decoration: none; }
   <div class="sec__head reveal">
     <div>
       <div class="t-label">02 · 단계 진행도</div>
-      <h2 class="sec__title">S0 → S5 · 단계 게이트</h2>
+      <h2 class="sec__title">S0 → S6 · 단계 게이트</h2>
       <p class="sec__sub">의미 골격 가설을 검증하는 단계형 경로. 각 단계는 reconstruction proxy와 generation 평가를 분리하고, 상위 단계로 넘어가기 전에 control 비교를 통과해야 합니다.</p>
     </div>
   </div>
@@ -1115,6 +1115,24 @@ a { color: inherit; text-decoration: none; }
             <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/></svg>
           </span>
           <span class="phase__id">S5</span>
+        </div>
+        <span class="badge">FUTURE</span>
+      </div>
+      <h3 class="phase__title">Semantic Plan Bridge</h3>
+      <div class="phase__metric">
+        oracle plan · plan prediction<br/>
+        predicted-plan rollout
+      </div>
+      <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
+    </article>
+
+    <article class="phase phase--future" tabindex="0">
+      <div class="phase__head">
+        <div class="phase__id-row">
+          <span class="phase__icon phase__icon--future" aria-hidden="true">
+            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/></svg>
+          </span>
+          <span class="phase__id">S6</span>
         </div>
         <span class="badge">FUTURE</span>
       </div>
@@ -1874,7 +1892,7 @@ a { color: inherit; text-decoration: none; }
 
       <div class="metric-card__caveat">
         <strong>Meaning</strong>
-        <span>공유 모델에서도 semantic skeleton의 final rollout 우위는 유지됐습니다. 하지만 decoder는 content span보다 punctuation·짧은 subword artifact에 기대므로 다음은 S5가 아니라 span target 구조 개선입니다.</span>
+        <span>공유 모델에서도 semantic skeleton의 final rollout 우위는 유지됐습니다. 하지만 decoder는 content span보다 punctuation·짧은 subword artifact에 기대므로 다음은 open-ended generation이 아니라 span target 구조 개선입니다.</span>
       </div>
     </div>
 
@@ -1951,7 +1969,7 @@ a { color: inherit; text-decoration: none; }
           <span class="badge badge--red">finding</span>
           <h3 class="timeline__title">S4g pretrained decoder span 생성 실패 진단</h3>
         </div>
-        <p class="timeline__desc"><code>importance_schedule</code> rollout score 0.7314가 <code>random</code> 0.6404, <code>same_position_random</code> 0.4580, <code>wrong_document</code> -0.0021, <code>no_anchor</code> -0.0513을 모두 넘었습니다. 그러나 span content/entity recall은 모두 0.0000이고 artifact rate는 0.9961이어서 S5 scale-up보다 target/decoder 구조 개선이 먼저입니다.</p>
+        <p class="timeline__desc"><code>importance_schedule</code> rollout score 0.7314가 <code>random</code> 0.6404, <code>same_position_random</code> 0.4580, <code>wrong_document</code> -0.0021, <code>no_anchor</code> -0.0513을 모두 넘었습니다. 그러나 span content/entity recall은 모두 0.0000이고 artifact rate는 0.9961이어서 open-ended scale-up보다 target/decoder 구조 개선이 먼저입니다.</p>
       </div>
     </div>
 
@@ -2185,9 +2203,9 @@ a { color: inherit; text-decoration: none; }
     </div>
 
     <div class="card">
-      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S4h</span></div>
+      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S5</span></div>
       <h3 class="open__title">generated span content collapse</h3>
-      <p class="open__body">S4g는 pretrained decoder에서도 rollout 우위를 유지했지만 span content/entity recall은 0.0000에 머물렀습니다. 다음에는 content/function token 분리, 단어 또는 의미 chunk 단위 target, anchor-conditioned decoder로 생성 span 자체의 의미 밀도를 올려야 합니다. 구조 설명은 <a href="./s4h-structure-explainer.html" style="color:var(--text-brand); font-weight:600;">S4h explainer</a>에 별도 정리했습니다.</p>
+      <p class="open__body">S4g는 pretrained decoder에서도 rollout 우위를 유지했지만 span content/entity recall은 0.0000에 머물렀습니다. 다음 S5에서는 content/function token 분리, 단어 또는 의미 chunk 단위 target, anchor-conditioned decoder로 생성 span 자체의 의미 밀도를 올려야 합니다. 구조 설명은 <a href="./s5-semantic-plan-bridge.html" style="color:var(--text-brand); font-weight:600;">S5 explainer</a>에 별도 정리했습니다.</p>
     </div>
   </div>
 </section>
@@ -2202,7 +2220,7 @@ a { color: inherit; text-decoration: none; }
     <div class="row" style="gap:20px;">
       <span class="footer__meta">last update · 2026-05-07 14:34 KST</span>
       <a class="btn btn--secondary btn--sm" href="./research-checkpoint-s4g.html">research-checkpoint-s4g.html</a>
-      <a class="btn btn--secondary btn--sm" href="./s4h-structure-explainer.html">s4h-structure-explainer.html</a>
+      <a class="btn btn--secondary btn--sm" href="./s5-semantic-plan-bridge.html">s5-semantic-plan-bridge.html</a>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/research-timeline.md">research-timeline.md</a>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/experiment-roadmap.md">experiment-roadmap.md</a>
       <a class="btn btn--secondary btn--sm" href="../design/design-system.html">design-system.html</a>
