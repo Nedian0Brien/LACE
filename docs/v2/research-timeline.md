@@ -4,6 +4,28 @@
 
 ## 2026-05-07
 
+### 결정: heuristic planner는 연구 대상이 아니라 진단용 비교 장치로만 둔다
+
+추가 시각: 2026-05-07 15:39 KST
+
+맥락:
+
+S5 version 1은 anchor/context 기반 heuristic predicted plan을 포함했다. 사용자는 heuristic planner가 연구 대상으로 바람직하지 않다고 지적했다.
+
+결정:
+
+이 지적을 수용한다. Heuristic planner는 learned planner를 만들기 전의 임시 진단 장치였을 뿐, LACE v2의 연구 대상이나 방법론 claim으로 삼지 않는다. 앞으로 S5의 핵심 구조는 learned semantic planner로 정의한다. Heuristic은 필요할 때 smoke/control/ablation으로만 사용하고, 성능 개선이나 방법론적 기여를 주장하는 주 조건으로 두지 않는다.
+
+근거/출처:
+
+- 사용자 해석
+- `docs/v2/experiments/s5-semantic-plan-bridge.md`
+- `wiki/concepts/lace/s5-semantic-plan-bridge.md`
+
+다음 실험에 주는 의미:
+
+다음 S5 iteration의 primary condition은 learned semantic planner여야 한다. Planner는 current skeleton, left/right anchor, gap query, transition ratio를 입력받아 content word/entity plan을 예측하고, no-plan/random-plan/wrong-document-plan은 control로 둔다.
+
 ### 해석 보정: S5 predicted plan 실패는 구조 폐기보다 scale/data/capacity 부족으로도 읽어야 함
 
 추가 시각: 2026-05-07 15:37 KST

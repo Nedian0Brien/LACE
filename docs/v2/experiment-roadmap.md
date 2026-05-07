@@ -376,7 +376,7 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다. S4e에서는 이 우위가 shared-condition model에서도 유지됐지만, generated span 자체의 content/entity recall은 S4d보다 낮아졌다. S4g에서는 pretrained decoder를 붙여도 final rollout 우위는 유지됐지만 span content/entity recall은 0.0000으로 더 무너졌고 artifact rate는 0.9961까지 올랐다. S5에서는 oracle semantic plan이 span content recall 0.4144와 artifact 0.1699로 S4g collapse를 회복했지만, heuristic predicted plan은 random plan보다 낮고 no-plan rollout과 거의 같았다.
 
-따라서 다음도 아직 open-ended generation이 아니다. S5 내부에서 learned semantic planner를 만들어야 한다. 다음 gate는 skeleton/anchor/gap query에서 content word/entity plan을 예측하고, 그 predicted plan이 no-plan/random/wrong-document plan보다 rollout을 개선하는지 확인하는 것이다.
+따라서 다음도 아직 open-ended generation이 아니다. S5 내부에서 learned semantic planner를 만들어야 한다. Heuristic planner는 연구 대상이 아니라 smoke/control/ablation으로만 둔다. 다음 gate는 skeleton/anchor/gap query에서 content word/entity plan을 예측하고, 그 learned predicted plan이 no-plan/random/wrong-document plan보다 rollout을 개선하는지 확인하는 것이다.
 
 결과 문서는 다음에 있다.
 
@@ -427,7 +427,7 @@ S5: learned semantic planner iteration
 
 산출물:
 
-- heuristic planner를 learned semantic planner로 교체
+- heuristic planner를 primary condition에서 제외하고 learned semantic planner로 교체
 - planner target은 full surface span이 아니라 content word/entity plan으로 구성
 - content-applicable span 기준 plan recall/F1을 별도 집계
 - predicted-plan rollout이 no-plan/random/wrong-document plan보다 좋아지는지 확인

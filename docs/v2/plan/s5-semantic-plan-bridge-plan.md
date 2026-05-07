@@ -99,3 +99,5 @@ S5가 통과하면 S6 open-ended generation으로 넘어갈 수 있다. 통과 �
 ```
 
 S5가 실패하면 open-ended scale-up은 보류하고, anchor-conditioned decoder 또는 learned semantic planner를 별도 구조 개선으로 검토한다.
+
+실행 후 결정: heuristic planner는 후속 연구 대상이 아니라 진단용 비교 장치로만 둔다. 다음 S5 primary condition은 heuristic을 정교화하는 방향이 아니라 learned semantic planner로 교체하는 방향이어야 한다.

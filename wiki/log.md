@@ -130,3 +130,9 @@ sources: [사용자 대화]
 - 사용자의 지적을 반영해 [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]]에 scale/data/capacity caveat를 추가했다.
 - S5 version 1의 predicted plan 실패는 semantic plan 구조 폐기가 아니라, `t5-small`, 768 train samples, condition별 3,000 example cap, 1 epoch, heuristic planner 조건의 한계로 읽는 편이 더 방어 가능하다고 기록했다.
 - 다음 방향은 S6가 아니라 S5 내부 learned semantic planner scale-up으로 정리했다.
+
+## [2026-05-07] decision | heuristic planner 연구 대상 제외
+
+- 사용자의 지적을 반영해 heuristic planner를 LACE v2의 연구 대상이나 방법론 claim에서 제외했다.
+- Heuristic planner는 learned planner를 만들기 전 병목을 드러내는 smoke/control/ablation으로만 유지한다.
+- 다음 S5 primary condition은 current skeleton, left/right anchor, gap query, transition ratio에서 content word/entity plan을 예측하는 learned semantic planner로 정의했다.

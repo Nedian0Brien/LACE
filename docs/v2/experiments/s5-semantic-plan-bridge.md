@@ -168,7 +168,7 @@ but does not yet show that the model can infer that plan from the skeleton.
 남은 모호성은 다음이다.
 
 - oracle plan은 target content를 직접 사용하므로 실제 reverse model 능력으로 과장하면 안 된다.
-- predicted plan은 이번 runner에서 학습된 planner가 아니라 heuristic이다. 따라서 learned planner 가능성은 아직 남아 있다.
+- predicted plan은 이번 runner에서 학습된 planner가 아니라 heuristic이다. 따라서 이 조건은 후속 연구 대상이 아니라 learned planner를 만들기 전의 진단용 비교 장치로만 취급한다.
 - 모델과 데이터 규모도 작다. `t5-small`, train samples 768, condition별 train example cap 3,000, 1 epoch 조건이므로 predicted plan 실패를 구조 폐기로 해석하면 과도하다.
 - plan recall metric은 function-only span에서 `none` plan을 맞히는 경우를 포함하므로, no-plan/position-only의 plan recall 값은 content-plan 예측력으로 읽으면 안 된다.
 - T5-small 1 epoch, 24,000 examples 조건이므로 더 큰 모델이나 longer training의 가능성은 남아 있다.
@@ -189,7 +189,7 @@ s6_ready: false
 
 다음 구현 방향은 다음이다.
 
-1. heuristic predicted plan을 learned semantic planner로 교체한다.
+1. heuristic predicted plan을 후속 primary condition에서 제외하고 learned semantic planner로 교체한다.
 2. planner target은 full surface span이 아니라 content word/entity plan으로 둔다.
 3. planner 입력에는 current skeleton, left/right anchor, gap position, transition ratio를 넣는다.
 4. 평가에서는 plan recall/F1을 content-applicable span 기준으로 따로 집계한다.
