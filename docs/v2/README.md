@@ -73,4 +73,6 @@ S4c는 [experiments/s4c-span-infilling-reverse-decoder.md](./experiments/s4c-spa
 
 S4d는 [experiments/s4d-skeleton-conditioned-gap-span-expansion.md](./experiments/s4d-skeleton-conditioned-gap-span-expansion.md)에 기록했다. S4d는 current semantic skeleton, left/right anchor role, span marker를 입력으로 새로 열릴 contiguous gap/span만 생성했다. `importance_schedule`은 rollout score 0.7175로 `random_schedule` 0.6145, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이겼다. 따라서 같은 위치 구조에서도 실제 semantic skeleton content와 좌우 anchor가 reverse expansion에 정보를 제공한다는 해석이 가능해졌다.
 
-현재 다음 단계는 open-ended S5가 아니다. S4d의 semantic anchor 사용 신호를 유지하면서 generated span 자체의 content/entity recall을 높이고, 여섯 조건을 별도 모델로 학습하는 비용을 shared-condition runner로 줄이는 구조 보정을 먼저 수행한다.
+S4e는 [experiments/s4e-shared-condition-semantic-span-expansion.md](./experiments/s4e-shared-condition-semantic-span-expansion.md)에 기록했다. S4e는 여섯 schedule 예제를 하나의 shared-condition model로 학습해 S4d의 모델 분리 confound를 줄였다. `importance_schedule`은 rollout score 0.7569로 `random_schedule` 0.6406, `same_position_random_schedule` 0.4761, `wrong_document_same_position_schedule` 0.1396, `no_anchor_gap_only_schedule` 0.1496을 모두 이겼다. 하지만 span content recall은 0.0029로 S4d 0.0172보다 낮았고, artifact rate도 0.6906으로 높았다.
+
+현재 다음 단계는 open-ended S5가 아니다. S4e는 semantic skeleton의 final rollout 우위가 모델 분리 때문만은 아니라는 점을 강화했지만, generated span 자체의 content/entity collapse는 해결하지 못했다. 따라서 다음은 span target 구성, content/function token 분리, anchor cross-attention, 조건별 균형 샘플링 같은 구조 개선이다.

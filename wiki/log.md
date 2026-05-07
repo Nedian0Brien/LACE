@@ -3,7 +3,7 @@ title: "LACE 연구 위키 변경 로그"
 type: "summary"
 tags: [LACE, 연구위키, 로그]
 created: 2026-05-06
-updated: 2026-05-06
+updated: 2026-05-07
 sources: [사용자 대화]
 ---
 
@@ -88,3 +88,9 @@ sources: [사용자 대화]
 - S4d 결과를 [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]]에 수집했다.
 - `importance_schedule` rollout score 0.7175가 `random_schedule` 0.6145, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이긴 결과를 기록했다.
 - S4d는 같은 gap/span 위치 구조에서도 실제 semantic skeleton content와 좌우 anchor가 있어야 reverse expansion이 강해진다는 해석을 강화하지만, open-ended generation 증거는 아니라고 caveat를 남겼다.
+
+## [2026-05-07] ingest | S4e shared-condition semantic span expansion 결과
+
+- S4e 결과를 [[concepts/lace/s4e-shared-condition-semantic-span-expansion|S4e shared-condition semantic span expansion]]에 수집했다.
+- `importance_schedule` rollout score 0.7569가 `random_schedule` 0.6406, `same_position_random_schedule` 0.4761, `wrong_document_same_position_schedule` 0.1396, `no_anchor_gap_only_schedule` 0.1496을 모두 이긴 결과를 기록했다.
+- 다만 span content recall은 0.0029로 S4d보다 낮고 artifact rate는 0.6906으로 높아, 다음 단계가 S5 scale-up이 아니라 generated span content/entity collapse를 줄이는 구조 개선임을 기록했다.

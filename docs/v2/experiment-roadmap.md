@@ -269,6 +269,27 @@ Final content recall은 importance 0.3340, random 0.2448, same-position random 0
 
 다만 생성문은 아직 자연스럽지 않고 span-level content recall은 0.0172로 낮다. 또한 random은 ROUGE-L 0.3148로 importance 0.3092보다 조금 높다. 따라서 S4d는 open-ended generation 성공이 아니라 constrained gap/span expansion에서의 content-use 증거로 해석한다.
 
+## S4e. Shared-Condition Semantic Span Expansion
+
+### 질문
+
+S4d의 semantic skeleton 우위가 조건별 모델 분리 때문이 아니라, 하나의 공유 reverse model 안에서도 유지되는가? 또한 generated span 자체의 content/entity recall을 S4d보다 높일 수 있는가?
+
+### 평가 순서
+
+1. S4d의 여섯 schedule 예제를 하나로 합쳐 shared-condition model을 학습한다.
+2. 각 예제에는 `condition_id`, `gap_length`, `left_anchor_distance`, `right_anchor_distance`를 추가한다.
+3. S4d와 같은 teacher-forced span metric 및 multi-step rollout metric을 계산한다.
+4. S4d 대비 span content/entity gain과 final rollout non-regression을 함께 gate로 둔다.
+
+### 결과
+
+S4e는 `process_ready=true`, `overall_pass=false`, `structure_review_needed=true`, `s5_ready=false`였다. `importance_schedule`은 rollout score 0.7569로 `random_schedule` 0.6406, `position_only_schedule` 0.1576, `same_position_random_schedule` 0.4761, `wrong_document_same_position_schedule` 0.1396, `no_anchor_gap_only_schedule` 0.1496을 모두 이겼다.
+
+Final content recall은 importance 0.3464, random 0.2404였고, final entity recall도 importance 0.2976이 random 0.2137보다 높았다. 이는 S4d의 우위가 조건별 모델 분리 때문만은 아니라는 해석을 강화한다.
+
+하지만 S4e의 본래 개선 목표였던 span-level content/entity는 실패했다. Importance span content recall은 0.0029로 S4d 0.0172보다 낮았고, span entity recall은 0.0013으로 S4d 0.0047보다 낮았다. Artifact rate도 importance 0.6906으로 random 0.5259보다 높았다. 따라서 다음은 S5 scale-up이 아니라 generated span 자체의 의미 정보량을 높이는 구조 개선이다.
+
 ## S5. Open-ended Generation
 
 ### 질문
@@ -286,9 +307,9 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다. S4e에서는 이 우위가 shared-condition model에서도 유지됐지만, generated span 자체의 content/entity recall은 S4d보다 낮아졌다.
 
-따라서 다음도 아직 open-ended S5가 아니다. S4d에서 확인한 semantic anchor 사용 신호를 유지하면서, generated span 자체의 content/entity recall을 높이고 여섯 조건을 별도 모델로 학습하는 비용을 shared-condition runner로 줄여야 한다.
+따라서 다음도 아직 open-ended S5가 아니다. S4d/S4e에서 확인한 semantic anchor 사용 신호를 유지하면서, generated span 자체의 content/entity recall을 높여야 한다. 우선순위는 span target 구성, content/function token 분리, anchor cross-attention, 조건별 균형 샘플링이다.
 
 결과 문서는 다음에 있다.
 
@@ -304,6 +325,7 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s4b-multi-step-delta-rollout.md](./experiments/s4b-multi-step-delta-rollout.md)
 - [experiments/s4c-span-infilling-reverse-decoder.md](./experiments/s4c-span-infilling-reverse-decoder.md)
 - [experiments/s4d-skeleton-conditioned-gap-span-expansion.md](./experiments/s4d-skeleton-conditioned-gap-span-expansion.md)
+- [experiments/s4e-shared-condition-semantic-span-expansion.md](./experiments/s4e-shared-condition-semantic-span-expansion.md)
 
 핵심 판단:
 
@@ -324,17 +346,18 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 15. S4b에서는 generated delta를 다음 step 입력으로 넣는 multi-step rollout에서도 `importance_schedule`이 rollout score 0.7336으로 `random_schedule` 0.6215와 `position_only_schedule` 0.1858을 이겼다.
 16. S4c에서는 marker-position infilling이 random보다 mask accuracy는 높였지만, position-only가 같은 accuracy와 더 높은 score를 보여 semantic content 사용 증거로 방어할 수 없었다.
 17. S4d에서는 같은 gap/span 위치 구조에서도 `importance_schedule`이 rollout score 0.7175로 `random_schedule` 0.6145, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이겼다.
+18. S4e에서는 shared-condition model에서도 `importance_schedule`이 rollout score 0.7569로 모든 strict control을 이겼지만, span content recall은 0.0029로 S4d보다 낮고 artifact rate는 0.6906으로 높았다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S4e: shared-condition span expansion and generated-span content improvement
+S4f: content-aware span target decomposition
 ```
 
 산출물:
 
-- S4d의 stricter controls를 유지
-- 여섯 schedule을 별도 모델이 아니라 condition embedding이 있는 shared model로 학습
-- generated span의 content/entity recall을 별도 gate로 강화
-- punctuation/whitespace/subword artifact를 primary interpretation에서 분리
-- S5로 넘기기 전 constrained expansion 품질을 먼저 개선
+- S4d/S4e의 strict controls를 유지
+- content token span과 function/punctuation span을 분리해 평가
+- span target을 subword 조각이 아니라 더 의미 있는 chunk 단위로 구성
+- left/right anchor를 span query가 직접 참고하는 구조 검토
+- S5로 넘기기 전 generated span의 content/entity collapse를 먼저 해결

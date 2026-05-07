@@ -17,6 +17,7 @@ s4a-delta-token-reverse-objective.md
 s4b-multi-step-delta-rollout.md
 s4c-span-infilling-reverse-decoder.md
 s4d-skeleton-conditioned-gap-span-expansion.md
+s4e-shared-condition-semantic-span-expansion.md
 ```
 
 결과 문서는 다음을 반드시 분리해서 해석한다.

@@ -3,7 +3,7 @@ title: "LACE 연구 위키 색인"
 type: "summary"
 tags: [LACE, 연구위키, 색인]
 created: 2026-05-06
-updated: 2026-05-06
+updated: 2026-05-07
 sources: [사용자 대화, AGENTS.md]
 ---
 
@@ -27,6 +27,7 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s4b-multi-step-delta-rollout|S4b multi-step delta rollout]] - generated delta를 다음 step 입력으로 넣는 실제 rollout에서 importance schedule이 random과 position-only를 이긴 실험.
 - [[concepts/lace/s4c-span-infilling-reverse-decoder|S4c span-infilling reverse decoder]] - naive marker infilling이 random보다 mask accuracy는 높였지만 position-only confound와 content/entity collapse로 실패한 구조 실험.
 - [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]] - 같은 gap/span 위치 구조에서 실제 semantic skeleton content와 좌우 anchor가 random, position-only, same-position random, wrong-document, no-anchor control을 모두 이긴 구조 실험.
+- [[concepts/lace/s4e-shared-condition-semantic-span-expansion|S4e shared-condition semantic span expansion]] - S4d의 rollout 우위가 공유 모델에서도 유지됐지만 generated span content/entity 개선에는 실패한 구조 실험.
 
 ## 연구 실험
 
@@ -41,3 +42,4 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s4b-multi-step-delta-rollout|S4b multi-step delta rollout]] - final content recall 0.3357, entity recall 0.2855, repetition 0.0501로 random rollout보다 의미 보존과 반복 제어가 나은 실험.
 - [[concepts/lace/s4c-span-infilling-reverse-decoder|S4c span-infilling reverse decoder]] - marker별 독립 token 분류가 의미 span 복원으로 이어지지 않고 위치·형식 token shortcut을 드러낸 실험.
 - [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]] - rollout score 0.7175로 random 0.6145, same-position random 0.4733, wrong-document 0.0504를 넘어 semantic anchor content 사용 증거를 강화한 실험.
+- [[concepts/lace/s4e-shared-condition-semantic-span-expansion|S4e shared-condition semantic span expansion]] - shared-condition model에서도 rollout score 0.7569로 strict control을 이겼지만 span content recall은 0.0029로 낮아 구조 개선 필요성을 확인한 실험.
