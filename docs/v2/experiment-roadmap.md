@@ -342,10 +342,20 @@ Semantic chunk 또는 plan이라는 중간 표현을 주거나 예측하게 하�
 
 S5의 첫 gate는 open-ended generation이 아니다. 다음이 확인되어야 한다.
 
-- `importance_schedule`이 strict controls를 계속 이긴다.
+- `oracle_plan_schedule`이 no-plan, random-plan, wrong-document, position-only control을 이긴다.
 - generated-span-only content/entity recall이 S4g의 0.0000에서 유의하게 오른다.
 - artifact rate가 S4g의 0.9961에서 크게 내려간다.
 - final rollout score가 S4d/S4e/S4g보다 크게 퇴행하지 않는다.
+
+### 결과
+
+S5 version 1은 `process_ready=true`, `overall_pass=false`, `s6_ready=false`였다. `stage_1_oracle_plan`은 통과했지만, `stage_2_plan_prediction`과 `stage_3_predicted_plan_rollout`은 실패했다.
+
+Oracle semantic plan 조건은 S4g의 span collapse를 크게 회복했다. `oracle_plan_schedule`의 generated-span content recall은 0.4144, entity recall은 0.1191, artifact rate는 0.1699였다. S4g의 content/entity recall 0.0000, artifact 0.9961과 비교하면 semantic plan bridge 자체는 강한 upper-bound 효과를 보였다. Rollout score도 1.4027로 `no_plan_schedule` 0.7055, `random_plan_schedule` 0.7022, `same_position_random_plan_schedule` 0.4423, `wrong_document_plan_schedule` 0.0065, `position_only_plan_schedule` -0.0471을 모두 이겼다.
+
+하지만 predicted plan 조건은 실패했다. `predicted_plan_schedule`의 plan recall은 0.0146으로 `random_plan_schedule` 0.0459보다 낮았고, generated-span content/entity recall은 0.0000이었다. Rollout score도 0.7054로 `no_plan_schedule` 0.7055와 사실상 같았다. 따라서 S5는 "올바른 semantic plan이 있으면 span 생성이 살아난다"는 것은 확인했지만, "모델이 skeleton/anchor에서 그 plan을 찾을 수 있다"는 것은 아직 확인하지 못했다.
+
+또한 `shuffled_plan_schedule`은 rollout score 1.3989로 oracle 1.4027과 거의 같았다. 현재 plan 효과는 순서 있는 문장 계획이라기보다 content word bag 제공 효과에 가깝다.
 
 ## S6. Open-ended Generation
 
@@ -364,9 +374,9 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다. S4e에서는 이 우위가 shared-condition model에서도 유지됐지만, generated span 자체의 content/entity recall은 S4d보다 낮아졌다. S4g에서는 pretrained decoder를 붙여도 final rollout 우위는 유지됐지만 span content/entity recall은 0.0000으로 더 무너졌고 artifact rate는 0.9961까지 올랐다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다. S4e에서는 이 우위가 shared-condition model에서도 유지됐지만, generated span 자체의 content/entity recall은 S4d보다 낮아졌다. S4g에서는 pretrained decoder를 붙여도 final rollout 우위는 유지됐지만 span content/entity recall은 0.0000으로 더 무너졌고 artifact rate는 0.9961까지 올랐다. S5에서는 oracle semantic plan이 span content recall 0.4144와 artifact 0.1699로 S4g collapse를 회복했지만, heuristic predicted plan은 random plan보다 낮고 no-plan rollout과 거의 같았다.
 
-따라서 다음도 아직 open-ended generation이 아니다. S4d/S4e/S4g에서 확인한 semantic anchor 사용 신호를 유지하면서, generated span 자체의 content/entity recall을 높여야 한다. 코드네임 가지치기를 막기 위해 다음 구현 phase는 `S5: Semantic Plan Bridge`로 승격하고, oracle plan, plan prediction, predicted-plan rollout은 S5 내부 stage로 관리한다.
+따라서 다음도 아직 open-ended generation이 아니다. S5 내부에서 learned semantic planner를 만들어야 한다. 다음 gate는 skeleton/anchor/gap query에서 content word/entity plan을 예측하고, 그 predicted plan이 no-plan/random/wrong-document plan보다 rollout을 개선하는지 확인하는 것이다.
 
 결과 문서는 다음에 있다.
 
@@ -384,6 +394,7 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s4d-skeleton-conditioned-gap-span-expansion.md](./experiments/s4d-skeleton-conditioned-gap-span-expansion.md)
 - [experiments/s4e-shared-condition-semantic-span-expansion.md](./experiments/s4e-shared-condition-semantic-span-expansion.md)
 - [experiments/s4g-pretrained-decoder-semantic-span-expansion.md](./experiments/s4g-pretrained-decoder-semantic-span-expansion.md)
+- [experiments/s5-semantic-plan-bridge.md](./experiments/s5-semantic-plan-bridge.md)
 
 핵심 판단:
 
@@ -406,18 +417,18 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 17. S4d에서는 같은 gap/span 위치 구조에서도 `importance_schedule`이 rollout score 0.7175로 `random_schedule` 0.6145, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이겼다.
 18. S4e에서는 shared-condition model에서도 `importance_schedule`이 rollout score 0.7569로 모든 strict control을 이겼지만, span content recall은 0.0029로 S4d보다 낮고 artifact rate는 0.6906으로 높았다.
 19. S4g에서는 pretrained `t5-small` decoder를 사용해도 `importance_schedule` rollout score가 0.7314로 strict control을 모두 이겼지만, span content/entity recall은 모두 0.0000이고 artifact rate는 0.9961로 높아졌다.
+20. S5에서는 `oracle_plan_schedule`이 span content recall 0.4144, entity recall 0.1191, artifact rate 0.1699로 S4g collapse를 회복했지만, `predicted_plan_schedule`은 plan recall 0.0146으로 `random_plan_schedule` 0.0459보다 낮고 no-plan rollout과 거의 같았다.
 
-다음 Kaggle 실험 후보는 다음이다.
+다음 Kaggle 실험 후보는 새 `S` 코드네임이 아니라 S5 내부의 planner 개선 stage다.
 
 ```text
-S5: Semantic Plan Bridge
+S5: learned semantic planner iteration
 ```
 
 산출물:
 
-- S4d/S4e/S4g의 strict controls를 유지
-- `stage_1_oracle_plan`, `stage_2_plan_prediction`, `stage_3_predicted_plan_rollout`을 하나의 phase 안에서 관리
-- content token span과 function/punctuation span을 분리해 평가
-- span target을 subword 조각이 아니라 단어 또는 의미 chunk 단위로 구성
-- left/right anchor를 span query가 직접 참고하는 구조 검토
-- S6 open-ended generation으로 넘기기 전 generated span의 content/entity collapse를 먼저 해결
+- heuristic planner를 learned semantic planner로 교체
+- planner target은 full surface span이 아니라 content word/entity plan으로 구성
+- content-applicable span 기준 plan recall/F1을 별도 집계
+- predicted-plan rollout이 no-plan/random/wrong-document plan보다 좋아지는지 확인
+- S6 open-ended generation으로 넘기기 전 predicted plan bottleneck을 해결

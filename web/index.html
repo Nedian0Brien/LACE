@@ -824,18 +824,18 @@ a { color: inherit; text-decoration: none; }
   <div class="status-strip reveal-stagger">
     <div class="card kpi">
       <div class="t-label kpi__label">현재 단계</div>
-      <div class="kpi__value">S4g 진단 완료</div>
-      <div class="kpi__hint">pretrained decoder에서도 span content 0</div>
+      <div class="kpi__value">S5 부분 통과</div>
+      <div class="kpi__hint">oracle plan pass · predicted plan fail</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">다음 마일스톤</div>
-      <div class="kpi__value">S5 구조 개선</div>
-      <div class="kpi__hint">target 단위 재구성 · anchor-conditioned decoder</div>
+      <div class="kpi__value">S5 planner 개선</div>
+      <div class="kpi__hint">learned semantic planner</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">마지막 업데이트</div>
       <div class="kpi__value">05-07</div>
-      <div class="kpi__hint">2026-05-07 14:34 KST</div>
+      <div class="kpi__hint">2026-05-07 15:33 KST</div>
     </div>
     <div class="card kpi">
       <div class="t-label kpi__label">데이터 / 백본</div>
@@ -1108,20 +1108,20 @@ a { color: inherit; text-decoration: none; }
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
 
-    <article class="phase phase--future" tabindex="0">
+    <article class="phase phase--pending" tabindex="0">
       <div class="phase__head">
         <div class="phase__id-row">
-          <span class="phase__icon phase__icon--future" aria-hidden="true">
-            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/></svg>
+          <span class="phase__icon phase__icon--pending" aria-hidden="true">
+            <svg viewBox="0 0 18 18"><circle class="ring" cx="9" cy="9" r="7.2" stroke-width="1.4" fill="none"/><circle class="dot" cx="9" cy="9" r="2.4"/></svg>
           </span>
           <span class="phase__id">S5</span>
         </div>
-        <span class="badge">FUTURE</span>
+        <span class="badge badge--yel">PARTIAL</span>
       </div>
       <h3 class="phase__title">Semantic Plan Bridge</h3>
       <div class="phase__metric">
-        oracle plan · plan prediction<br/>
-        predicted-plan rollout
+        oracle content 0.4144 · artifact 0.1699<br/>
+        predicted plan recall 0.0146
       </div>
       <div class="phase__bar" aria-hidden="true"><div class="phase__bar-fill"></div></div>
     </article>
@@ -2199,13 +2199,13 @@ a { color: inherit; text-decoration: none; }
     <div class="card">
       <div class="row" style="gap:8px;"><span class="badge badge--red">caveat</span><span class="t-mono">생성 미검증</span></div>
       <h3 class="open__title">open-ended generation은 아직 미증명</h3>
-      <p class="open__body">S0–S4g는 아직 constrained/proxy 평가입니다. S4g도 위치가 주어진 gap/span expansion이지 open-ended generation 성공 증거는 아니므로 의미 일관성·반복 제어의 최종 평가는 아직 올리지 않습니다.</p>
+      <p class="open__body">S0–S5는 아직 constrained/proxy 평가입니다. S5도 oracle semantic plan upper-bound가 포함된 gap/span expansion이지 open-ended generation 성공 증거는 아니므로 의미 일관성·반복 제어의 최종 평가는 아직 올리지 않습니다.</p>
     </div>
 
     <div class="card">
-      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S5</span></div>
-      <h3 class="open__title">generated span content collapse</h3>
-      <p class="open__body">S4g는 pretrained decoder에서도 rollout 우위를 유지했지만 span content/entity recall은 0.0000에 머물렀습니다. 다음 S5에서는 content/function token 분리, 단어 또는 의미 chunk 단위 target, anchor-conditioned decoder로 생성 span 자체의 의미 밀도를 올려야 합니다. 구조 설명은 <a href="./s5-semantic-plan-bridge.html" style="color:var(--text-brand); font-weight:600;">S5 explainer</a>에 별도 정리했습니다.</p>
+      <div class="row" style="gap:8px;"><span class="badge badge--yel">next</span><span class="t-mono">S5 stage 2</span></div>
+      <h3 class="open__title">semantic plan prediction bottleneck</h3>
+      <p class="open__body">S5에서 oracle plan은 span content recall 0.4144와 artifact 0.1699로 S4g collapse를 회복했습니다. 하지만 predicted plan recall은 0.0146으로 random plan 0.0459보다 낮고 no-plan rollout과 거의 같았습니다. 다음은 S6가 아니라 learned semantic planner입니다.</p>
     </div>
   </div>
 </section>
@@ -2218,7 +2218,7 @@ a { color: inherit; text-decoration: none; }
       <div class="t-h3">v2 track · semantic skeleton + positional scaffold</div>
     </div>
     <div class="row" style="gap:20px;">
-      <span class="footer__meta">last update · 2026-05-07 14:34 KST</span>
+      <span class="footer__meta">last update · 2026-05-07 15:33 KST</span>
       <a class="btn btn--secondary btn--sm" href="./research-checkpoint-s4g.html">research-checkpoint-s4g.html</a>
       <a class="btn btn--secondary btn--sm" href="./s5-semantic-plan-bridge.html">s5-semantic-plan-bridge.html</a>
       <a class="btn btn--secondary btn--sm" href="../docs/v2/research-timeline.md">research-timeline.md</a>

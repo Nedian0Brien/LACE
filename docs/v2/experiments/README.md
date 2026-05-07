@@ -19,6 +19,7 @@ s4c-span-infilling-reverse-decoder.md
 s4d-skeleton-conditioned-gap-span-expansion.md
 s4e-shared-condition-semantic-span-expansion.md
 s4g-pretrained-decoder-semantic-span-expansion.md
+s5-semantic-plan-bridge.md
 ```
 
 결과 문서는 다음을 반드시 분리해서 해석한다.

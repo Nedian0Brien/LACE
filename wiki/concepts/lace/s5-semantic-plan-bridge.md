@@ -4,7 +4,7 @@ type: "concept"
 tags: [LACE, v2, S5, semantic-skeleton, span-expansion, anchor-attention, hierarchical-decoder]
 created: 2026-05-07
 updated: 2026-05-07
-sources: [web/s5-semantic-plan-bridge.html, docs/v2/experiments/s4g-pretrained-decoder-semantic-span-expansion.md, docs/v2/experiment-naming-rules.md]
+sources: [web/s5-semantic-plan-bridge.html, docs/v2/experiments/s4g-pretrained-decoder-semantic-span-expansion.md, docs/v2/experiments/s5-semantic-plan-bridge.md, docs/v2/experiment-naming-rules.md]
 ---
 
 # S5 Semantic Plan Bridge
@@ -58,14 +58,40 @@ S5는 final rollout score만으로 통과시키면 안 된다. S4g에서 final c
 
 통과 조건은 다음을 분리해서 본다.
 
-- `importance_schedule`이 random, same-position random, wrong-document, no-anchor control을 계속 이기는가.
+- `oracle_plan_schedule` 또는 predicted plan 조건이 no-plan, random-plan, wrong-document, position-only control을 이기는가.
 - generated-span-only content/entity recall이 S4g의 0.0000에서 오르는가.
 - artifact rate가 S4g의 0.9961에서 내려가는가.
 - final rollout score가 S4d/S4e/S4g보다 크게 퇴행하지 않는가.
 
+## S5 version 1 결과
+
+S5 version 1은 [[s4g-pretrained-decoder-semantic-span-expansion|S4g]]의 pretrained text-to-text realizer를 유지하고 `semantic plan` prompt 필드를 추가했다.
+
+결과는 둘로 갈라졌다.
+
+| 조건 | 핵심 결과 |
+|---|---|
+| `oracle_plan_schedule` | span content recall 0.4144, entity recall 0.1191, artifact 0.1699, rollout score 1.4027 |
+| `predicted_plan_schedule` | plan recall 0.0146, span content/entity 0.0000, rollout score 0.7054 |
+| `no_plan_schedule` | rollout score 0.7055 |
+| `wrong_document_plan_schedule` | rollout score 0.0065 |
+| `position_only_plan_schedule` | rollout score -0.0471 |
+
+따라서 S5 version 1은 `stage_1_oracle_plan`은 통과했지만 `stage_2_plan_prediction`과 `stage_3_predicted_plan_rollout`은 실패했다.
+
+핵심 해석은 다음이다.
+
+```text
+올바른 의미 chunk를 주면 span 생성은 살아난다.
+하지만 현재 구조는 그 의미 chunk를 스스로 찾지 못한다.
+```
+
+또한 `shuffled_plan_schedule`이 rollout score 1.3989로 oracle 1.4027과 거의 같았으므로, 이번 plan 효과는 순서 있는 문장 계획이라기보다 content word bag 제공 효과에 가깝다.
+
 ## 관련 문서
 
 - `web/s5-semantic-plan-bridge.html`
+- `docs/v2/experiments/s5-semantic-plan-bridge.md`
 - `docs/v2/experiment-naming-rules.md`
 - [[s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]]
 - [[forward-reverse-process-본질|Forward-Reverse Process 본질]]

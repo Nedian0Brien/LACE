@@ -19,6 +19,7 @@ s4c-span-infilling-reverse-decoder-plan.md
 s4d-skeleton-conditioned-gap-span-expansion-plan.md
 s4e-shared-condition-semantic-span-expansion-plan.md
 s4g-pretrained-decoder-semantic-span-expansion-plan.md
+s5-semantic-plan-bridge-plan.md
 ```
 
 계획서는 반드시 [../research-questions.md](../research-questions.md)의 어떤 질문을 검증하는지와 [../experiment-roadmap.md](../experiment-roadmap.md)의 어떤 `S` phase에 해당하는지를 명시한다.

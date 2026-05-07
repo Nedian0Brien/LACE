@@ -16,7 +16,7 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/위치-보조-구조|위치 보조 구조]] - 의미 골격을 문장으로 펼칠 때 위치와 순서 흐름을 보조하는 구조.
 - [[concepts/lace/forward-reverse-process-본질|Forward-Reverse Process 본질]] - 중요도 기반 masking schedule과 그 역과정으로 문장을 확장하는 diffusion language model이라는 v2 핵심 문제의 재정의.
 - [[concepts/lace/v2-experiment-naming-rules|v2 experiment naming rules]] - 실험 코드네임이 과도하게 가지치기되지 않도록 `S{n}`, stage, condition, gate의 역할을 분리한 규칙.
-- [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]] - subword 조각 복원 대신 anchor-conditioned gap query가 content chunk를 먼저 계획하고 surface span으로 실현하는 다음 phase.
+- [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]] - oracle semantic plan은 span collapse를 회복했지만 predicted plan은 실패해 learned planner가 다음 병목으로 드러난 phase.
 - [[concepts/lace/attention-scaffold|attention_scaffold]] - attention 수신 점수로 고른 의미 골격과 위치 보조 구조를 결합한 S2 핵심 입력 조건.
 - [[concepts/lace/sinusoidal-absolute|sinusoidal_absolute]] - 원래 token index를 사인/코사인 파형 좌표로 바꿔 의미 골격에 더하는 절대 위치 부호화 방식.
 - [[concepts/lace/s2a-positional-encoding|S2a-positional encoding]] - S3 전에 위치 보조 구조 후보를 learned/sinusoidal/relative/rotary 방식으로 비교한 실험.
@@ -47,4 +47,4 @@ sources: [사용자 대화, AGENTS.md]
 - [[concepts/lace/s4d-skeleton-conditioned-gap-span-expansion|S4d skeleton-conditioned gap/span expansion]] - rollout score 0.7175로 random 0.6145, same-position random 0.4733, wrong-document 0.0504를 넘어 semantic anchor content 사용 증거를 강화한 실험.
 - [[concepts/lace/s4e-shared-condition-semantic-span-expansion|S4e shared-condition semantic span expansion]] - shared-condition model에서도 rollout score 0.7569로 strict control을 이겼지만 span content recall은 0.0029로 낮아 구조 개선 필요성을 확인한 실험.
 - [[concepts/lace/s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]] - pretrained decoder로도 `importance_schedule` rollout score 0.7314가 strict control을 이겼지만 span content/entity recall은 0.0000으로 무너져 S5 scale-up 보류를 강화한 실험.
-- [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]] - S4g 이후 다음 실험 후보를 한국어 예시와 시각 설명으로 구체화하고, 코드네임 가지치기를 막기 위해 새 phase로 승격한 구조 설계.
+- [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]] - S5 version 1 결과를 반영해 `stage_1_oracle_plan` 통과와 `stage_2/3` 실패를 기록한 구조 설계 및 실험 항목.

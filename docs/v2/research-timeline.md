@@ -4,6 +4,52 @@
 
 ## 2026-05-07
 
+### 발견: S5 Semantic Plan Bridge는 oracle plan에서 span collapse를 회복했지만 predicted plan은 실패
+
+추가 시각: 2026-05-07 15:33 KST
+
+맥락:
+
+S4g는 pretrained `t5-small` decoder를 써도 generated span content/entity recall이 0.0000이고 artifact rate가 0.9961이었다. 따라서 S5에서는 skeleton과 surface span 사이에 semantic plan 중간 표현을 넣어, 올바른 content chunk가 주어질 때 span 생성이 살아나는지 확인했다.
+
+결과:
+
+S5는 Kaggle kernel `dennisparknd/lace-v2-s5-semantic-plan-bridge` version 1로 실행했다. `oracle_plan_schedule`은 span content recall 0.4144, entity recall 0.1191, artifact rate 0.1699로 S4g의 span collapse를 크게 회복했다. Rollout score도 1.4027로 `no_plan_schedule` 0.7055, `random_plan_schedule` 0.7022, `same_position_random_plan_schedule` 0.4423, `wrong_document_plan_schedule` 0.0065, `position_only_plan_schedule` -0.0471을 모두 이겼다.
+
+하지만 `predicted_plan_schedule`은 plan recall 0.0146으로 `random_plan_schedule` 0.0459보다 낮았고, generated span content/entity recall은 0.0000이었다. Rollout score도 0.7054로 no-plan 0.7055와 사실상 같았다. 따라서 S5는 `stage_1_oracle_plan`은 통과했지만 `stage_2_plan_prediction`과 `stage_3_predicted_plan_rollout`은 실패했다.
+
+근거/출처:
+
+- `outputs/v2_s5/lace_v2_s5/metrics.json`
+- `outputs/v2_s5/lace_v2_s5/summary.md`
+- `docs/v2/experiments/s5-semantic-plan-bridge.md`
+
+다음 실험에 주는 의미:
+
+S6 open-ended generation은 아직 보류한다. 다음은 S5 내부에서 heuristic planner를 learned semantic planner로 교체하고, content-applicable span 기준 plan recall/F1을 별도로 집계한 뒤, predicted plan rollout이 no-plan/random/wrong-document plan보다 좋아지는지 확인해야 한다.
+
+### 결정: S5 Semantic Plan Bridge runner와 계획서 작성
+
+추가 시각: 2026-05-07 15:03 KST
+
+맥락:
+
+사용자는 S5 실험 진행을 승인했다. 직전 코드네임 규칙에 따라 S5는 `S5a/S5b`로 가지치기하지 않고, oracle plan, plan prediction, predicted-plan rollout을 하나의 phase 안의 stage로 관리한다.
+
+결정:
+
+`kaggle/v2_s5/run_v2_s5.py`, `scripts/push_kaggle_v2_s5.sh`, `docs/v2/plan/s5-semantic-plan-bridge-plan.md`를 추가했다. 첫 runner는 S4g의 pretrained text-to-text realizer를 유지하면서 prompt에 `semantic plan` 필드를 추가한다. 조건은 `oracle_plan_schedule`, `predicted_plan_schedule`, `no_plan_schedule`, `random_plan_schedule`, `same_position_random_plan_schedule`, `wrong_document_plan_schedule`, `position_only_plan_schedule`, `shuffled_plan_schedule`로 둔다.
+
+근거/출처:
+
+- `docs/v2/plan/s5-semantic-plan-bridge-plan.md`
+- `kaggle/v2_s5/run_v2_s5.py`
+- `scripts/push_kaggle_v2_s5.sh`
+
+다음 실험에 주는 의미:
+
+S5는 open-ended generation 실험이 아니라 span-level semantic generation 병목을 확인하는 구조 실험이다. 로컬 smoke는 runner plumbing 확인에만 사용하고, 실제 해석은 Kaggle full run output으로 한다.
+
 ### 결정: 실험 코드네임 가지치기 방지 규칙 확정
 
 추가 시각: 2026-05-07 14:46 KST

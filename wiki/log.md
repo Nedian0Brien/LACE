@@ -118,3 +118,9 @@ sources: [사용자 대화]
 - `docs/v2/experiment-naming-rules.md`를 생성해 `S{n}`은 독립 연구 질문 또는 phase gate, `stage`는 같은 phase 안의 내부 단계, `condition`은 같은 runner 안의 비교 조건으로 정의했다.
 - 과거에 `S4h`라고 부르던 구조 후보를 구현 phase명으로 쓰지 않고 `S5: Semantic Plan Bridge`로 승격했다.
 - open-ended generation은 S5가 통과한 뒤의 `S6`로 정리했다.
+
+## [2026-05-07] ingest | S5 Semantic Plan Bridge 결과
+
+- S5 결과를 [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]]에 수집했다.
+- `oracle_plan_schedule`은 span content recall 0.4144, entity recall 0.1191, artifact rate 0.1699로 S4g의 span collapse를 회복했고 rollout score 1.4027로 no-plan, random-plan, wrong-document, position-only control을 모두 이겼다.
+- 하지만 `predicted_plan_schedule`은 plan recall 0.0146으로 random plan 0.0459보다 낮고 no-plan rollout과 거의 같아, S6가 아니라 S5 내부 learned semantic planner가 다음 병목임을 기록했다.
