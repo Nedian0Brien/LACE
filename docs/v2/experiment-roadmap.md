@@ -290,6 +290,28 @@ Final content recall은 importance 0.3464, random 0.2404였고, final entity rec
 
 하지만 S4e의 본래 개선 목표였던 span-level content/entity는 실패했다. Importance span content recall은 0.0029로 S4d 0.0172보다 낮았고, span entity recall은 0.0013으로 S4d 0.0047보다 낮았다. Artifact rate도 importance 0.6906으로 random 0.5259보다 높았다. 따라서 다음은 S5 scale-up이 아니라 generated span 자체의 의미 정보량을 높이는 구조 개선이다.
 
+## S4g. Pretrained Decoder Semantic Span Expansion
+
+### 질문
+
+S4e의 generated span content/entity collapse가 작은 custom decoder의 언어 prior 부족 때문인가, 아니면 현재 span target 구성과 reverse expansion 구조 자체의 병목인가?
+
+### 평가 순서
+
+1. S4d/S4e의 six-control gap/span expansion 비교를 유지한다.
+2. 작은 custom decoder 대신 pretrained `t5-small` seq2seq decoder를 사용한다.
+3. condition, transition, span position, anchor distance, current skeleton text를 prompt로 직렬화한다.
+4. target은 newly unmasked span text만 둔다.
+5. S4e 대비 span content/entity gain과 artifact 감소를 핵심 gate로 둔다.
+
+### 결과
+
+S4g는 `process_ready=true`, `overall_pass=false`, `structure_review_needed=true`, `s5_ready=false`였다. `importance_schedule`은 rollout score 0.7314로 `random_schedule` 0.6404, `position_only_schedule` -0.0237, `same_position_random_schedule` 0.4580, `wrong_document_same_position_schedule` -0.0021, `no_anchor_gap_only_schedule` -0.0513을 모두 이겼다.
+
+Final content recall은 importance 0.3432, random 0.2582였고, final entity recall은 importance 0.2901, random 0.2260이었다. 따라서 pretrained decoder 조건에서도 semantic skeleton과 anchor가 있는 trajectory의 final rollout 우위는 유지됐다.
+
+하지만 S4g가 해결하려던 span-level semantic generation은 실패했다. Importance span content recall과 span entity recall은 모두 0.0000이고, artifact rate는 0.9961로 S4e 0.6906보다 나빠졌다. 따라서 S4e의 실패를 작은 decoder 규모 문제로만 설명하기 어렵다. 다음은 S5 scale-up이 아니라 span target 단위 재구성, content/function token 분리, anchor-conditioned decoder 구조 개선이다.
+
 ## S5. Open-ended Generation
 
 ### 질문
@@ -307,9 +329,9 @@ Semantic skeleton 기반 reverse process가 open-ended generation에서 random c
 
 ## 현재 다음 단계 추천
 
-S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다. S4e에서는 이 우위가 shared-condition model에서도 유지됐지만, generated span 자체의 content/entity recall은 S4d보다 낮아졌다.
+S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하지 못했다. S3a/S3b는 terminal probe confound를 분해했고, S4는 importance-ordered reverse transition을 process-level로 비교했다. S4에서 random은 종합 score와 표면 복원 지표가 더 좋았지만, importance는 의미 보존/확장 지표가 더 좋았다. S4a에서 objective를 newly unmasked delta token/span 예측으로 바꾸자 importance가 random과 position-only를 모두 이겼다. S4b에서는 이 우위가 multi-step rollout에서도 유지됐고, 특히 position-only가 semantic final state에서 무너졌다. S4c의 naive marker-position infilling은 position-only confound와 content/entity collapse로 실패했다. S4d는 left/right anchor role을 쓰는 gap/span expansion으로 바꾸자 same-position random, wrong-document, no-anchor control까지 모두 이겼다. S4e에서는 이 우위가 shared-condition model에서도 유지됐지만, generated span 자체의 content/entity recall은 S4d보다 낮아졌다. S4g에서는 pretrained decoder를 붙여도 final rollout 우위는 유지됐지만 span content/entity recall은 0.0000으로 더 무너졌고 artifact rate는 0.9961까지 올랐다.
 
-따라서 다음도 아직 open-ended S5가 아니다. S4d/S4e에서 확인한 semantic anchor 사용 신호를 유지하면서, generated span 자체의 content/entity recall을 높여야 한다. 우선순위는 span target 구성, content/function token 분리, anchor cross-attention, 조건별 균형 샘플링이다.
+따라서 다음도 아직 open-ended S5가 아니다. S4d/S4e/S4g에서 확인한 semantic anchor 사용 신호를 유지하면서, generated span 자체의 content/entity recall을 높여야 한다. 우선순위는 span target 단위 재구성, content/function token 분리, anchor-conditioned decoder, 조건별 균형 샘플링이다.
 
 결과 문서는 다음에 있다.
 
@@ -326,6 +348,7 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 - [experiments/s4c-span-infilling-reverse-decoder.md](./experiments/s4c-span-infilling-reverse-decoder.md)
 - [experiments/s4d-skeleton-conditioned-gap-span-expansion.md](./experiments/s4d-skeleton-conditioned-gap-span-expansion.md)
 - [experiments/s4e-shared-condition-semantic-span-expansion.md](./experiments/s4e-shared-condition-semantic-span-expansion.md)
+- [experiments/s4g-pretrained-decoder-semantic-span-expansion.md](./experiments/s4g-pretrained-decoder-semantic-span-expansion.md)
 
 핵심 판단:
 
@@ -347,17 +370,18 @@ S0, S1, S2, S2a는 통과했고, S3는 실행됐지만 핵심 gate를 통과하�
 16. S4c에서는 marker-position infilling이 random보다 mask accuracy는 높였지만, position-only가 같은 accuracy와 더 높은 score를 보여 semantic content 사용 증거로 방어할 수 없었다.
 17. S4d에서는 같은 gap/span 위치 구조에서도 `importance_schedule`이 rollout score 0.7175로 `random_schedule` 0.6145, `same_position_random_schedule` 0.4733, `wrong_document_same_position_schedule` 0.0504, `no_anchor_gap_only_schedule` 0.0300을 모두 이겼다.
 18. S4e에서는 shared-condition model에서도 `importance_schedule`이 rollout score 0.7569로 모든 strict control을 이겼지만, span content recall은 0.0029로 S4d보다 낮고 artifact rate는 0.6906으로 높았다.
+19. S4g에서는 pretrained `t5-small` decoder를 사용해도 `importance_schedule` rollout score가 0.7314로 strict control을 모두 이겼지만, span content/entity recall은 모두 0.0000이고 artifact rate는 0.9961로 높아졌다.
 
 다음 Kaggle 실험 후보는 다음이다.
 
 ```text
-S4f: content-aware span target decomposition
+S4h: content-aware span target decomposition
 ```
 
 산출물:
 
-- S4d/S4e의 strict controls를 유지
+- S4d/S4e/S4g의 strict controls를 유지
 - content token span과 function/punctuation span을 분리해 평가
-- span target을 subword 조각이 아니라 더 의미 있는 chunk 단위로 구성
+- span target을 subword 조각이 아니라 단어 또는 의미 chunk 단위로 구성
 - left/right anchor를 span query가 직접 참고하는 구조 검토
 - S5로 넘기기 전 generated span의 content/entity collapse를 먼저 해결

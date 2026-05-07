@@ -94,3 +94,15 @@ sources: [사용자 대화]
 - S4e 결과를 [[concepts/lace/s4e-shared-condition-semantic-span-expansion|S4e shared-condition semantic span expansion]]에 수집했다.
 - `importance_schedule` rollout score 0.7569가 `random_schedule` 0.6406, `same_position_random_schedule` 0.4761, `wrong_document_same_position_schedule` 0.1396, `no_anchor_gap_only_schedule` 0.1496을 모두 이긴 결과를 기록했다.
 - 다만 span content recall은 0.0029로 S4d보다 낮고 artifact rate는 0.6906으로 높아, 다음 단계가 S5 scale-up이 아니라 generated span content/entity collapse를 줄이는 구조 개선임을 기록했다.
+
+## [2026-05-07] ingest | S4g pretrained decoder semantic span expansion 결과
+
+- S4g 결과를 [[concepts/lace/s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]]에 수집했다.
+- pretrained `t5-small` decoder 조건에서도 `importance_schedule` rollout score 0.7314가 `random_schedule` 0.6404, `same_position_random_schedule` 0.4580, `wrong_document_same_position_schedule` -0.0021, `no_anchor_gap_only_schedule` -0.0513을 이긴 결과를 기록했다.
+- 하지만 span content/entity recall은 모두 0.0000이고 artifact rate는 0.9961이어서, S4e 실패를 작은 decoder 규모 문제만으로 설명하기 어렵고 다음 단계가 S5 scale-up이 아니라 span target/decoder 구조 개선임을 기록했다.
+
+## [2026-05-07] structure | S4g 연구 중간 체크포인트 HTML 생성
+
+- `web/research-checkpoint-s4g.html`을 생성해 S0부터 S4g까지의 연구 상태를 process signal, span semantic collapse, S5 readiness, 다음 구조 개선 gate로 나누어 시각화했다.
+- `web/index.html`에 S4g 결과 카드, 최신 타임라인 항목, 체크포인트 링크를 추가했다.
+- 체크포인트는 `design/design-system.html`의 중립 색상, 단색 accent, dense metric card 스타일을 따르되, S4g 이후 핵심 판단인 "S5 보류, S4h 구조 개선"이 첫 화면에서 보이도록 구성했다.

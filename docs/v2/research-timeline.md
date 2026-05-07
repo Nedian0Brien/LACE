@@ -4,6 +4,55 @@
 
 ## 2026-05-07
 
+### 발견: S4g pretrained decoder는 rollout 우위를 유지했지만 span semantic generation을 해결하지 못함
+
+추가 시각: 2026-05-07 14:06 KST
+
+맥락:
+
+S4e는 shared-condition model에서도 `importance_schedule`의 final rollout 우위가 유지됨을 보였지만, generated span content/entity recall은 거의 무너졌고 artifact rate가 높았다. 사용자는 custom decoder 규모가 제대로 된 언어 생성을 하기에는 너무 작을 수 있다고 지적했다. S4g는 이 반론을 확인하기 위해 pretrained `t5-small` seq2seq decoder를 사용했다.
+
+결과:
+
+S4g는 `process_ready=true`, `overall_pass=false`, `structure_review_needed=true`, `s5_ready=false`였다. `importance_schedule` rollout score는 0.7314로 `random_schedule` 0.6404, `position_only_schedule` -0.0237, `same_position_random_schedule` 0.4580, `wrong_document_same_position_schedule` -0.0021, `no_anchor_gap_only_schedule` -0.0513을 모두 이겼다. Final content recall은 importance 0.3432, random 0.2582였고, final entity recall도 importance 0.2901, random 0.2260보다 높았다.
+
+주의점:
+
+S4g의 본래 목표였던 span-level semantic generation은 실패했다. Importance span content recall과 span entity recall은 모두 0.0000이고, artifact rate는 0.9961로 S4e 0.6906보다 높았다. 샘플에서는 target이 `brown`, `Australia`, `character`, `10` 같은 content token일 때도 prediction이 쉼표, `s`, 빈 조각에 가까운 token으로 수렴했다. 따라서 final rollout 우위는 새 span 생성 성공보다 기존 skeleton content 보존 효과가 강하게 반영된 결과로 해석해야 한다.
+
+근거/출처:
+
+- `outputs/v2_s4g/lace_v2_s4g/summary.md`
+- `outputs/v2_s4g/lace_v2_s4g/metrics.json`
+- `outputs/v2_s4g/lace_v2_s4g/reverse_transition_samples.jsonl`
+- `docs/v2/experiments/s4g-pretrained-decoder-semantic-span-expansion.md`
+
+다음 실험에 주는 의미:
+
+S4g는 S4e 실패를 작은 decoder의 언어 prior 부족으로만 설명하기 어렵게 만든다. 다음은 S5 scale-up이 아니라 span target 단위 재구성, content/function token 분리, anchor-conditioned decoder 구조처럼 새로 unmask되는 span 자체가 실제 content/entity를 담도록 만드는 구조 개선이어야 한다.
+
+### 결정: S4g pretrained decoder semantic span expansion 개시
+
+추가 시각: 2026-05-07 13:53 KST
+
+맥락:
+
+S4e는 shared-condition model에서도 `importance_schedule`의 rollout 우위가 유지됨을 보였지만, generated span content/entity recall은 낮고 artifact rate가 높았다. 사용자는 제대로 된 언어 생성을 하기에는 현재 custom decoder 규모가 너무 작다는 점을 지적했다. 따라서 S4e 실패가 구조 문제인지, 작은 decoder의 언어 prior 부족인지 분리해야 한다.
+
+결정:
+
+S4g는 S4d/S4e의 six-control gap/span expansion 장치를 유지하되, 작은 custom decoder를 `AutoModelForSeq2SeqLM` 기반 pretrained decoder로 바꾼다. 입력은 condition, transition, span position, anchor distance, current skeleton text를 직렬화한 text prompt이고, target은 newly unmasked span text다. 학습 objective는 일반 seq2seq cross entropy로 유지한다.
+
+근거/출처:
+
+- `docs/v2/experiments/s4e-shared-condition-semantic-span-expansion.md`
+- `docs/v2/plan/s4g-pretrained-decoder-semantic-span-expansion-plan.md`
+- `kaggle/v2_s4g/run_v2_s4g.py`
+
+다음 실험에 주는 의미:
+
+S4g가 span content/entity를 높이고 artifact를 낮추면서 strict control 우위를 유지하면, S4e 실패의 상당 부분은 작은 decoder의 언어 prior 부족으로 해석할 수 있다. 반대로 no-anchor/random도 함께 좋아지거나 artifact가 계속 높으면, 단순 scale-up보다 span target 구성과 anchor 사용 구조를 먼저 개선해야 한다.
+
 ### 발견: S4e shared-condition model은 rollout 우위를 유지했지만 span content 개선에는 실패
 
 추가 시각: 2026-05-07 13:00 KST
