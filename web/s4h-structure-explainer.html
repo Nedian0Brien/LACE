@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>LACE v2 · S4h 구조 설명서</title>
+<meta name="description" content="S4h anchor-conditioned hierarchical span expansion 구조를 한국어 예문과 시각 예시로 설명하는 문서." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  font-family: "Inter", "Pretendard Variable", Pretendard, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background: #fff;
+  color: #141414;
+  font-size: 15px;
+  line-height: 1.58;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration: none; }
+strong { font-weight: 800; }
+
+:root {
+  --bg: #fff;
+  --soft: #f6f6f6;
+  --line-soft: #ededed;
+  --line: #dedede;
+  --text: #141414;
+  --muted: #666;
+  --faint: #8a8a8a;
+  --blue: #0067d9;
+  --blue-soft: #eaf3ff;
+  --green: #15803d;
+  --green-soft: #eaf8ef;
+  --red: #c73516;
+  --red-soft: #fff0ea;
+  --yellow: #a46400;
+  --yellow-soft: #fff5cf;
+  --purple: #7048e8;
+  --purple-soft: #f1edff;
+  --teal: #0f766e;
+  --teal-soft: #e6f7f5;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 8px;
+  --max: 1180px;
+  --pad: 24px;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, .9);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar__inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  height: 58px;
+  padding: 0 var(--pad);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+}
+.brand__mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: inline-grid;
+  place-items: center;
+  background: var(--text);
+  color: #fff;
+  font-size: 12px;
+}
+.nav {
+  display: flex;
+  gap: 2px;
+  margin-left: 6px;
+}
+.nav a {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 7px 10px;
+  border-radius: 7px;
+}
+.nav a:hover { background: var(--soft); color: var(--text); }
+.spacer { flex: 1; }
+.btn {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 800;
+}
+.btn:hover { background: var(--soft); }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+.section { padding: 56px 0 8px; }
+.hero {
+  padding: 78px 0 46px;
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(90deg, transparent 0, transparent 23px, rgba(0,0,0,.035) 24px),
+    linear-gradient(180deg, transparent 0, transparent 23px, rgba(0,0,0,.035) 24px);
+  background-size: 24px 24px;
+}
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 44px;
+  align-items: end;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.h1 {
+  margin: 14px 0 0;
+  max-width: 820px;
+  font-size: clamp(38px, 6vw, 68px);
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+.lead {
+  margin: 20px 0 0;
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 17px;
+}
+.hero-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  padding: 18px;
+}
+.hero-card__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+}
+.hero-card__body {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.claim {
+  margin-top: 24px;
+  padding: 15px 18px;
+  border-left: 4px solid var(--blue);
+  background: var(--blue-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-family: var(--mono);
+  color: #0b4c9a;
+  font-size: 13px;
+}
+
+.section__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.h2 {
+  margin: 6px 0 0;
+  font-size: 29px;
+  line-height: 1.15;
+}
+.sub {
+  margin: 6px 0 0;
+  max-width: 720px;
+  color: var(--muted);
+}
+.meta {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  padding: 20px;
+}
+.panel--soft { background: var(--soft); }
+.panel__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.panel__title { margin: 0; font-size: 18px; line-height: 1.2; }
+.panel__body { margin: 10px 0 0; color: var(--muted); }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--soft);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.tag--blue { color: var(--blue); background: var(--blue-soft); border-color: #bad7ff; }
+.tag--green { color: var(--green); background: var(--green-soft); border-color: #bfe5ce; }
+.tag--red { color: var(--red); background: var(--red-soft); border-color: #ffc9b8; }
+.tag--yellow { color: var(--yellow); background: var(--yellow-soft); border-color: #f0d487; }
+.tag--purple { color: var(--purple); background: var(--purple-soft); border-color: #d4c9ff; }
+.tag--teal { color: var(--teal); background: var(--teal-soft); border-color: #b7e8e3; }
+
+.sentence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft);
+}
+.tok {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.tok--keep { color: var(--blue); border-color: #bad7ff; background: var(--blue-soft); }
+.tok--gap { color: var(--red); border-style: dashed; background: var(--red-soft); }
+.tok--chunk { color: var(--green); border-color: #bfe5ce; background: var(--green-soft); }
+.tok--fn { color: var(--yellow); border-color: #f0d487; background: var(--yellow-soft); }
+.tok--muted { color: var(--faint); background: #fafafa; }
+
+.arrow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+  margin: 18px 0;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.arrow::before,
+.arrow::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--line);
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+}
+.wrong { border-color: #ffc9b8; background: var(--red-soft); }
+.right { border-color: #bfe5ce; background: var(--green-soft); }
+.mini-label {
+  font-family: var(--mono);
+  color: var(--faint);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.step {
+  min-height: 150px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  position: relative;
+}
+.step::after {
+  content: "→";
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  transform: translateY(-50%);
+  color: var(--faint);
+  font-family: var(--mono);
+  font-weight: 800;
+}
+.step:last-child::after { display: none; }
+.step__num {
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--text);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+.step__title {
+  margin: 12px 0 8px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.step__body {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.attention {
+  min-height: 300px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.attention__row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+.node {
+  min-height: 74px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  padding: 12px;
+  text-align: center;
+}
+.node--anchor { border-color: #bad7ff; background: var(--blue-soft); color: var(--blue); }
+.node--query { border-color: #d4c9ff; background: var(--purple-soft); color: var(--purple); }
+.node--plan { border-color: #bfe5ce; background: var(--green-soft); color: var(--green); }
+.node__label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.beam {
+  position: absolute;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(0,103,217,.18), rgba(112,72,232,.58), rgba(21,128,61,.18));
+  border-radius: 999px;
+  transform-origin: left center;
+}
+.beam--left { width: 37%; left: 16%; top: 155px; transform: rotate(10deg); }
+.beam--right { width: 37%; right: 16%; top: 155px; transform: rotate(-10deg); }
+.beam--global { width: 64%; left: 18%; top: 230px; background: rgba(0,0,0,.12); }
+
+.ladder {
+  display: grid;
+  gap: 12px;
+}
+.ladder__row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+.ladder__label {
+  font-family: var(--mono);
+  color: var(--faint);
+  font-size: 12px;
+}
+.bar {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px;
+  background: #fff;
+}
+
+.example-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  background: #fff;
+}
+.example-card__title { margin: 0; font-size: 18px; }
+.flow-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.flow-table th,
+.flow-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.flow-table th {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.flow-table tr:last-child td { border-bottom: 0; }
+
+.summary-band {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--soft);
+}
+.principles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.principle {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  padding: 16px;
+}
+.principle__title { margin: 8px 0 0; font-weight: 800; }
+.principle__body { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+
+.footer {
+  margin-top: 58px;
+  padding: 36px 0 52px;
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  font-size: 13px;
+}
+
+@media (max-width: 1040px) {
+  .hero__grid,
+  .grid-2,
+  .compare { grid-template-columns: 1fr; }
+  .grid-3,
+  .principles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pipeline { grid-template-columns: 1fr; }
+  .step::after { display: none; }
+  .attention__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  :root { --pad: 18px; }
+  .nav { display: none; }
+  .grid-3,
+  .principles { grid-template-columns: 1fr; }
+  .section__head { display: block; }
+  .ladder__row { grid-template-columns: 1fr; gap: 6px; }
+  .attention { min-height: auto; }
+  .beam { display: none; }
+}
+</style>
+</head>
+
+<body>
+<nav class="topbar" aria-label="primary">
+  <div class="topbar__inner">
+    <a class="brand" href="./index.html">
+      <span class="brand__mark">L</span>
+      LACE v2
+    </a>
+    <div class="nav">
+      <a href="#problem">문제</a>
+      <a href="#proposal">구조</a>
+      <a href="#examples">예문</a>
+      <a href="#gates">게이트</a>
+    </div>
+    <div class="spacer"></div>
+    <a class="btn" href="./research-checkpoint-s4g.html">S4g 체크포인트</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <div class="eyebrow">S4h design explainer · anchor-conditioned hierarchical span expansion</div>
+      <h1 class="h1">token 조각 복원이 아니라, 의미 chunk를 먼저 세우고 문장을 확장한다.</h1>
+      <p class="lead">
+        S4g는 pretrained decoder를 붙여도 새 span을 의미 있게 생성하지 못했다. 그래서 S4h의 핵심은 모델을 더 키우는 것이 아니라,
+        reverse process의 단위를 subword 조각에서 의미 있는 word/chunk 단위로 바꾸는 것이다.
+      </p>
+      <div class="claim">핵심 직관: 뼈대 토큰 사이의 빈칸을 "쉼표 하나"로 맞히는 문제가 아니라, "이 자리에는 어떤 의미 단위가 들어가야 하는가"를 먼저 맞히는 문제로 바꾼다.</div>
+    </div>
+    <aside class="hero-card">
+      <div class="eyebrow">one sentence summary</div>
+      <h2 class="hero-card__title">먼저 의미 계획, 그 다음 표면 문장.</h2>
+      <p class="hero-card__body">
+        `고양이 / 창가 / 잠들었다`라는 skeleton에서 바로 subword를 맞히지 않는다.
+        먼저 `검은`, `조용히` 같은 의미 chunk를 고르고, 이후 조사·어미·쉼표를 붙여 자연문으로 만든다.
+      </p>
+    </aside>
+  </div>
+</header>
+
+<main>
+  <section class="wrap section" id="problem">
+    <div class="section__head">
+      <div>
+        <div class="eyebrow">01 · why S4g failed</div>
+        <h2 class="h2">현재 구조는 의미 확장이 아니라 조각 맞히기로 변질됐다</h2>
+        <p class="sub">같은 원문을 두 방식으로 보면 문제가 바로 보인다. 우리가 원하는 것은 오른쪽인데, S4g가 실제로 학습한 문제는 왼쪽에 가까웠다.</p>
+      </div>
+      <div class="meta">한국어 예시 · 설명용 synthetic sentence</div>
+    </div>
+
+    <div class="compare">
+      <article class="panel wrong">
+        <div class="panel__top">
+          <h3 class="panel__title">S4g식 target</h3>
+          <span class="tag tag--red">bad unit</span>
+        </div>
+        <div class="sentence">
+          <span class="tok tok--keep">고양이</span>
+          <span class="tok tok--gap">▢</span>
+          <span class="tok tok--keep">창가</span>
+          <span class="tok tok--gap">▢</span>
+          <span class="tok tok--keep">잠들었다</span>
+        </div>
+        <div class="arrow">target examples</div>
+        <div class="sentence">
+          <span class="tok tok--gap">,</span>
+          <span class="tok tok--gap">은</span>
+          <span class="tok tok--gap">히</span>
+          <span class="tok tok--gap">▁</span>
+        </div>
+        <p class="panel__body">모델은 의미를 복원하기보다 빈번한 표면 조각을 맞히는 쪽으로 유리해진다.</p>
+      </article>
+
+      <article class="panel right">
+        <div class="panel__top">
+          <h3 class="panel__title">S4h식 target</h3>
+          <span class="tag tag--green">semantic unit</span>
+        </div>
+        <div class="sentence">
+          <span class="tok tok--keep">고양이</span>
+          <span class="tok tok--gap">▢</span>
+          <span class="tok tok--keep">창가</span>
+          <span class="tok tok--gap">▢</span>
+          <span class="tok tok--keep">잠들었다</span>
+        </div>
+        <div class="arrow">target chunks</div>
+        <div class="sentence">
+          <span class="tok tok--chunk">검은</span>
+          <span class="tok tok--chunk">조용히</span>
+          <span class="tok tok--fn">가</span>
+          <span class="tok tok--fn">에서</span>
+        </div>
+        <p class="panel__body">모델은 먼저 의미 chunk를 채우고, 기능어와 표면 형식은 뒤에서 정리한다.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap section" id="proposal">
+    <div class="section__head">
+      <div>
+        <div class="eyebrow">02 · proposed structure</div>
+        <h2 class="h2">S4h: anchor-conditioned hierarchical span expansion</h2>
+        <p class="sub">구조는 다섯 부분으로 나눈다. 중요한 점은 gap 하나가 독립 token 위치가 아니라, 좌우 anchor 사이에 있는 의미 query가 된다는 것이다.</p>
+      </div>
+    </div>
+
+    <div class="pipeline">
+      <div class="step">
+        <span class="step__num">1</span>
+        <div class="step__title">Skeleton Encoder</div>
+        <div class="step__body">현재 남아 있는 의미 골격, 위치, transition ratio를 encoding한다.</div>
+      </div>
+      <div class="step">
+        <span class="step__num">2</span>
+        <div class="step__title">Gap Query Builder</div>
+        <div class="step__body">연속된 빈칸을 하나의 span query로 묶고 좌우 anchor를 찾는다.</div>
+      </div>
+      <div class="step">
+        <span class="step__num">3</span>
+        <div class="step__title">Anchor Attention</div>
+        <div class="step__body">query가 left/right anchor와 전체 skeleton을 직접 attention한다.</div>
+      </div>
+      <div class="step">
+        <span class="step__num">4</span>
+        <div class="step__title">Semantic Planner</div>
+        <div class="step__body">이 gap에 들어갈 content chunk를 먼저 예측한다.</div>
+      </div>
+      <div class="step">
+        <span class="step__num">5</span>
+        <div class="step__title">Surface Realizer</div>
+        <div class="step__body">content chunk에 조사, 어미, punctuation을 붙여 문장 span으로 실현한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <div class="section__head">
+      <div>
+        <div class="eyebrow">03 · visual model</div>
+        <h2 class="h2">anchor는 prompt 설명이 아니라 query가 직접 참고하는 표현이다</h2>
+        <p class="sub">S4g에서는 anchor 정보가 문자열 prompt 안에 들어갔다. S4h에서는 gap query가 anchor representation을 직접 보는 구조로 바뀐다.</p>
+      </div>
+    </div>
+
+    <div class="attention">
+      <div class="beam beam--left" aria-hidden="true"></div>
+      <div class="beam beam--right" aria-hidden="true"></div>
+      <div class="beam beam--global" aria-hidden="true"></div>
+      <div class="attention__row">
+        <div class="node node--anchor">
+          <span class="node__label">left anchor</span>
+          고양이
+        </div>
+        <div class="node">
+          <span class="node__label">position</span>
+          창가 앞
+        </div>
+        <div class="node node--query">
+          <span class="node__label">gap query</span>
+          어떤 의미가 들어갈까?
+        </div>
+        <div class="node">
+          <span class="node__label">transition</span>
+          0.25 → 0.50
+        </div>
+        <div class="node node--anchor">
+          <span class="node__label">right anchor</span>
+          창가
+        </div>
+      </div>
+      <div class="arrow">query attends to anchors and global skeleton</div>
+      <div class="attention__row">
+        <div class="node">
+          <span class="node__label">global</span>
+          고양이 · 창가 · 잠들었다
+        </div>
+        <div class="node node--plan">
+          <span class="node__label">semantic plan</span>
+          검은
+        </div>
+        <div class="node node--plan">
+          <span class="node__label">surface span</span>
+          검은 고양이가
+        </div>
+        <div class="node node--plan">
+          <span class="node__label">insert</span>
+          current state 갱신
+        </div>
+        <div class="node">
+          <span class="node__label">next step</span>
+          더 세부 span 확장
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="summary-band">
+    <div class="wrap section">
+      <div class="principles">
+        <div class="principle">
+          <span class="tag tag--blue">principle 1</span>
+          <div class="principle__title">단위 변경</div>
+          <p class="principle__body">subword span이 아니라 word/chunk span을 기본 예측 단위로 둔다.</p>
+        </div>
+        <div class="principle">
+          <span class="tag tag--green">principle 2</span>
+          <div class="principle__title">순서 변경</div>
+          <p class="principle__body">content chunk를 먼저 만들고 function/punctuation은 뒤에서 실현한다.</p>
+        </div>
+        <div class="principle">
+          <span class="tag tag--purple">principle 3</span>
+          <div class="principle__title">anchor 직접 사용</div>
+          <p class="principle__body">anchor를 prompt text가 아니라 span query의 attention 대상으로 만든다.</p>
+        </div>
+        <div class="principle">
+          <span class="tag tag--red">principle 4</span>
+          <div class="principle__title">metric 분리</div>
+          <p class="principle__body">final rollout과 generated-span-only content/entity를 분리해서 본다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="examples">
+    <div class="section__head">
+      <div>
+        <div class="eyebrow">04 · Korean examples</div>
+        <h2 class="h2">한국어 문장으로 보는 reverse expansion</h2>
+        <p class="sub">아래 예시는 실제 학습 데이터가 아니라 구조 직관을 보여주기 위한 설명용 예시다. 핵심은 "의미 골격 → content chunk → 표면 문장"의 순서다.</p>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <article class="example-card">
+        <h3 class="example-card__title">예시 A · 고양이 문장</h3>
+        <div class="mini-label">original</div>
+        <div class="sentence">
+          <span class="tok tok--chunk">검은</span>
+          <span class="tok tok--keep">고양이가</span>
+          <span class="tok tok--keep">창가에서</span>
+          <span class="tok tok--chunk">조용히</span>
+          <span class="tok tok--keep">잠들었다</span>
+        </div>
+        <div class="mini-label">skeleton</div>
+        <div class="sentence">
+          <span class="tok tok--keep">고양이</span>
+          <span class="tok tok--keep">창가</span>
+          <span class="tok tok--keep">잠들었다</span>
+        </div>
+        <div class="mini-label">semantic chunks</div>
+        <div class="sentence">
+          <span class="tok tok--chunk">검은</span>
+          <span class="tok tok--chunk">조용히</span>
+        </div>
+      </article>
+
+      <article class="example-card">
+        <h3 class="example-card__title">예시 B · 시장 문장</h3>
+        <div class="mini-label">original</div>
+        <div class="sentence">
+          <span class="tok tok--keep">서울의</span>
+          <span class="tok tok--chunk">오래된</span>
+          <span class="tok tok--keep">시장에서</span>
+          <span class="tok tok--keep">할머니가</span>
+          <span class="tok tok--chunk">따뜻한</span>
+          <span class="tok tok--keep">호떡을</span>
+          <span class="tok tok--keep">팔았다</span>
+        </div>
+        <div class="mini-label">skeleton</div>
+        <div class="sentence">
+          <span class="tok tok--keep">서울</span>
+          <span class="tok tok--keep">시장</span>
+          <span class="tok tok--keep">할머니</span>
+          <span class="tok tok--keep">호떡</span>
+          <span class="tok tok--keep">팔았다</span>
+        </div>
+        <div class="mini-label">semantic chunks</div>
+        <div class="sentence">
+          <span class="tok tok--chunk">오래된</span>
+          <span class="tok tok--chunk">따뜻한</span>
+        </div>
+      </article>
+
+      <article class="example-card">
+        <h3 class="example-card__title">예시 C · 바다 문장</h3>
+        <div class="mini-label">original</div>
+        <div class="sentence">
+          <span class="tok tok--keep">북쪽</span>
+          <span class="tok tok--keep">바다에서</span>
+          <span class="tok tok--chunk">작은</span>
+          <span class="tok tok--keep">어선이</span>
+          <span class="tok tok--chunk">새벽 안개를</span>
+          <span class="tok tok--keep">지나</span>
+          <span class="tok tok--keep">항구로</span>
+          <span class="tok tok--keep">돌아왔다</span>
+        </div>
+        <div class="mini-label">skeleton</div>
+        <div class="sentence">
+          <span class="tok tok--keep">북쪽</span>
+          <span class="tok tok--keep">바다</span>
+          <span class="tok tok--keep">어선</span>
+          <span class="tok tok--keep">항구</span>
+          <span class="tok tok--keep">돌아왔다</span>
+        </div>
+        <div class="mini-label">semantic chunks</div>
+        <div class="sentence">
+          <span class="tok tok--chunk">작은</span>
+          <span class="tok tok--chunk">새벽 안개를 지나</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <div class="section__head">
+      <div>
+        <div class="eyebrow">05 · rollout intuition</div>
+        <h2 class="h2">reverse process는 의미에서 표면으로 내려온다</h2>
+      </div>
+    </div>
+
+    <div class="ladder">
+      <div class="ladder__row">
+        <div class="ladder__label">x_t · 25%</div>
+        <div class="bar sentence">
+          <span class="tok tok--keep">고양이</span>
+          <span class="tok tok--keep">창가</span>
+          <span class="tok tok--keep">잠들었다</span>
+        </div>
+      </div>
+      <div class="ladder__row">
+        <div class="ladder__label">semantic plan</div>
+        <div class="bar sentence">
+          <span class="tok tok--chunk">검은</span>
+          <span class="tok tok--chunk">조용히</span>
+        </div>
+      </div>
+      <div class="ladder__row">
+        <div class="ladder__label">x_{t-1} · 50%</div>
+        <div class="bar sentence">
+          <span class="tok tok--chunk">검은</span>
+          <span class="tok tok--keep">고양이</span>
+          <span class="tok tok--keep">창가</span>
+          <span class="tok tok--chunk">조용히</span>
+          <span class="tok tok--keep">잠들었다</span>
+        </div>
+      </div>
+      <div class="ladder__row">
+        <div class="ladder__label">surface realizer</div>
+        <div class="bar sentence">
+          <span class="tok tok--chunk">검은</span>
+          <span class="tok tok--keep">고양이가</span>
+          <span class="tok tok--keep">창가에서</span>
+          <span class="tok tok--chunk">조용히</span>
+          <span class="tok tok--keep">잠들었다</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="gates">
+    <div class="section__head">
+      <div>
+        <div class="eyebrow">06 · experiment gates</div>
+        <h2 class="h2">S4h가 확인해야 할 것</h2>
+        <p class="sub">이 구조가 좋은 연구 실험이 되려면 final score만 보면 안 된다. S4g에서 이미 final score와 span generation이 분리된다는 걸 봤기 때문이다.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <article class="panel">
+        <div class="panel__top">
+          <h3 class="panel__title">통과해야 하는 신호</h3>
+          <span class="tag tag--green">pass signals</span>
+        </div>
+        <table class="flow-table">
+          <thead>
+            <tr><th>Gate</th><th>좋은 결과</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>strict controls</td><td>importance가 random, same-position random, wrong-document, no-anchor를 계속 이긴다.</td></tr>
+            <tr><td>span content</td><td>S4g 0.0000에서 유의하게 올라간다.</td></tr>
+            <tr><td>span entity</td><td>고유명/수량/장소 표현이 쉼표나 `s`로 붕괴하지 않는다.</td></tr>
+            <tr><td>artifact</td><td>S4g 0.9961에서 크게 내려간다.</td></tr>
+            <tr><td>rollout</td><td>S4d/S4e/S4g final score 대비 크게 퇴행하지 않는다.</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="panel">
+        <div class="panel__top">
+          <h3 class="panel__title">실패로 봐야 하는 신호</h3>
+          <span class="tag tag--red">fail signals</span>
+        </div>
+        <table class="flow-table">
+          <thead>
+            <tr><th>Symptom</th><th>해석</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>final만 높고 span은 낮음</td><td>기존 skeleton 보존 효과일 가능성이 크다.</td></tr>
+            <tr><td>position-only도 같이 상승</td><td>의미 골격이 아니라 위치 prior를 학습했을 수 있다.</td></tr>
+            <tr><td>same-position random이 근접</td><td>같은 위치에 아무 content나 넣어도 되는 구조일 수 있다.</td></tr>
+            <tr><td>artifact가 높음</td><td>여전히 표면 조각 shortcut에 의존한다.</td></tr>
+            <tr><td>content/function 분리가 안 됨</td><td>의미 확장과 문법 정리가 같은 실패로 섞인다.</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    LACE v2 · S4h structure explainer · source context: S4g checkpoint and v2 experiment roadmap
+  </div>
+</footer>
+</body>
+</html>

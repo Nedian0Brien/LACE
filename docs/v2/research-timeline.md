@@ -4,6 +4,28 @@
 
 ## 2026-05-07
 
+### 결정: S4h 구조 설명서를 통해 hierarchical span expansion 후보를 구체화
+
+추가 시각: 2026-05-07 14:34 KST
+
+맥락:
+
+S4g 이후 사용자는 구조적 문제 진단에는 동의했지만, 어떤 구조를 만들어야 하는지 직관적으로 감이 오지 않는다고 했다. 따라서 S4h 후보 구조를 단순 설명이 아니라 한국어 문장 예시와 시각적 흐름으로 정리할 필요가 생겼다.
+
+결정:
+
+`S4h: anchor-conditioned hierarchical span expansion`을 설명 후보 구조로 문서화했다. 핵심은 reverse process가 곧바로 subword/punctuation 조각을 맞히지 않고, 먼저 gap query가 left/right anchor와 global skeleton을 직접 참고해 content word/chunk 단위 semantic plan을 만들고, 이후 surface realizer가 조사, 어미, punctuation을 붙여 문장 span으로 실현하는 것이다.
+
+근거/출처:
+
+- `web/s4h-structure-explainer.html`
+- `web/research-checkpoint-s4g.html`
+- `docs/v2/experiments/s4g-pretrained-decoder-semantic-span-expansion.md`
+
+다음 실험에 주는 의미:
+
+S4h 구현 시 gate는 final rollout score만 보지 않는다. `importance_schedule`이 strict controls를 계속 이기는지, generated-span-only content/entity recall이 S4g의 0.0000에서 오르는지, artifact rate가 S4g의 0.9961에서 내려가는지를 분리해서 봐야 한다.
+
 ### 발견: S4g pretrained decoder는 rollout 우위를 유지했지만 span semantic generation을 해결하지 못함
 
 추가 시각: 2026-05-07 14:06 KST
