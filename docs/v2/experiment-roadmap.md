@@ -432,3 +432,5 @@ S5: learned semantic planner iteration
 - content-applicable span 기준 plan recall/F1을 별도 집계
 - predicted-plan rollout이 no-plan/random/wrong-document plan보다 좋아지는지 확인
 - S6 open-ended generation으로 넘기기 전 predicted plan bottleneck을 해결
+
+구현 계획은 [plan/s5-learned-semantic-planner-plan.md](./plan/s5-learned-semantic-planner-plan.md)에 둔다. 핵심은 planner model과 plan-conditioned realizer를 분리하고, rollout step마다 현재 skeleton에서 learned plan을 다시 생성하는 것이다.

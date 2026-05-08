@@ -103,10 +103,31 @@ oracle plan은 강하다.
 
 다음 S5 iteration은 open-ended generation이 아니라 learned semantic planner여야 한다. 이때 heuristic은 primary condition에서 제외하고 smoke/control/ablation으로만 유지한다. Plan prediction 자체를 별도 gate로 두고, content-applicable span 기준 plan recall/F1과 predicted-plan rollout 개선을 함께 확인해야 한다.
 
+## Learned planner 구현 확인
+
+다음 구현은 단순히 `predicted_plan_from_context()` 휴리스틱을 더 복잡하게 바꾸는 방식이 아니다. Planner를 별도 seq2seq 모델로 두고, current skeleton, left/right anchor, gap query, transition ratio에서 oracle content/entity plan을 예측하도록 학습한다.
+
+Pipeline은 두 단계다.
+
+```text
+current skeleton + anchors + gap query
+-> learned semantic planner
+-> content/entity plan
+-> plan-conditioned span realizer
+-> newly unmasked span
+```
+
+특히 rollout에서는 이전 step의 생성 결과가 다음 current skeleton이 되므로, eval 시작 전에 learned plan을 한 번만 캐시하면 부족하다. 각 rollout step에서 현재 skeleton을 planner에 넣어 plan을 다시 생성해야 한다.
+
+Primary condition은 `learned_plan_schedule`로 두고, heuristic은 `heuristic_plan_control_schedule`처럼 diagnostic control로만 남긴다. Plan metric은 function-only span의 `none` 정답이 섞인 전체 평균과 별도로, `plan_applicable == 1`인 content-applicable span 기준 recall/F1을 반드시 보고한다.
+
+Realizer는 oracle plan만으로 학습하지 않는다. Oracle plan examples에 plan-dropout examples를 섞어 `semantic plan: none`도 같은 입력 형식에서 경험하게 한다. 이렇게 해야 no-plan baseline이 단순 out-of-distribution 불이익을 받지 않는다. Random/wrong-document plan은 학습에 넣지 않고 eval control로만 둔다.
+
 ## 관련 문서
 
 - `web/s5-semantic-plan-bridge.html`
 - `docs/v2/experiments/s5-semantic-plan-bridge.md`
+- `docs/v2/plan/s5-learned-semantic-planner-plan.md`
 - `docs/v2/experiment-naming-rules.md`
 - [[s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]]
 - [[forward-reverse-process-본질|Forward-Reverse Process 본질]]

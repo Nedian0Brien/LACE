@@ -136,3 +136,9 @@ sources: [사용자 대화]
 - 사용자의 지적을 반영해 heuristic planner를 LACE v2의 연구 대상이나 방법론 claim에서 제외했다.
 - Heuristic planner는 learned planner를 만들기 전 병목을 드러내는 smoke/control/ablation으로만 유지한다.
 - 다음 S5 primary condition은 current skeleton, left/right anchor, gap query, transition ratio에서 content word/entity plan을 예측하는 learned semantic planner로 정의했다.
+
+## [2026-05-08] plan | S5 learned semantic planner 구현 방식 확인
+
+- [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]]에 learned planner 구현 방식을 추가했다.
+- 다음 runner는 planner model과 plan-conditioned realizer를 분리하는 두 단계 파이프라인으로 설계한다.
+- Rollout에서는 eval 시작 전 plan cache가 아니라 각 step의 current skeleton에서 learned plan을 동적으로 생성해야 한다고 기록했다.

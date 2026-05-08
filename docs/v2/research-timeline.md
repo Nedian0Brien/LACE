@@ -2,6 +2,30 @@
 
 이 문서는 v2 의미 골격 연구 흐름의 연구 질문, 결정, 경험적 사실, 주의점, 해석 변경을 시간순으로 기록한다.
 
+## 2026-05-08
+
+### 계획: S5 learned semantic planner는 두 모델 파이프라인으로 구현한다
+
+추가 시각: 2026-05-08 09:16 KST
+
+맥락:
+
+S5의 다음 primary condition을 learned semantic planner로 두기로 했고, 사용자는 이 구조를 실제로 어떻게 구현할지 확인을 요청했다.
+
+결정:
+
+S5 내부 iteration으로 별도 runner를 둔다. Planner model은 current skeleton, left/right anchor, gap query, transition ratio를 입력받아 content word/entity plan을 생성한다. Plan-conditioned realizer는 oracle plan examples와 plan-dropout examples를 함께 사용해 span 실현 방법을 학습하고, eval에서는 oracle/learned/no-plan/random/wrong-document/heuristic plan을 같은 realizer에 주입한다.
+
+근거/출처:
+
+- `kaggle/v2_s5/run_v2_s5.py`
+- `docs/v2/plan/s5-learned-semantic-planner-plan.md`
+- `wiki/concepts/lace/s5-semantic-plan-bridge.md`
+
+다음 실험에 주는 의미:
+
+기존 `predicted_plan_from_context()`를 더 정교한 휴리스틱으로 바꾸는 것이 아니라, `learned_plan_schedule`을 primary condition으로 추가한다. 특히 rollout에서는 이전 step의 생성 결과가 current skeleton을 바꾸므로, 각 step마다 planner가 learned plan을 다시 생성해야 한다.
+
 ## 2026-05-07
 
 ### 결정: heuristic planner는 연구 대상이 아니라 진단용 비교 장치로만 둔다
