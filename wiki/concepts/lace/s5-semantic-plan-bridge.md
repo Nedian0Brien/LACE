@@ -137,11 +137,27 @@ Realizer는 oracle plan만으로 학습하지 않는다. Oracle plan examples에
 
 따라서 다음 runner의 성공 기준은 no-plan/random 대비 개선만으로 두면 약하다. `learned_plan_schedule`은 oracle gap의 일부를 회복하고, direct seq2seq baseline과도 경쟁해야 한다.
 
+## 중간 진단
+
+2026-05-08 중간 진단의 핵심은 다음이다.
+
+```text
+LACE v2는 새로운 DLM forward process 후보로서 일부 근거를 얻었다.
+하지만 아직 full Diffusion Language Model은 아니다.
+```
+
+입증된 것은 constrained reverse rollout에서 semantic skeleton + positional scaffold가 random/position-only보다 의미 보존 궤적을 더 잘 만든다는 점이다. S4b와 S4d가 이 주장을 가장 강하게 지지한다. S5 oracle plan은 올바른 content/entity plan이 있으면 span semantic collapse가 크게 회복된다는 upper-bound를 보였다.
+
+입증되지 않은 것은 모델이 그 plan을 스스로 예측할 수 있는지, ordered semantic plan이 필요한지, learned planner + realizer가 direct seq2seq baseline보다 나은지, 그리고 이것이 표준 diffusion formalism으로 정식화될 수 있는지다.
+
+따라서 S5 learned planner는 단순 후속 개선이 아니라, LACE forward process가 실제 learned reverse expansion으로 이어지는지 확인하는 핵심 gate다.
+
 ## 관련 문서
 
 - `web/s5-semantic-plan-bridge.html`
 - `docs/v2/experiments/s5-semantic-plan-bridge.md`
 - `docs/v2/plan/s5-learned-semantic-planner-plan.md`
+- `docs/v2/reviews/midpoint-forward-process-diagnosis.md`
 - `docs/v2/reviews/claude-s5-learned-planner-methodology-review.md`
 - `docs/v2/experiment-naming-rules.md`
 - [[s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]]

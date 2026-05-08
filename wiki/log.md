@@ -148,3 +148,9 @@ sources: [사용자 대화]
 - Claude에게 LACE 전체 연구 컨셉과 S5 learned semantic planner 계획의 타당성 검토를 요청하고 `docs/v2/reviews/claude-s5-learned-planner-methodology-review.md`에 저장했다.
 - 핵심 지적은 S5 learned planner가 diffusion claim이 아니라 planner+realizer claim으로 이동할 위험, shuffled plan이 content word bag으로 작동하는 문제, S4g pretrained decoder collapse 원인 미해결이다.
 - 다음 S5 runner에는 direct seq2seq baseline, ordered-vs-shuffled learned plan 비교, planner recall threshold별 downstream 분석, plan-dropout sensitivity를 포함해야 한다고 기록했다.
+
+## [2026-05-08] diagnosis | LACE v2 forward process 중간 진단
+
+- 사용자의 요청에 따라 LACE v2가 새 DLM forward process를 정의하려는 연구라는 관점에서 입증된 것과 미입증인 것을 정리했다.
+- `docs/v2/reviews/midpoint-forward-process-diagnosis.md`를 추가해 semantic skeleton artifact, constrained reverse rollout 우위, S5 oracle plan upper-bound는 입증된 쪽으로, full DLM formalism, open-ended generation, learned planner, ordered plan, direct seq2seq baseline 대비 우위는 미입증으로 분리했다.
+- [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]]에도 중간 진단을 반영했다.

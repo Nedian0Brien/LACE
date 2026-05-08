@@ -436,3 +436,5 @@ S5: learned semantic planner iteration
 구현 계획은 [plan/s5-learned-semantic-planner-plan.md](./plan/s5-learned-semantic-planner-plan.md)에 둔다. 핵심은 planner model과 plan-conditioned realizer를 분리하고, rollout step마다 현재 skeleton에서 learned plan을 다시 생성하는 것이다.
 
 Claude 방법론 검토는 [reviews/claude-s5-learned-planner-methodology-review.md](./reviews/claude-s5-learned-planner-methodology-review.md)에 둔다. 검토 결과 다음 runner에는 direct seq2seq baseline, ordered-vs-shuffled learned plan 비교, planner recall threshold별 downstream 분석, plan-dropout sensitivity를 추가해야 한다.
+
+중간 진단은 [reviews/midpoint-forward-process-diagnosis.md](./reviews/midpoint-forward-process-diagnosis.md)에 둔다. 현재까지 입증된 것은 full DLM이 아니라 constrained reverse rollout에서 semantic skeleton trajectory가 random/position-only보다 의미 보존에 유리하다는 점이다. Learned planner와 open-ended generation은 아직 통과하지 못한 gate다.

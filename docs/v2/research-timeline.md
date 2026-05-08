@@ -4,6 +4,31 @@
 
 ## 2026-05-08
 
+### 중간 진단: 현재 연구는 forward process 후보를 만들었지만 full DLM은 아직 입증하지 못했다
+
+추가 시각: 2026-05-08 10:02 KST
+
+맥락:
+
+사용자는 현재 연구가 Diffusion Language Model을 만들기 위한 Forward Process를 새롭게 정의하려는 시도라고 정리하고, 그 과정에서 입증된 것과 입증되지 않은 것을 중간 진단하자고 했다.
+
+진단:
+
+현재까지 입증된 것은 semantic skeleton artifact를 만들 수 있고, constrained reverse rollout에서 importance-ordered trajectory가 random/position-only보다 의미 보존에 유리하다는 점이다. S4b/S4d는 이 주장을 가장 강하게 지지한다. S5 oracle plan은 올바른 content/entity plan이 주어지면 span semantic collapse가 크게 회복된다는 upper-bound를 보였다.
+
+하지만 아직 full Diffusion Language Model은 아니다. Open-ended generation, learned semantic planner, ordered semantic plan, 표준 diffusion formalism으로서의 `q(x_t | x_0)`, direct seq2seq baseline 대비 우위, corpus/model scale 일반화는 모두 미입증이다.
+
+근거/출처:
+
+- `docs/v2/reviews/midpoint-forward-process-diagnosis.md`
+- `docs/v2/experiments/s4b-multi-step-delta-rollout.md`
+- `docs/v2/experiments/s4d-skeleton-conditioned-gap-span-expansion.md`
+- `docs/v2/experiments/s5-semantic-plan-bridge.md`
+
+다음 실험에 주는 의미:
+
+다음 S5 learned planner는 단순 성능 개선 실험이 아니라, LACE forward process가 reverse process 안에서 실제로 learned semantic expansion으로 연결될 수 있는지 확인하는 핵심 gate다. 이 gate가 통과하기 전에는 S6 open-ended generation이나 scale-up으로 넘어가지 않는다.
+
 ### 외부 검토: Claude는 S5 learned planner가 planner+realizer 연구로 이동할 위험을 지적했다
 
 추가 시각: 2026-05-08 09:44 KST
