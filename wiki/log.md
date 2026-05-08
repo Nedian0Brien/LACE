@@ -142,3 +142,9 @@ sources: [사용자 대화]
 - [[concepts/lace/s5-semantic-plan-bridge|S5 Semantic Plan Bridge]]에 learned planner 구현 방식을 추가했다.
 - 다음 runner는 planner model과 plan-conditioned realizer를 분리하는 두 단계 파이프라인으로 설계한다.
 - Rollout에서는 eval 시작 전 plan cache가 아니라 각 step의 current skeleton에서 learned plan을 동적으로 생성해야 한다고 기록했다.
+
+## [2026-05-08] review | Claude S5 learned planner 방법론 검토
+
+- Claude에게 LACE 전체 연구 컨셉과 S5 learned semantic planner 계획의 타당성 검토를 요청하고 `docs/v2/reviews/claude-s5-learned-planner-methodology-review.md`에 저장했다.
+- 핵심 지적은 S5 learned planner가 diffusion claim이 아니라 planner+realizer claim으로 이동할 위험, shuffled plan이 content word bag으로 작동하는 문제, S4g pretrained decoder collapse 원인 미해결이다.
+- 다음 S5 runner에는 direct seq2seq baseline, ordered-vs-shuffled learned plan 비교, planner recall threshold별 downstream 분석, plan-dropout sensitivity를 포함해야 한다고 기록했다.

@@ -123,11 +123,26 @@ Primary condition은 `learned_plan_schedule`로 두고, heuristic은 `heuristic_
 
 Realizer는 oracle plan만으로 학습하지 않는다. Oracle plan examples에 plan-dropout examples를 섞어 `semantic plan: none`도 같은 입력 형식에서 경험하게 한다. 이렇게 해야 no-plan baseline이 단순 out-of-distribution 불이익을 받지 않는다. Random/wrong-document plan은 학습에 넣지 않고 eval control로만 둔다.
 
+## Claude 방법론 검토
+
+2026-05-08에 Claude에게 LACE 전체 연구 컨셉과 S5 learned semantic planner 계획에 대한 외부 방법론 검토를 요청했다.
+
+검토의 핵심은 조건부 수용이다. LACE의 기본 직관은 방어 가능하지만, S5 learned planner가 성공하더라도 그것이 diffusion language model의 claim인지, 아니면 planner + conditional realizer pipeline의 claim인지 분리해야 한다고 지적했다.
+
+특히 다음 세 가지를 강한 risk로 보았다.
+
+- `shuffled_plan_schedule`이 oracle plan과 거의 같은 성능을 낸 것은 현재 plan이 ordered sentence plan이 아니라 content word bag으로 작동한다는 신호다.
+- S4g에서 pretrained `t5-small`을 붙였는데도 generated span content/entity recall이 0.0000이고 artifact rate가 0.9961로 무너진 원인을 먼저 이해해야 한다.
+- Learned planner를 추가하기 전에 direct seq2seq baseline, ordered-vs-shuffled learned plan, planner recall threshold별 downstream 분석, plan-dropout sensitivity가 필요하다.
+
+따라서 다음 runner의 성공 기준은 no-plan/random 대비 개선만으로 두면 약하다. `learned_plan_schedule`은 oracle gap의 일부를 회복하고, direct seq2seq baseline과도 경쟁해야 한다.
+
 ## 관련 문서
 
 - `web/s5-semantic-plan-bridge.html`
 - `docs/v2/experiments/s5-semantic-plan-bridge.md`
 - `docs/v2/plan/s5-learned-semantic-planner-plan.md`
+- `docs/v2/reviews/claude-s5-learned-planner-methodology-review.md`
 - `docs/v2/experiment-naming-rules.md`
 - [[s4g-pretrained-decoder-semantic-span-expansion|S4g pretrained decoder semantic span expansion]]
 - [[forward-reverse-process-본질|Forward-Reverse Process 본질]]

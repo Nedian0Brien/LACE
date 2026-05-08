@@ -109,3 +109,24 @@ newly unmasked span
    - `S5-G-ORACLE-UPPER-BOUND-STILL-HOLDS`
 
 이 구현에서 가장 중요한 점은 learned planner가 realizer보다 앞에 있는 독립 학습 문제라는 것이다. 즉 S5의 다음 실험은 "span을 더 잘 생성하는 decoder"가 아니라 "reverse expansion 전에 무엇을 채워야 하는지 계획하는 모델"을 검증한다.
+
+## 6. Claude 방법론 검토 이후 보강 사항
+
+2026-05-08 Claude review는 S5 learned planner가 성공하더라도 diffusion language model claim이 아니라 planner+conditional realizer claim으로 이동할 위험을 지적했다. 따라서 다음 runner에는 다음 보강을 포함한다.
+
+1. `direct_seq2seq_baseline`
+   - 같은 skeleton, anchor, gap query에서 span을 직접 예측한다.
+   - Learned planner pipeline이 이 baseline과 구분되지 않으면 diffusion rollout 기여를 주장하지 않는다.
+2. `shuffled_learned_plan_schedule`
+   - learned plan의 term 순서를 섞어 ordered plan과 비교한다.
+   - ordered와 shuffled가 같으면 현재 plan은 sentence plan이 아니라 content word bag으로 해석한다.
+3. planner recall threshold 분석
+   - learned plan recall 구간별로 downstream span content/entity recall과 artifact rate를 따로 본다.
+   - planner metric 개선이 realizer 개선으로 이어지는지 확인한다.
+4. plan-dropout sensitivity
+   - 0%, 20%, 50% 같은 dropout 비율을 비교한다.
+   - no-plan baseline을 out-of-distribution으로 만들지 않으면서 plan 사용 신호가 사라지지 않는 범위를 찾는다.
+5. S4g collapse diagnostic
+   - pretrained decoder artifact collapse가 conditioning format 문제인지, target serialization 문제인지, generation setting 문제인지 확인하는 최소 diagnostic을 포함한다.
+
+성공 기준도 보강한다. Learned plan이 no-plan/random보다 조금 좋아지는 것만으로는 약하다. 최소한 oracle plan이 만든 gap의 일부를 회복하고, direct seq2seq baseline과 경쟁해야 다음 phase로 넘어갈 수 있다.

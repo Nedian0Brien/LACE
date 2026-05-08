@@ -4,6 +4,28 @@
 
 ## 2026-05-08
 
+### 외부 검토: Claude는 S5 learned planner가 planner+realizer 연구로 이동할 위험을 지적했다
+
+추가 시각: 2026-05-08 09:44 KST
+
+맥락:
+
+사용자는 Claude에게 현재 실험 계획, 만들고자 하는 모델, 전체 연구 컨셉을 상세히 설명하고 타당성 검토를 요청하라고 지시했다.
+
+사실:
+
+Claude review를 CLI로 요청했고, 결과를 `docs/v2/reviews/claude-s5-learned-planner-methodology-review.md`에 저장했다. 핵심 지적은 S5 learned planner가 성공하더라도 diffusion claim이 아니라 planner+conditional realizer claim으로 이동할 수 있다는 것이다. 또한 `shuffled_plan_schedule`이 oracle과 거의 같은 문제, S4g pretrained decoder artifact collapse, rollout score와 content/entity recall의 해리, direct seq2seq baseline 부재를 주요 risk로 지적했다.
+
+근거/출처:
+
+- `docs/v2/reviews/claude-s5-learned-planner-methodology-review.md`
+- `docs/v2/experiments/s5-semantic-plan-bridge.md`
+- `docs/v2/plan/s5-learned-semantic-planner-plan.md`
+
+다음 실험에 주는 의미:
+
+S5 learned planner는 진행 가능하지만, 다음 runner에는 direct seq2seq baseline, ordered-vs-shuffled learned plan 비교, planner recall threshold별 downstream 분석, plan-dropout sensitivity를 포함해야 한다. 또한 성공 기준은 no-plan/random 대비 개선만이 아니라 oracle gap 일부 회복과 direct baseline 대비 경쟁력까지 포함해야 한다.
+
 ### 계획: S5 learned semantic planner는 두 모델 파이프라인으로 구현한다
 
 추가 시각: 2026-05-08 09:16 KST
